@@ -9,7 +9,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,600;1,6..96,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Nunito:wght@400;500;600;700;800&family=Manrope:wght@800&display=swap">
 <style>
 /* Layout: marketplace app — sticky bar, search strip, venue grid; host view is a two-column dashboard. */
 :root{
@@ -17,9 +17,9 @@
   --accent:#5DA9E9; --accent-text:#2B74B3; --accent-soft:#E3F0FB; --on-accent:#0F2338; --brass:#C29A4E;
   --logo-pin:#5DA9E9; --logo-door:#E2C98F; --good:#2D7650; --good-soft:#E0F0E6; --warn:#A35A12;
   --scrim:rgba(14,20,18,.55); --shadow:0 1px 2px rgba(22,32,30,.06),0 8px 28px rgba(22,32,30,.08);
-  --f-display:"Bodoni Moda",Didot,"Times New Roman",serif;
-  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --f-display:"Fraunces",Georgia,"Times New Roman",serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:14px;
 }
 /* Event moods: picking an occasion re-colours the app. Wedding = black primary, white secondary. */
@@ -29,23 +29,11 @@
 :root[data-mood="christening"]{--bg:#F1F5FA;--sunk:#E2EBF5;--line:#D3DFEC;--accent:#3F74AE;--accent-text:#3F74AE;--accent-soft:#E1ECF8;--on-accent:#FFFFFF;--brass:#B89B5E}
 :root[data-mood="corporate"]{--bg:#EEF1F5;--sunk:#E1E6EE;--line:#D1D8E2;--accent:#1D3557;--accent-text:#1D3557;--accent-soft:#E0E7F1;--on-accent:#FFFFFF;--brass:#8B929C}
 :root[data-mood="clubs"]{--bg:#EDF3EF;--sunk:#DEEAE2;--line:#CFDFD4;--accent:#28724A;--accent-text:#28724A;--accent-soft:#DDEFE4;--on-accent:#FFFFFF;--brass:#B08A2E}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0E1620; --surface:#16212D; --sunk:#111A24; --ink:#EEF2F5; --muted:#9AAABA; --line:#263444;
-  --accent:#7DBDF0; --accent-text:#8CC6F2; --accent-soft:#1A2D40; --on-accent:#0B1B2B; --brass:#E2C98F; --good:#72C495; --good-soft:#17301F; --warn:#E3A35E;
-  --scrim:rgba(0,0,0,.65); --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1620; --surface:#16212D; --sunk:#111A24; --ink:#EEF2F5; --muted:#9AAABA; --line:#263444;
   --accent:#7DBDF0; --accent-text:#8CC6F2; --accent-soft:#1A2D40; --on-accent:#0B1B2B; --brass:#E2C98F; --good:#72C495; --good-soft:#17301F; --warn:#E3A35E;
   --scrim:rgba(0,0,0,.65); --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}
-/* Event moods, dark theme: wedding flips to white primary on black. */
-@media (prefers-color-scheme:dark){
- :root:not([data-theme="light"])[data-mood="wedding"]{--bg:#0A0A0A;--surface:#151515;--sunk:#0F0F0F;--ink:#F5F5F3;--muted:#9C9C9C;--line:#2B2B2B;--accent:#F5F5F3;--accent-text:#F5F5F3;--accent-soft:#242424;--on-accent:#0A0A0A;--brass:#BDBDBD}
- :root:not([data-theme="light"])[data-mood="birthday"]{--bg:#140C10;--surface:#20141A;--sunk:#180E13;--line:#36222C;--accent:#FF77A6;--accent-text:#FF77A6;--accent-soft:#3A1625;--on-accent:#1E0A12;--brass:#F2C14E}
- :root:not([data-theme="light"])[data-mood="wake"]{--bg:#0F1217;--surface:#181D25;--sunk:#12161C;--line:#29303B;--accent:#AAB6CB;--accent-text:#AAB6CB;--accent-soft:#1F2633;--on-accent:#10141B;--brass:#8F98A8}
- :root:not([data-theme="light"])[data-mood="christening"]{--bg:#0D131B;--surface:#162130;--sunk:#101824;--line:#243347;--accent:#9DC3EA;--accent-text:#9DC3EA;--accent-soft:#1A2A3B;--on-accent:#0B1521;--brass:#D3B97E}
- :root:not([data-theme="light"])[data-mood="corporate"]{--bg:#0D1118;--surface:#161D29;--sunk:#10151E;--line:#253042;--accent:#8EAFD8;--accent-text:#8EAFD8;--accent-soft:#19263A;--on-accent:#0B1220;--brass:#A3AAB4}
- :root:not([data-theme="light"])[data-mood="clubs"]{--bg:#0D1410;--surface:#16211B;--sunk:#101914;--line:#243529;--accent:#7CCB9A;--accent-text:#7CCB9A;--accent-soft:#163021;--on-accent:#0A1A10;--brass:#D6B262}
-}
+/* Dark palettes apply only when the viewer explicitly chooses dark. */
 :root[data-theme="dark"][data-mood="wedding"]{--bg:#0A0A0A;--surface:#151515;--sunk:#0F0F0F;--ink:#F5F5F3;--muted:#9C9C9C;--line:#2B2B2B;--accent:#F5F5F3;--accent-text:#F5F5F3;--accent-soft:#242424;--on-accent:#0A0A0A;--brass:#BDBDBD}
 :root[data-theme="dark"][data-mood="birthday"]{--bg:#140C10;--surface:#20141A;--sunk:#180E13;--line:#36222C;--accent:#FF77A6;--accent-text:#FF77A6;--accent-soft:#3A1625;--on-accent:#1E0A12;--brass:#F2C14E}
 :root[data-theme="dark"][data-mood="wake"]{--bg:#0F1217;--surface:#181D25;--sunk:#12161C;--line:#29303B;--accent:#AAB6CB;--accent-text:#AAB6CB;--accent-soft:#1F2633;--on-accent:#10141B;--brass:#8F98A8}
@@ -62,7 +50,7 @@ body,.top,.search,.chip,.go,.cta,.btn,.field,.book,.panel,.kpis,.addon{transitio
 .mood-note i::before,.mood-note i::after{content:"";flex:1}
 .mood-note i::before{background:var(--accent)}
 .mood-note i::after{background:var(--accent-soft)}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;font-variation-settings:"SOFT" 100}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -71,7 +59,7 @@ button{cursor:pointer}
 .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .num{font-variant-numeric:tabular-nums}
 h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;margin:0;letter-spacing:-.01em}
-.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:var(--f-mono);font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
 /* Top bar */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -113,7 +101,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;margin:0
 .pic svg{display:block;width:100%;height:100%}
 .badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);color:#16201E;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;display:flex;gap:6px;align-items:center}
 .badge.instant::before{content:"";width:7px;height:7px;border-radius:50%;background:#2D7650}
-.kind{position:absolute;bottom:10px;left:10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(10,14,13,.45);backdrop-filter:blur(6px);padding:4px 8px;border-radius:6px}
+.kind{position:absolute;bottom:10px;left:10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#17324D;background:rgba(255,255,255,.82);backdrop-filter:blur(6px);padding:4px 8px;border-radius:6px}
 .card .row1{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .card h3{font-size:20px;line-height:1.2}
 .rating{font-size:13.5px;font-weight:600;white-space:nowrap}
@@ -386,27 +374,30 @@ function festoon(pts,id){
   const [[x0,y0],[cx,cy],[x1,y1]]=pts; let d=`M${x0} ${y0}Q${cx} ${cy} ${x1} ${y1}`, dots="";
   for(let i=1;i<14;i++){const t=i/14;const x=lerp(lerp(x0,cx,t),lerp(cx,x1,t),t), y=lerp(lerp(y0,cy,t),lerp(cy,y1,t),t)+2;
     dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#FFE2A8"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#FFC56E" opacity=".35" filter="url(#GL${id})"/>`}
-  return `<path d="${d}" stroke="rgba(0,0,0,.5)" stroke-width="1" fill="none"/>${dots}`;
+  return `<path d="${d}" stroke="#5E6B78" stroke-opacity=".7" stroke-width="1" fill="none"/>${dots}`;
 }
+const WALL={pub:"#7B5E4B",hall:"#8D7A68",hall2:"#7E8796",leisure:"#5E88B0",bar:"#8B5A4C",barn:"#9C6C48",pavilion:"#5F8466",boathouse:"#4F6F90"};
+const SKIES=[["#7DBAE8","#BFDDF4","#F3EBDA"],["#86C1EC","#C8E3F6","#F5EEDD"],["#76B3E3","#B6D8F2","#F1E8D4"]];
 function scene(v,uid){
-  const b=BUILD[v.type], id=v.id+uid, sil="#0D1220", [s0,s1,s2]=v.sky;
+  const b=BUILD[v.type], id=v.id+uid, sil=WALL[v.type]||"#5E7187";
   let seed=[...v.id].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const [s0,s1,s2]=SKIES[seed%3];
   const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
-  let stars="";for(let i=0;i<22;i++){stars+=`<circle cx="${(rnd()*400).toFixed(0)}" cy="${(rnd()*90).toFixed(0)}" r="${(rnd()*1.1+.3).toFixed(1)}" fill="#fff" opacity="${(rnd()*.6+.2).toFixed(2)}"/>`}
-  const glow=b.win.map(([x,y,w,h])=>`<rect x="${x-3}" y="${y-3}" width="${w+6}" height="${h+6}" fill="#FFB85C" opacity=".55"/>`).join("");
-  const wins=b.win.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="url(#W${id})"/>`).join("");
-  const ground=b.water?`<rect y="196" width="400" height="54" fill="url(#R${id})"/>`+b.win.map(([x,y,w,h])=>`<rect x="${x}" y="${392-y-h}" width="${w}" height="${h*.7}" fill="#FFB85C" opacity=".22" filter="url(#GL${id})"/>`).join("")+`<path d="M0 214h400M20 228h360M60 240h280" stroke="#fff" stroke-opacity=".08"/>`
-    :`<rect y="220" width="400" height="30" fill="#0A0E18"/><ellipse cx="200" cy="224" rx="150" ry="8" fill="#FFB85C" opacity=".12" filter="url(#GL${id})"/>`;
-  return `<svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of ${v.name} at dusk">
-  <defs><linearGradient id="S${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s0}"/><stop offset=".6" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient>
-  <linearGradient id="W${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7B3"/><stop offset="1" stop-color="#FFAE4F"/></linearGradient>
-  <linearGradient id="R${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2A44"/><stop offset="1" stop-color="#0B1222"/></linearGradient>
-  <filter id="GL${id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs>
-  <rect width="400" height="250" fill="url(#S${id})"/>${stars}
-  <circle cx="${330-(seed%5)*40}" cy="46" r="11" fill="#FFF3DA" opacity=".85"/>
-  <path d="M0 200C70 172 120 186 190 176S320 160 400 180V250H0Z" fill="#141A2C" opacity=".75"/>
-  <path d="M0 214C80 200 150 210 230 200S350 196 400 206V250H0Z" fill="#0F1424"/>
-  <g filter="url(#GL${id})">${glow}</g>
+  let clouds="";for(let i=0;i<3;i++){const cx=(rnd()*360+20).toFixed(0),cy=(rnd()*50+24).toFixed(0),w=(rnd()*30+34).toFixed(0);
+    clouds+=`<g fill="#FFFFFF" opacity=".85"><ellipse cx="${cx}" cy="${cy}" rx="${w}" ry="9"/><ellipse cx="${+cx-w*.3}" cy="${cy-6}" rx="${w*.45}" ry="9"/><ellipse cx="${+cx+w*.25}" cy="${cy-8}" rx="${w*.4}" ry="10"/></g>`}
+  const wins=b.win.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="url(#W${id})" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.2"/>`).join("");
+  const ground=b.water?`<rect y="196" width="400" height="54" fill="url(#R${id})"/>`+b.win.map(([x,y,w,h])=>`<rect x="${x}" y="${392-y-h}" width="${w}" height="${h*.6}" fill="#FFFFFF" opacity=".18"/>`).join("")+`<path d="M0 214h400M20 228h360M60 240h280" stroke="#fff" stroke-opacity=".35"/>`
+    :`<rect y="220" width="400" height="30" fill="#E6D3A3"/><path d="M0 220h400" stroke="#D2BC86" stroke-width="2"/>`;
+  return `<svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of ${v.name} on a sunny day">
+  <defs><linearGradient id="S${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s0}"/><stop offset=".65" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient>
+  <linearGradient id="W${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F8FD"/><stop offset="1" stop-color="#B7D5EE"/></linearGradient>
+  <linearGradient id="R${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86BCE4"/><stop offset="1" stop-color="#5E9ACB"/></linearGradient>
+  <filter id="GL${id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+  <rect width="400" height="250" fill="url(#S${id})"/>
+  <circle cx="${330-(seed%5)*40}" cy="44" r="26" fill="#FFF3C4" opacity=".45"/><circle cx="${330-(seed%5)*40}" cy="44" r="14" fill="#FFF1B8"/>
+  ${clouds}
+  <path d="M0 200C70 172 120 186 190 176S320 160 400 180V250H0Z" fill="#B9CFA0"/>
+  <path d="M0 214C80 200 150 210 230 200S350 196 400 206V250H0Z" fill="#9DBD84"/>
   <path d="${b.body}" fill="${sil}"/>${b.extra.replaceAll("SIL",sil).replaceAll("url(#GL)",`url(#GL${id})`)}${wins}
   ${b.festoon?festoon(b.festoon,id):""}${b.festoon2?festoon(b.festoon2,id):""}
   ${ground}</svg>`;
@@ -593,7 +584,7 @@ function chartSVG(){
   const W=640,H=250,L=48,R=12,T=28,B=30, max=7000, data=host.revenue, n=data.length, bw=(W-L-R)/n;
   const y=v=>T+(H-T-B)*(1-v/max);
   let g="";
-  for(let t=0;t<=max;t+=1750){g+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">£${t/1000}k</text>`}
+  for(let t=0;t<=max;t+=1750){g+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Nunito, sans-serif">£${t/1000}k</text>`}
   const bars=data.map((v,i)=>{const x=L+i*bw+bw*.18,w=bw*.64,after=i>=host.joined;
     return `<rect x="${x}" y="${y(v)}" width="${w}" height="${y(0)-y(v)}" rx="4" fill="${after?"var(--accent)":"var(--muted)"}" opacity="${after?1:.45}"><title>${host.months[i]}: ${gbp(v)}</title></rect>
     <text x="${x+w/2}" y="${H-10}" text-anchor="middle" font-size="11" fill="var(--muted)">${host.months[i]}</text>`}).join("");
@@ -605,7 +596,7 @@ function chartSVG(){
     <text x="${jx+6}" y="${T-4}" font-size="11.5" font-weight="700" fill="var(--ink)">Listed on Vendo</text>
     <line x1="${L}" x2="${jx}" y1="${y(before)}" y2="${y(before)}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4" opacity=".6"/>
     ${bars}
-    <text x="${lx}" y="${y(last)-8}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-text)" font-family="IBM Plex Mono, monospace">${gbp(last)}</text></svg>`;
+    <text x="${lx}" y="${y(last)-8}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-text)" font-family="Nunito, sans-serif">${gbp(last)}</text></svg>`;
 }
 function renderHost(){
   const v=VENUES[0], open=host.enquiries.filter(e=>e.s==="new").length;
