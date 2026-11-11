@@ -305,6 +305,30 @@ const VENUES = [
   features:["Private bar and bartender","DJ booth and sound system","Bespoke cocktail menu","Cloakroom","Street-food platters","Open until 2am"],
   addons:[{l:"Signature cocktail on arrival",p:9,head:1},{l:"Street-food platters",p:14,head:1},{l:"Resident DJ",p:280},{l:"Personalised menu cards",p:60}],
   rules:["Over 18s only after 8pm","Minimum bar spend £1,500 on Saturdays","No outside food"]},
+ {id:"velvet",name:"Velvet Rooms",kind:"Nightclub",type:"club",place:"Call Lane, Leeds",region:"Yorkshire",
+  space:"Main room, two bars and VIP mezzanine",seated:60,standing:450,hour:200,day:1800,minH:4,rating:4.7,reviews:93,instant:false,
+  suits:["Birthdays","Corporate","Weddings"],
+  host:"Marcus Webb",hostShort:"MW",reply:"Usually replies within 3 hours",
+  blurb:"A converted mill with a full club lighting rig, a sound system built for DJs, two bars and a raised VIP mezzanine. Hire the whole club for 18ths, 21sts, launch nights and wedding after-parties, or take the mezzanine for a smaller crowd.",
+  features:["Club sound system and lighting rig","Two bars with dedicated staff","VIP mezzanine with booths","Door team and cloakroom","Late licence to 3am","Smoking terrace"],
+  addons:[{l:"Resident DJ",p:250},{l:"Drinks package",p:25,head:1},{l:"Photo booth",p:220},{l:"Extra door staff",p:180}],
+  rules:["Over 18s only, ID checked on the door","Door staff required for 100+ guests","No outside drinks"]},
+ {id:"lantern",name:"The Lantern Rooftop",kind:"Rooftop bar",type:"rooftop",place:"Jewellery Quarter, Birmingham",region:"Midlands",
+  space:"Heated roof terrace and glass-walled bar",seated:50,standing:120,hour:130,day:1200,minH:3,rating:4.8,reviews:61,instant:true,
+  suits:["Birthdays","Corporate","Weddings"],
+  host:"Ellie Brennan",hostShort:"EB",reply:"Usually replies within 1 hour",
+  blurb:"A roof terrace six floors up with parasols, festoon lights and views across the city, plus a glass-walled bar for when the weather turns. Popular for engagement parties, birthdays and summer work socials.",
+  features:["Heated terrace with parasols","Glass-walled indoor bar","City skyline views","Lift access","Sharing platters and small plates","Open until midnight"],
+  addons:[{l:"Welcome spritz",p:8,head:1},{l:"Sharing platters",p:16,head:1},{l:"Acoustic musician",p:300},{l:"Private lift host",p:90}],
+  rules:["Terrace closes at 11pm","Over 18s after 7pm","Full refund if it rains and you move indoors"]},
+ {id:"neon",name:"Neon Social",kind:"Karaoke and party bar",type:"karaoke",place:"Grey Street, Newcastle upon Tyne",region:"North East",
+  space:"Private karaoke booths and party bar",seated:70,standing:160,hour:110,day:950,minH:3,rating:4.9,reviews:138,instant:true,
+  suits:["Birthdays","Corporate"],
+  host:"Leanne Carr",hostShort:"LC",reply:"Usually replies within 2 hours",
+  blurb:"Six private karaoke booths around a neon-lit party bar with its own stage. Book a booth for ten, or the whole bar for a birthday or office party. Our hosts run the songbook, the mics and the cocktails.",
+  features:["Six private karaoke booths","Party bar with stage","Songbook of 40,000 tracks","Table-service cocktails","Party host on every booking","Open until 2am"],
+  addons:[{l:"Cocktail jugs",p:12,head:1},{l:"Party host and games",p:120},{l:"Neon birthday sign",p:45},{l:"Pizza and fries",p:10,head:1}],
+  rules:["Over 18s after 8pm","No glass in the booths","Booths are timed in 2-hour slots"]},
  {id:"saltmarsh",name:"Saltmarsh Leisure Centre",kind:"Leisure centre",type:"leisure",place:"Whitstable, Kent",region:"South East",
   space:"Main sports hall and dance studio",seated:250,standing:400,hour:70,day:600,minH:2,rating:4.6,reviews:41,instant:true,
   suits:["Birthdays","Clubs & classes","Corporate"],sky:["#1F3A52","#3F7790","#A9D3D6"],
@@ -367,7 +391,17 @@ const BUILD = {
       win:[[90,168,30,30],[134,168,30,30],[236,168,30,30],[280,168,30,30],[184,170,32,52]],
       extra:'<circle cx="200" cy="132" r="9" fill="#F4E3C0" opacity=".9"/>'+[76,120,166,234,280,324].map(x=>`<rect x="${x}" y="152" width="3" height="70" fill="SIL"/>`).join("")},
  boathouse:{body:"M70 196V128l130-50 130 50v68Z",
-      win:[[92,140,26,20],[132,140,26,20],[242,140,26,20],[282,140,26,20],[168,150,64,46]],extra:"",water:true}
+      win:[[92,140,26,20],[132,140,26,20],[242,140,26,20],[282,140,26,20],[168,150,64,46]],extra:"",water:true},
+ club:{body:"M40 222V124l80-30v30l80-30v30l80-30v30l80-30V222Z",
+      win:[[58,140,34,16],[104,140,34,16],[262,140,34,16],[308,140,34,16],[172,174,56,48]],
+      extra:'<rect x="156" y="152" width="88" height="12" rx="6" fill="#B07CFF"/><rect x="152" y="148" width="96" height="20" rx="10" fill="#B07CFF" opacity=".35" filter="url(#GL)"/><rect x="40" y="200" width="320" height="4" fill="#2B2238" opacity=".25"/>'},
+ rooftop:{body:"M110 222V96h180v126Z M100 96h200v-8H100Z",
+      win:[[126,110,30,22],[166,110,30,22],[206,110,30,22],[246,110,30,22],[126,144,30,22],[166,144,30,22],[206,144,30,22],[246,144,30,22],[176,184,48,38]],
+      extra:'<path d="M100 88V72M300 88V72M100 74H300" stroke="SIL" stroke-width="2"/><path d="M128 74q16-18 32 0Z" fill="#E9D5A6"/><path d="M144 74V88" stroke="SIL" stroke-width="2"/><path d="M240 74q16-18 32 0Z" fill="#5DA9E9"/><path d="M256 74V88" stroke="SIL" stroke-width="2"/>',
+      festoon:[[100,60],[200,82],[300,60]]},
+ karaoke:{body:"M50 222V112l55-24 55 24V222Z M160 222V98h190v124Z",
+      win:[[70,124,30,26],[112,124,30,26],[70,170,30,26],[112,170,30,26],[180,112,40,30],[234,112,40,30],[288,112,40,30],[178,164,152,46]],
+      extra:'<rect x="196" y="148" width="116" height="10" rx="5" fill="#FF7AA8"/><rect x="192" y="144" width="124" height="18" rx="9" fill="#FF7AA8" opacity=".35" filter="url(#GL)"/><path d="M350 140h12v22h-12" fill="none" stroke="#FFC56E" stroke-width="3"/>'}
 };
 function lerp(a,b,t){return a+(b-a)*t}
 function festoon(pts,id){
@@ -376,7 +410,7 @@ function festoon(pts,id){
     dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="#FFE2A8"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#FFC56E" opacity=".35" filter="url(#GL${id})"/>`}
   return `<path d="${d}" stroke="#5E6B78" stroke-opacity=".7" stroke-width="1" fill="none"/>${dots}`;
 }
-const WALL={pub:"#7B5E4B",hall:"#8D7A68",hall2:"#7E8796",leisure:"#5E88B0",bar:"#8B5A4C",barn:"#9C6C48",pavilion:"#5F8466",boathouse:"#4F6F90"};
+const WALL={pub:"#7B5E4B",hall:"#8D7A68",hall2:"#7E8796",leisure:"#5E88B0",bar:"#8B5A4C",barn:"#9C6C48",pavilion:"#5F8466",boathouse:"#4F6F90",club:"#5A5072",rooftop:"#6D7F96",karaoke:"#7A4E63"};
 const SKIES=[["#7DBAE8","#BFDDF4","#F3EBDA"],["#86C1EC","#C8E3F6","#F5EEDD"],["#76B3E3","#B6D8F2","#F1E8D4"]];
 function scene(v,uid){
   const b=BUILD[v.type], id=v.id+uid, sil=WALL[v.type]||"#5E7187";
@@ -430,7 +464,7 @@ function renderFind(){
   const regions=["Anywhere",...new Set(VENUES.map(v=>v.region))];
   app.innerHTML = `
   <section class="wrap intro">
-    <div class="eyebrow">Pubs · village halls · bars · clubs · leisure centres</div>
+    <div class="eyebrow">Pubs · bars · nightclubs · village halls · clubs · leisure centres</div>
     <h1 id="headline"></h1>
     <p>Book function rooms, halls and private bars straight from the people who run them. See real availability, build a quote, and send a request in a couple of minutes.</p>
     <form class="search" id="search">

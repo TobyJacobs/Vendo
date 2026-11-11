@@ -6,7 +6,7 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 
 ## What's in the demo
 
-- **Book a venue**: search and filter eight example venues by event type, region and guest numbers. Each listing has an availability calendar and a quote builder.
+- **Book a venue**: search and filter eleven example venues, from village halls to nightclubs, by event type, region and guest numbers. Each listing has an availability calendar and a quote builder.
 - **For venues**: a host dashboard with room-hire income, enquiries to accept or decline, upcoming bookings and an earnings estimator.
 - **Event moods**: the colours change with the occasion. For example, weddings switch the app to black and white.
 
