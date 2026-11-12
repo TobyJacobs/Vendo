@@ -230,6 +230,42 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .pill.ok{background:var(--good-soft);color:var(--good)}
 .pill.no{background:var(--sunk);color:var(--muted)}
 .upcoming{display:grid}
+.hcal{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:980px){.hcal{grid-template-columns:1fr}}
+.hcal-sum{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin:2px 0 10px}
+.hcal-sum b{color:var(--ink);font-variant-numeric:tabular-nums}
+.hgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.hgrid .dow{font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding-bottom:2px}
+.hday{border:1px solid var(--line);background:var(--surface);border-radius:10px;min-height:78px;padding:6px;display:flex;flex-direction:column;gap:3px;text-align:left;color:var(--ink);min-width:0;align-items:stretch;justify-content:flex-start}
+.hday:hover{background:var(--sunk)}
+.hday .n{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3}
+.hday.today .n{color:var(--accent-text)}
+.hday.today .n::after{content:" today";font-size:10.5px;font-weight:700;color:var(--accent-text)}
+.hday.past{opacity:.5}
+.hday[aria-pressed="true"]{outline:2px solid var(--accent-text);outline-offset:-2px}
+.ev{display:block;font-size:11px;font-weight:700;border-radius:5px;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.ev.vendo{background:var(--accent);color:var(--on-accent)}
+.ev.manual{background:var(--logo-door);color:#3A2C0C}
+.ev.block{background:repeating-linear-gradient(135deg,var(--sunk) 0 5px,var(--surface) 5px 10px);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+@media (max-width:640px){.hgrid{gap:3px}.hday{min-height:50px;padding:4px;border-radius:8px}.hday.today .n::after{content:""}.ev{font-size:0;height:6px;padding:0;border-radius:3px}.ev.block{background:var(--muted);box-shadow:none;opacity:.7}}
+.hkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin-top:10px}
+.hkey i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.hside{display:grid;gap:14px;align-content:start;min-width:0}
+.hside h3{margin:0;font-size:19px}
+.hentry{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.hentry .t{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.hentry .t b{min-width:0;overflow-wrap:anywhere}
+.hentry .s{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.hentry .rm{border:0;background:none;color:var(--warn);font-weight:700;font-size:13px;padding:2px 0;justify-self:start}
+.src{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.src.vendo{background:var(--accent-soft);color:var(--accent-text)}
+.src.manual{background:var(--logo-door);color:#3A2C0C}
+.src.block{background:var(--sunk);color:var(--muted)}
+.hfree{background:var(--good-soft);color:var(--good);border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px}
+.hform{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.hform .lform{gap:12px}
+.hnote{font-size:12.5px;color:var(--muted);margin:0}
+.up-row .tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--logo-door);color:#3A2C0C;vertical-align:1px}
 .up-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--line)}
 .up-row:first-child{border-top:0}
 .date{text-align:center;border:1px solid var(--line);border-radius:10px;padding:5px 0;line-height:1.1}
@@ -915,7 +951,8 @@ function reviewsHTML(v){
 }
 
 /* ---------- Venue detail ---------- */
-function bookedDay(v,d){const k=v.id.length*7+d.getDate()*13+d.getMonth()*5+d.getDay()*3;return k%6===0 || (d.getDay()===6 && k%3===0);}
+function bookedDay(v,d){if(v.id===HOST_ID&&hostDayBusy(d))return true;return baseBooked(v,d);}
+function baseBooked(v,d){const k=v.id.length*7+d.getDate()*13+d.getMonth()*5+d.getDay()*3;return k%6===0 || (d.getDay()===6 && k%3===0);}
 function openVenue(id,fromRoute){
   const v=VENUES.find(x=>x.id===id); if(!v) return; state.open=v;
   if(!fromRoute){try{history.replaceState(null,"","#venue-"+v.id);}catch(e){}}
@@ -1036,6 +1073,126 @@ const host = {
   joined:3,
   est:{type:"pub",per:6,rate:650,guests:70}
 };
+/* ---------- Host calendar: Vendo bookings plus ones taken by phone or in person ---------- */
+const HOST_ID="plough", CAL_KEY="vendo-host-cal";
+const isoD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const escH=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+const CAL_SEED=[
+  {id:"s1",date:"2026-11-20",kind:"booking",name:"Netherby Darts League",event:"Christmas dinner",from:"19:00",to:"23:00",guests:40,src:"Phone",price:520,note:"Hot buffet for 40. Deposit paid in cash."},
+  {id:"s2",date:"2026-12-12",kind:"booking",name:"Karen Lloyd",event:"60th birthday",from:"18:00",to:"00:00",guests:70,src:"In person",price:900,note:""},
+  {id:"s3",date:"2026-12-25",kind:"block",event:"Closed for Christmas Day"},
+  {id:"s4",date:"2026-12-26",kind:"block",event:"Closed for Boxing Day"}
+];
+let hcal=(()=>{try{const x=JSON.parse(localStorage.getItem(CAL_KEY));if(Array.isArray(x))return x;}catch(e){}return CAL_SEED.map(e=>({...e}));})();
+function saveCal(){try{localStorage.setItem(CAL_KEY,JSON.stringify(hcal));}catch(e){}}
+const calUI={month:new Date(TODAY.getFullYear(),TODAY.getMonth(),1),sel:new Date(TODAY),mode:"booking",
+  f:{name:"",event:"",from:"19:00",to:"23:00",guests:"",src:"Phone",price:"",note:"",reason:""}};
+const PAST_EVENTS=["Birthday party","Engagement party","Wake","Club dinner","Christening lunch","Anniversary party","Leaving do","Quiz night"];
+function fmtT(t){if(!t)return"";const[h,m]=t.split(":").map(Number);if(h===0&&m===0)return"midnight";if(h===12&&m===0)return"noon";
+  return (h%12||12)+(m?":"+String(m).padStart(2,"0"):"")+(h<12?"am":"pm");}
+function manualOn(d){const k=isoD(d);return hcal.filter(e=>e.date===k);}
+function hostDayBusy(d){return manualOn(d).length>0||host.upcoming.some(u=>sameDay(u.d,d));}
+function dayEntries(d){
+  const out=host.upcoming.filter(u=>sameDay(u.d,d)).map(u=>({kind:"vendo",title:u.t,sub:u.x,price:u.v}));
+  if(!out.length&&baseBooked(VENUES[0],d)){const g=PAST_EVENTS[(d.getDate()+d.getMonth())%PAST_EVENTS.length];
+    out.push({kind:"vendo",title:g,sub:"Long Room · booked through Vendo",price:null});}
+  manualOn(d).forEach(e=>out.push(e.kind==="block"?{kind:"block",title:e.event||"Blocked",sub:"Not available to book",id:e.id}
+    :{kind:"manual",title:`${e.name}${e.event?" · "+e.event:""}`,sub:[e.from&&`${fmtT(e.from)}–${fmtT(e.to)}`,e.guests&&`${e.guests} guests`,e.src&&`Booked ${e.src==="Other"?"another way":e.src==="Phone"?"by phone":e.src==="Email"?"by email":"in person"}`].filter(Boolean).join(" · "),note:e.note,price:e.price,id:e.id}));
+  return out;
+}
+const SRC_LABEL={vendo:"Vendo",manual:"Your booking",block:"Blocked"};
+function drawHostCal(){
+  const el=document.getElementById("hcal"); if(!el) return;
+  const m=calUI.month, y=m.getFullYear(), mo=m.getMonth(), days=new Date(y,mo+1,0).getDate(), off=(new Date(y,mo,1).getDay()+6)%7;
+  let cells="", nV=0,nM=0,nB=0,nFree=0;
+  for(let i=0;i<off;i++) cells+="<span></span>";
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,mo,d), es=dayEntries(dt), past=dt<TODAY, sel=calUI.sel&&sameDay(dt,calUI.sel);
+    es.forEach(e=>{if(e.kind==="vendo")nV++;else if(e.kind==="manual")nM++;else nB++;});
+    if(!es.length&&!past) nFree++;
+    const shown=es.slice(0,2).map(e=>`<span class="ev ${e.kind}">${escH(e.kind==="manual"?e.title.split(" · ")[0]:e.title)}</span>`).join("")+(es.length>2?`<span class="ev block">+${es.length-2} more</span>`:"");
+    const lbl=`${d} ${MONTHS_L[mo]}, ${es.length?es.map(e=>SRC_LABEL[e.kind].toLowerCase()+": "+e.title).join("; "):"free"}`;
+    cells+=`<button type="button" class="hday${past?" past":""}${sameDay(dt,TODAY)?" today":""}" data-d="${d}" aria-pressed="${!!sel}" aria-label="${escH(lbl)}"><span class="n">${d}</span>${shown}</button>`;
+  }
+  const atMin=y===TODAY.getFullYear()&&mo===TODAY.getMonth();
+  el.innerHTML=`<div>
+      <div class="cal-head"><button type="button" id="hc-prev" aria-label="Previous month" ${atMin?"disabled":""}>‹</button><span>${MONTHS_L[mo]} ${y}</span><button type="button" id="hc-next" aria-label="Next month">›</button></div>
+      <div class="hcal-sum"><span><b>${nV}</b> booked on Vendo</span><span><b>${nM}</b> taken by phone or in person</span><span><b>${nB}</b> blocked</span><span><b>${nFree}</b> days still free</span></div>
+      <div class="hgrid">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<span class="dow">${d}</span>`).join("")}${cells}</div>
+      <div class="hkey"><span><i style="background:var(--accent)"></i>Booked on Vendo</span><span><i style="background:var(--logo-door)"></i>Phone or in-person booking</span><span><i style="background:repeating-linear-gradient(135deg,var(--sunk) 0 3px,var(--surface) 3px 6px);box-shadow:inset 0 0 0 1px var(--line)"></i>Blocked</span></div>
+    </div>
+    <div class="hside" id="hside"></div>`;
+  el.querySelectorAll(".hday").forEach(b=>b.addEventListener("click",()=>{calUI.sel=new Date(y,mo,+b.dataset.d);drawHostCal();
+    if(matchMedia("(max-width:980px)").matches) document.getElementById("hside").scrollIntoView({behavior:"smooth",block:"start"});}));
+  document.getElementById("hc-prev").addEventListener("click",()=>{calUI.month=new Date(y,mo-1,1);drawHostCal();});
+  document.getElementById("hc-next").addEventListener("click",()=>{calUI.month=new Date(y,mo+1,1);drawHostCal();});
+  drawHostSide();
+}
+function drawHostSide(){
+  const el=document.getElementById("hside"), d=calUI.sel, f=calUI.f;
+  if(!d){el.innerHTML=`<p class="hnote">Pick a day to see what's on, or to add a booking you took by phone or in person.</p>`;return;}
+  const es=dayEntries(d), past=d<TODAY;
+  const list=es.length?es.map(e=>`<div class="hentry"><div class="t"><b>${escH(e.title)}</b><span class="src ${e.kind}">${SRC_LABEL[e.kind]}</span></div>
+      ${e.sub?`<div class="s">${escH(e.sub)}</div>`:""}${e.note?`<div class="s">${escH(e.note)}</div>`:""}
+      ${e.price?`<div class="s num">${gbp(e.price)}${e.kind==="manual"?" agreed":""}</div>`:""}
+      ${e.id&&!past?`<button type="button" class="rm" data-rm="${escH(e.id)}">${e.kind==="block"?"Unblock this date":"Remove booking"}</button>`:""}</div>`).join("")
+    :`<div class="hfree">${past?"Nothing was booked.":"Free. Guests can book this date on Vendo."}</div>`;
+  const form=past?"":`<div class="hform">
+      <div class="seg" role="group" aria-label="What to add"><button type="button" data-mode="booking" aria-pressed="${calUI.mode==="booking"}">Add a booking</button><button type="button" data-mode="block" aria-pressed="${calUI.mode==="block"}">Block the date</button></div>
+      ${calUI.mode==="booking"?`<form class="lform" id="hc-form" novalidate>
+        <div class="lf full"><label for="hc-name">Who's it for?</label><input id="hc-name" autocomplete="off" placeholder="e.g. Karen Lloyd" value="${escH(f.name)}"><span class="err" id="hc-err"></span></div>
+        <div class="lf full"><label for="hc-event">Event (optional)</label><input id="hc-event" list="hc-events" placeholder="e.g. 60th birthday" value="${escH(f.event)}">
+          <datalist id="hc-events">${["Birthday party","Wedding reception","Wake","Christening","Engagement party","Christmas party","Club dinner","Meeting"].map(x=>`<option value="${x}">`).join("")}</datalist></div>
+        <div class="lf"><label for="hc-from">From</label><input id="hc-from" type="time" value="${escH(f.from)}"></div>
+        <div class="lf"><label for="hc-to">Until</label><input id="hc-to" type="time" value="${escH(f.to)}"></div>
+        <div class="lf"><label for="hc-guests">Guests</label><input id="hc-guests" type="number" min="1" max="999" inputmode="numeric" value="${escH(f.guests)}"></div>
+        <div class="lf"><label for="hc-price">Price agreed, £</label><input id="hc-price" type="number" min="0" step="10" inputmode="decimal" value="${escH(f.price)}"></div>
+        <div class="lf full"><label for="hc-src">How was it booked?</label><select id="hc-src">${["Phone","In person","Email","Other"].map(x=>`<option ${x===f.src?"selected":""}>${x}</option>`).join("")}</select></div>
+        <div class="lf full"><label for="hc-note">Notes (optional)</label><textarea id="hc-note" placeholder="Deposit, food, phone number">${escH(f.note)}</textarea></div>
+        <div class="lf full"><button class="btn primary" type="submit">Add to calendar</button></div></form>`
+      :`<form class="lform" id="hc-form" novalidate>
+        <div class="lf full"><label for="hc-reason">Reason (only you see this)</label><input id="hc-reason" list="hc-reasons" placeholder="e.g. Closed for refurbishment" value="${escH(f.reason)}">
+          <datalist id="hc-reasons">${["Closed","Private use","Refurbishment","Staff holiday","Held for a regular"].map(x=>`<option value="${x}">`).join("")}</datalist></div>
+        <div class="lf full"><button class="btn primary" type="submit">Block this date</button></div></form>`}
+      <p class="hnote">Anything you add here closes the date on your Vendo listing straight away, so nobody can double-book it.</p>
+    </div>`;
+  el.innerHTML=`<h3>${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</h3>${list}${form}`;
+  el.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",()=>{const e=hcal.find(x=>x.id===b.dataset.rm);
+    hcal=hcal.filter(x=>x.id!==b.dataset.rm);saveCal();drawHostCal();drawUpcoming();
+    toast(e&&e.kind==="block"?"Date unblocked. Guests can book it again.":"Booking removed. The date is open on Vendo again.");}));
+  if(past) return;
+  el.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{calUI.mode=b.dataset.mode;drawHostSide();}));
+  const bind={name:"hc-name",event:"hc-event",from:"hc-from",to:"hc-to",guests:"hc-guests",price:"hc-price",src:"hc-src",note:"hc-note",reason:"hc-reason"};
+  Object.entries(bind).forEach(([k,id])=>{const i=document.getElementById(id);if(i)i.addEventListener("input",()=>{f[k]=i.value;const er=document.getElementById("hc-err");if(er)er.textContent="";});});
+  document.getElementById("hc-form").addEventListener("submit",ev=>{ev.preventDefault();
+    const id="m"+Date.now().toString(36), date=isoD(d);
+    if(calUI.mode==="booking"){
+      if(!f.name.trim()){document.getElementById("hc-err").textContent="Enter a name so you know who booked.";document.getElementById("hc-name").focus();return;}
+      hcal.push({id,date,kind:"booking",name:f.name.trim().slice(0,80),event:f.event.trim().slice(0,80),from:f.from,to:f.to,
+        guests:Math.max(0,Math.min(999,parseInt(f.guests)||0))||"",src:f.src,price:Math.max(0,Math.round(+f.price||0))||"",note:f.note.trim().slice(0,300)});
+      toast(`Added ${f.name.trim()} on ${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}. The date is now closed on your listing.`);
+      Object.assign(f,{name:"",event:"",guests:"",price:"",note:""});
+    }else{
+      hcal.push({id,date,kind:"block",event:(f.reason.trim()||"Blocked").slice(0,80)});
+      toast(`${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})} blocked. Guests can't book it.`);
+      f.reason="";
+    }
+    saveCal();drawHostCal();drawUpcoming();
+  });
+}
+function upcomingRows(){
+  const end=new Date(TODAY);end.setDate(end.getDate()+28);
+  const rows=host.upcoming.filter(u=>u.d>=TODAY&&u.d<=end).map(u=>({d:u.d,t:u.t,x:u.x,v:u.v,tag:""}));
+  hcal.filter(e=>e.kind==="booking").forEach(e=>{const d=new Date(e.date+"T00:00");if(d>=TODAY&&d<=end)
+    rows.push({d,t:e.name+(e.event?" · "+e.event:""),x:["Long Room",e.guests&&e.guests+" guests",e.from&&fmtT(e.from)+"–"+fmtT(e.to)].filter(Boolean).join(" · "),v:e.price||null,tag:e.src==="Phone"?"Phone":e.src==="In person"?"In person":e.src});});
+  return rows.sort((a,b)=>a.d-b.d);
+}
+function drawUpcoming(){
+  const el=document.getElementById("upc"); if(!el) return;
+  el.innerHTML=upcomingRows().map(u=>`<div class="up-row"><div class="date"><small>${MONTHS[u.d.getMonth()]}</small><b>${u.d.getDate()}</b></div>
+    <div class="w"><b>${escH(u.t)}</b><span>${escH(u.x)}${u.tag?`<span class="tag">${escH(u.tag)}</span>`:""}</span></div><span class="num" style="font-weight:700">${u.v?gbp(u.v):""}</span></div>`).join("")||`<p class="hnote">Nothing in the next four weeks.</p>`;
+}
 const EST_TYPES={pub:["Pub function room",650,22],hall:["Village or community hall",280,0],bar:["Bar or private room",1100,30],leisure:["Leisure centre or sports hall",420,6],club:["Sports or social club",520,18],barn:["Barn or outdoor space",1800,26]};
 
 function chartSVG(){
@@ -1074,6 +1231,9 @@ function renderHost(){
         <div class="key"><span><i style="background:var(--muted);opacity:.45"></i>Before listing</span><span><i style="background:var(--accent)"></i>With Vendo</span><span>Dashed line: old monthly average, ${gbp(1127)}</span></div></div>
       <div class="panel"><div class="panel-head"><h2>Enquiries</h2><span class="eyebrow" id="enq-count">${open} new</span></div><div class="enq" id="enq"></div></div>
     </div>
+    <div class="panel"><div class="panel-head"><h2>Your calendar</h2><span class="eyebrow">Vendo and your own bookings in one place</span></div>
+      <p style="margin:0;color:var(--muted);font-size:14px">Add bookings you take by phone or in person, or block dates you're closed. Vendo keeps your listing in step, so you're never double-booked.</p>
+      <div class="hcal" id="hcal"></div></div>
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>What could your space earn?</h2><span class="eyebrow">Estimator</span></div>
         <div class="est">
@@ -1088,14 +1248,13 @@ function renderHost(){
             <span style="font-size:12.5px;color:var(--muted)">No listing fee. Vendo takes 8% of hire only when a booking is paid.</span></div>
         </div></div>
       <div class="panel"><div class="panel-head"><h2>Coming up</h2><span class="eyebrow">Next 4 weeks</span></div>
-        <div class="upcoming">${host.upcoming.map(u=>`<div class="up-row"><div class="date"><small>${MONTHS[u.d.getMonth()]}</small><b>${u.d.getDate()}</b></div>
-          <div class="w"><b>${u.t}</b><span>${u.x}</span></div><span class="num" style="font-weight:700">${gbp(u.v)}</span></div>`).join("")}</div></div>
+        <div class="upcoming" id="upc"></div></div>
     </div>
     <div class="panel"><div class="panel-head"><h2>Rate your recent guests</h2><span class="eyebrow" id="rate-count"></span></div>
       <p style="margin:0;color:var(--muted);font-size:14px">Your ratings help other venues decide who to say yes to. Be fair and specific: guests can reply publicly.</p>
       <div class="rate-list" id="rate"></div></div>
     </section>`;
-  drawEnq(); drawEst(); drawRate();
+  drawEnq(); drawEst(); drawRate(); drawHostCal(); drawUpcoming();
   ["et","ep","er","eg"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{
     if(id==="et"){host.est.type=e.target.value;const t=EST_TYPES[host.est.type];host.est.rate=t[1];document.getElementById("er").value=t[1];}
     host.est.per=+document.getElementById("ep").value;host.est.rate=+document.getElementById("er").value;host.est.guests=+document.getElementById("eg").value;drawEst();}));
