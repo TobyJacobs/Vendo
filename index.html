@@ -66,6 +66,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;margin:0
 .top .wrap{display:flex;align-items:center;gap:16px;padding-block:12px}
 .logo{font-family:var(--f-display);font-style:normal;font-size:27px;font-weight:500;letter-spacing:-.02em;display:flex;align-items:baseline;gap:2px;text-decoration:none;color:var(--ink)}
 .logo svg{display:block;height:42px;width:auto}
+@media (max-width:640px){.logo svg{height:32px}.top .wrap{gap:10px}}
 .logo .lp{fill:var(--logo-pin)} .logo .lc{fill:var(--surface)} .logo .li{fill:var(--ink)} .logo .ld{fill:var(--logo-door)}
 .switch{margin-left:auto;display:flex;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:3px}
 .switch button{border:0;background:none;padding:7px 14px;border-radius:999px;font-weight:600;font-size:13.5px;color:var(--muted)}
@@ -187,6 +188,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .dash-head p{margin:6px 0 0;color:var(--muted)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700;font-size:14px;color:var(--ink)}
 .btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .kpi{padding:18px 20px;border-right:1px solid var(--line);display:grid;gap:4px}
 .kpi:last-child{border-right:0}
@@ -291,6 +293,54 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .mdist{font-size:12.5px;font-weight:800;color:var(--accent-text);white-space:nowrap}
 .dist{font-size:13px;font-weight:700;color:var(--accent-text);margin-top:-6px}
 @media (max-width:880px){.mapview{grid-template-columns:1fr}#map{height:380px}.maplist{max-height:none;overflow:visible}}
+/* Accounts and guest ratings */
+.me{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--accent-soft);color:var(--accent-text);font:800 13.5px/1 var(--f-body)}
+.me[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.verified{display:flex;gap:8px;flex-wrap:wrap}
+.verified span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 11px;background:var(--good-soft);color:var(--good)}
+.verified span::before{content:"✓";font-weight:800}
+.stars{color:var(--brass);letter-spacing:1px;white-space:nowrap}.stars .off{color:var(--line)}
+.grating{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.grating .big{font-family:var(--f-display);font-size:56px;line-height:1;font-variant-numeric:tabular-nums}
+.grating .stars{font-size:20px}
+.tagbars{display:grid;gap:9px}
+.tagbar{display:grid;grid-template-columns:minmax(0,1fr) 120px 26px;gap:12px;align-items:center;font-size:14px}
+.tagbar i{display:block;height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.tagbar i b{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tagbar span:last-child{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.howto{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted);display:grid;gap:4px}
+.revs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.rev{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start}
+.rev .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.rev .t b{font-family:var(--f-display);font-weight:500;font-size:16.5px}
+.rev .s{font-size:12.5px;color:var(--muted)}
+.rev p{margin:0;font-size:14.5px}
+.rev .by{font-size:12.5px;color:var(--muted)}
+.rev .gtags{display:flex;gap:6px;flex-wrap:wrap}
+.gtags span{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--accent-soft);color:var(--accent-text)}
+.gtags span.bad{background:var(--sunk);color:var(--warn)}
+.linkbtn{justify-self:start;border:0;background:none;padding:0;color:var(--accent-text);font-weight:700;font-size:13px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding-block:12px;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.brow b{font-size:15px}.brow span{font-size:13px;color:var(--muted)}
+.grate{font-size:12.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.grate .stars{font-size:12.5px}
+.grate .newg{font-weight:700;color:var(--accent-text)}
+.rate-list{display:grid;gap:12px}
+.rate-item{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
+.rate-item .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.rate-item .t b{font-size:15.5px}.rate-item .t span{font-size:13px;color:var(--muted)}
+.starpick{display:flex;gap:4px}
+.starpick button{border:0;background:none;font-size:28px;line-height:1;padding:0 2px;color:var(--line)}
+.starpick button.on{color:var(--brass)}
+.tagpick{display:flex;gap:6px;flex-wrap:wrap}
+.tagpick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.tagpick button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)}
+.tagpick button.bad[aria-pressed="true"]{background:var(--sunk);border-color:var(--warn);color:var(--warn)}
+.rate-item textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:14px;background:var(--surface);color:var(--ink);resize:vertical}
+.rate-item .acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rate-item .note{font-size:12.5px;color:var(--muted)}
+.rated-sum{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13.5px}
 footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:13px}
 </style>
 
@@ -308,6 +358,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
       <button id="tab-find" aria-pressed="true">Book a venue</button>
       <button id="tab-host" aria-pressed="false">For venues</button>
     </div>
+    <button class="me" id="tab-me" aria-pressed="false" aria-label="My account" title="My account">SR</button>
   </div>
 </header>
 
@@ -759,7 +810,7 @@ function drawBook(){
       <div class="note"><span>Refundable damage deposit, held separately</span><span>${gbp(deposit)}</span></div>
     </div>
     <button class="cta" id="req" ${quote.date?"":"disabled"}>${quote.date?(v.instant?"Book ":"Request ")+quote.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"}):"Choose a date to continue"}</button>
-    <p class="small">${v.instant?"Instant book: confirmed straight away.":"You won't be charged until "+v.host.split(",")[0]+" accepts."}</p>`;
+    <p class="small">${v.instant?"Instant book: confirmed straight away.":"You won't be charged until "+v.host.split(",")[0]+" accepts."} Your guest rating, ★ ${guestScore().toFixed(1)}, is shared with the venue.</p>`;
   el.querySelectorAll(".cal button").forEach(b=>b.addEventListener("click",()=>{quote.date=new Date(m.getFullYear(),m.getMonth(),+b.dataset.d);drawBook();}));
   document.getElementById("prev").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()-1,1);drawBook();});
   document.getElementById("next").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()+1,1);drawBook();});
@@ -773,11 +824,17 @@ function drawBook(){
 /* ---------- Host view ---------- */
 const host = {
   enquiries:[
-    {n:"Sophie & Callum Reid",e:"Wedding reception",d:"Sat 13 Jun 2027",g:110,val:5840,s:"new"},
-    {n:"Netherby Rugby Club",e:"End-of-season dinner",d:"Fri 4 Dec",g:70,val:1960,s:"new"},
-    {n:"Anita Varga",e:"40th birthday",d:"Sat 28 Nov",g:60,val:1240,s:"new"},
-    {n:"The Hughes family",e:"Wake",d:"Thu 19 Nov",g:45,val:780,s:"ok"}
+    {n:"Sophie & Callum Reid",e:"Wedding reception",d:"Sat 13 Jun 2027",g:110,val:5840,s:"new",gr:"me"},
+    {n:"Netherby Rugby Club",e:"End-of-season dinner",d:"Fri 4 Dec",g:70,val:1960,s:"new",gr:4.6,gc:12,gt:["Paid on time","Stuck to guest numbers"]},
+    {n:"Anita Varga",e:"40th birthday",d:"Sat 28 Nov",g:60,val:1240,s:"new",gr:null},
+    {n:"The Hughes family",e:"Wake",d:"Thu 19 Nov",g:45,val:780,s:"ok",gr:5,gc:1,gt:["Easy to deal with"]}
   ],
+  toRate:[
+    {id:"amira",n:"Amira Hassan",e:"30th birthday",d:"Sat 7 Nov",g:65,rated:null},
+    {id:"daniel",n:"Daniel Okafor",e:"Engagement party",d:"Sat 31 Oct",g:70,rated:null},
+    {id:"runners",n:"Bourton Running Club",e:"Awards night",d:"Fri 23 Oct",g:80,rated:{stars:5,tags:["On time","Left it tidy"],text:"Smooth night and a great group."}}
+  ],
+  draft:{},
   upcoming:[
     {d:new Date(2026,10,14),t:"Mia's christening lunch",x:"Long Room · 45 guests · 1pm–5pm",v:960},
     {d:new Date(2026,10,19),t:"The Hughes family wake",x:"Long Room · 45 guests · 2pm–6pm",v:780},
@@ -844,8 +901,12 @@ function renderHost(){
       <div class="panel"><div class="panel-head"><h2>Coming up</h2><span class="eyebrow">Next 4 weeks</span></div>
         <div class="upcoming">${host.upcoming.map(u=>`<div class="up-row"><div class="date"><small>${MONTHS[u.d.getMonth()]}</small><b>${u.d.getDate()}</b></div>
           <div class="w"><b>${u.t}</b><span>${u.x}</span></div><span class="num" style="font-weight:700">${gbp(u.v)}</span></div>`).join("")}</div></div>
-    </div></section>`;
-  drawEnq(); drawEst();
+    </div>
+    <div class="panel"><div class="panel-head"><h2>Rate your recent guests</h2><span class="eyebrow" id="rate-count"></span></div>
+      <p style="margin:0;color:var(--muted);font-size:14px">Your ratings help other venues decide who to say yes to. Be fair and specific: guests can reply publicly.</p>
+      <div class="rate-list" id="rate"></div></div>
+    </section>`;
+  drawEnq(); drawEst(); drawRate();
   ["et","ep","er","eg"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{
     if(id==="et"){host.est.type=e.target.value;const t=EST_TYPES[host.est.type];host.est.rate=t[1];document.getElementById("er").value=t[1];}
     host.est.per=+document.getElementById("ep").value;host.est.rate=+document.getElementById("er").value;host.est.guests=+document.getElementById("eg").value;drawEst();}));
@@ -864,6 +925,7 @@ function drawEnq(){
   const el=document.getElementById("enq");
   el.innerHTML=host.enquiries.map((q,i)=>`<div class="enq-item"><div class="t"><b>${q.n}</b><span class="pill ${q.s==="new"?"new":q.s==="ok"?"ok":"no"}">${q.s==="new"?"New":q.s==="ok"?"Accepted":"Declined"}</span></div>
     <div class="s">${q.e} · ${q.d} · ${q.g} guests · <span class="num">${gbp(q.val)}</span></div>
+    ${enqRating(q)}
     ${q.s==="new"?`<div class="acts"><button class="btn primary" data-a="ok" data-i="${i}">Accept</button><button class="btn" data-a="no" data-i="${i}">Decline</button></div>`:""}</div>`).join("");
   el.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{const q=host.enquiries[b.dataset.i];q.s=b.dataset.a;
     toast(q.s==="ok"?`Accepted. ${q.n.split(" ")[0]} has been sent a confirmation (demo).`:`Declined. Suggested your free dates instead (demo).`);
@@ -872,18 +934,99 @@ function drawEnq(){
     const d=document.getElementById("k-open-d"); d.textContent=open.length?gbp(p)+" in requests":"All caught up"; d.className="d "+(open.length?"attn":"up");
     document.getElementById("enq-count").textContent=open.length+" new"; drawEnq();}));
 }
+/* ---------- Guest accounts and ratings ---------- */
+const GOOD_TAGS=["On time","Left it tidy","Stuck to guest numbers","Respectful of neighbours","Easy to deal with","Paid on time"];
+const BAD_TAGS=["Went over guest numbers","Ran past finish time","Damage reported","Left a mess"];
+const ME={name:"Sophie Reid",first:"Sophie",initials:"SR",since:"March 2026",town:"Cheltenham",verified:["Email confirmed","Phone confirmed","ID checked"],
+  reviews:[
+    {venue:"The Lantern Rooftop",host:"Ellie Brennan",event:"30th birthday",date:"Sep 2026",stars:5,tags:["On time","Stuck to guest numbers","Left it tidy"],text:"Sophie and her friends were brilliant. Arrived on time, kept to numbers and left the terrace spotless."},
+    {venue:"Hartwell Cricket Club Pavilion",host:"Dave Norris",event:"Engagement party",date:"Jul 2026",stars:5,tags:["Easy to deal with","Left it tidy","Respectful of neighbours"],text:"Lovely group, easy to deal with from first message to clean-up. Welcome back any time."},
+    {venue:"St Clement's Church Hall",host:"Margaret Hale",event:"Christening lunch",date:"May 2026",stars:5,tags:["Left it tidy","On time","Respectful of neighbours"],text:"Everything left exactly as we found it. Thank you."},
+    {venue:"The Copper Still",host:"Priya Shah",event:"Leaving drinks",date:"Apr 2026",stars:4,tags:["Easy to deal with","Went over guest numbers"],text:"Great night. Numbers crept up by a few on the door, but Sophie sorted it with us straight away."},
+    {venue:"Ashby Wold Village Hall",host:"Ashby Wold Hall Committee",event:"Baby shower",date:"Mar 2026",stars:5,tags:["Left it tidy","On time","Stuck to guest numbers","Respectful of neighbours","Easy to deal with"],text:"Chairs stacked, kitchen clean, keys back on time. Model hirers."}
+  ],
+  bookings:[
+    {venue:"The Lantern Rooftop",id:"lantern",event:"Sister's 21st",date:"Sat 6 Feb 2027",guests:60,status:"Confirmed"},
+    {venue:"The Plough & Harrow",id:"plough",event:"Wedding reception",date:"Sat 13 Jun 2027",guests:110,status:"Awaiting reply"}
+  ]};
+function guestScore(){const r=ME.reviews;return r.reduce((a,x)=>a+x.stars,0)/r.length;}
+function starsHTML(n){const k=Math.round(n);return `<span class="stars" aria-label="${n.toFixed(1)} out of 5">${"★".repeat(k)}<span class="off">${"★".repeat(5-k)}</span></span>`;}
+function tagCounts(){const c={};ME.reviews.forEach(r=>r.tags.forEach(t=>{if(GOOD_TAGS.includes(t))c[t]=(c[t]||0)+1;}));return GOOD_TAGS.filter(t=>c[t]).map(t=>[t,c[t]]).sort((a,b)=>b[1]-a[1]);}
+function tagHTML(tags){return `<div class="gtags">${tags.map(t=>`<span class="${BAD_TAGS.includes(t)?"bad":""}">${t}</span>`).join("")}</div>`;}
+
+function renderAccount(){
+  const sc=guestScore(), n=ME.reviews.length;
+  app.innerHTML=`<section class="wrap dash">
+    <div class="dash-head"><div><div class="eyebrow">My account</div><h1>Hello, ${ME.first}.</h1><p>Member since ${ME.since} · ${ME.town}</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="edit-profile">Edit profile</button><button class="btn" id="sign-out">Sign out</button></div></div>
+    <div class="verified">${ME.verified.map(v=>`<span>${v}</span>`).join("")}</div>
+    <div class="cols">
+      <div class="panel"><div class="panel-head"><h2>Your guest rating</h2><span class="eyebrow">From venue owners</span></div>
+        <div class="grating"><span class="big">${sc.toFixed(1)}</span><div>${starsHTML(sc)}<div style="font-size:13.5px;color:var(--muted)">From ${n} venue owners you've booked with</div></div></div>
+        <div class="tagbars">${tagCounts().map(([t,c])=>`<div class="tagbar"><span>${t}</span><i><b style="width:${c/n*100}%"></b></i><span>${c}</span></div>`).join("")}</div>
+        <ul class="howto">
+          <li>Only venues you've actually booked can rate you.</li>
+          <li>Ratings appear once you've both left a review, or after 14 days.</li>
+          <li>Venues see your rating when you send a request. A strong rating helps you get a yes.</li>
+          <li>You can reply publicly to any rating.</li>
+        </ul></div>
+      <div class="panel"><div class="panel-head"><h2>Your bookings</h2><span class="eyebrow">${ME.bookings.length} upcoming</span></div>
+        <div>${ME.bookings.map(b=>`<div class="brow"><b>${b.event}</b><span class="pill ${b.status==="Confirmed"?"ok":"new"}">${b.status}</span>
+          <span>${b.venue} · ${b.date} · ${b.guests} guests</span><button class="linkbtn" data-open="${b.id}">View venue</button></div>`).join("")}</div></div>
+    </div>
+    <div class="panel"><div class="panel-head"><h2>What venue owners say about you</h2><span class="eyebrow">${n} reviews</span></div>
+      <div class="revs">${ME.reviews.map((r,i)=>`<div class="rev"><div class="t"><b>${r.venue}</b>${starsHTML(r.stars)}</div>
+        <span class="s">${r.event} · ${r.date}</span><p>${r.text}</p>${tagHTML(r.tags)}<span class="by">${r.host}</span>
+        <button class="linkbtn" data-reply="${i}">Reply publicly</button></div>`).join("")}</div></div>
+  </section>`;
+  document.getElementById("edit-profile").addEventListener("click",()=>toast("Demo: this would open your profile settings"));
+  document.getElementById("sign-out").addEventListener("click",()=>toast("Demo: you'd be signed out here"));
+  app.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
+  app.querySelectorAll("[data-reply]").forEach(b=>b.addEventListener("click",()=>toast(`Demo: reply to ${ME.reviews[b.dataset.reply].host.split(",")[0]}`)));
+}
+
+function enqRating(q){
+  if(q.gr==="me"){const sc=guestScore();return `<div class="grate">${starsHTML(sc)}<b>${sc.toFixed(1)}</b> guest rating · ${ME.reviews.length} events · ${tagCounts().slice(0,2).map(t=>t[0]).join(" · ")}</div>`;}
+  if(q.gr==null) return `<div class="grate"><span class="newg">New to Vendo</span> · ID checked · no ratings yet</div>`;
+  return `<div class="grate">${starsHTML(q.gr)}<b>${q.gr.toFixed(1)}</b> guest rating · ${q.gc} ${q.gc===1?"event":"events"} · ${q.gt.join(" · ")}</div>`;
+}
+function drawRate(){
+  const el=document.getElementById("rate"); if(!el) return;
+  const left=host.toRate.filter(r=>!r.rated).length;
+  document.getElementById("rate-count").textContent=left?`${left} to rate`:"All rated";
+  el.innerHTML=host.toRate.map(r=>{
+    if(r.rated) return `<div class="rate-item"><div class="t"><b>${r.n}</b><span>${r.e} · ${r.d} · ${r.g} guests</span></div>
+      <div class="rated-sum">${starsHTML(r.rated.stars)}<span class="pill ok">Rated</span>${r.rated.text?`<span style="color:var(--muted)">“${r.rated.text}”</span>`:""}</div>${r.rated.tags.length?tagHTML(r.rated.tags):""}</div>`;
+    const d=host.draft[r.id]||(host.draft[r.id]={stars:0,tags:[],text:""});
+    const tags=[...GOOD_TAGS,...(d.stars&&d.stars<=3?BAD_TAGS:[])];
+    return `<div class="rate-item" data-id="${r.id}"><div class="t"><b>${r.n}</b><span>${r.e} · ${r.d} · ${r.g} guests</span></div>
+      <div class="starpick" role="group" aria-label="Rate ${r.n}">${[1,2,3,4,5].map(k=>`<button type="button" data-star="${k}" class="${k<=d.stars?"on":""}" aria-label="${k} star${k>1?"s":""}" aria-pressed="${k===d.stars}">★</button>`).join("")}</div>
+      <div class="tagpick" role="group" aria-label="What went well">${tags.map(t=>`<button type="button" data-tag="${t}" class="${BAD_TAGS.includes(t)?"bad":""}" aria-pressed="${d.tags.includes(t)}">${t}</button>`).join("")}</div>
+      <textarea id="rc-${r.id}" placeholder="Anything other venues should know? (optional)">${d.text}</textarea>
+      <div class="acts"><button type="button" class="btn primary" data-submit ${d.stars?"":"disabled"}>Submit rating</button><span class="note">${r.n.split(" ")[0]} sees it once they've reviewed you, or in 14 days.</span></div></div>`;
+  }).join("");
+  el.querySelectorAll(".rate-item[data-id]").forEach(item=>{
+    const r=host.toRate.find(x=>x.id===item.dataset.id), d=host.draft[r.id];
+    item.querySelector("textarea").addEventListener("input",e=>{d.text=e.target.value;});
+    item.querySelectorAll("[data-star]").forEach(b=>b.addEventListener("click",()=>{d.stars=+b.dataset.star; if(d.stars>3) d.tags=d.tags.filter(t=>!BAD_TAGS.includes(t)); drawRate();}));
+    item.querySelectorAll("[data-tag]").forEach(b=>b.addEventListener("click",()=>{const t=b.dataset.tag; d.tags=d.tags.includes(t)?d.tags.filter(x=>x!==t):[...d.tags,t]; drawRate();}));
+    item.querySelector("[data-submit]").addEventListener("click",()=>{if(!d.stars)return; r.rated={stars:d.stars,tags:d.tags.slice(),text:d.text.trim()}; toast(`Rating saved for ${r.n}.`); drawRate();});
+  });
+}
 let tt; function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2800);}
 
 /* ---------- Routing ---------- */
 function route(){
-  const v=location.hash==="#host"?"host":"find"; state.view=v;
+  const v=location.hash==="#host"?"host":location.hash==="#account"?"account":"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
   document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
+  document.getElementById("tab-me").setAttribute("aria-pressed",v==="account");
   if(state.open) closeVenue();
-  v==="host"?renderHost():renderFind();
+  v==="host"?renderHost():v==="account"?renderAccount():renderFind();
 }
 document.getElementById("tab-find").addEventListener("click",()=>{location.hash="find";route();window.scrollTo(0,0)});
 document.getElementById("tab-host").addEventListener("click",()=>{location.hash="host";route();window.scrollTo(0,0)});
+document.getElementById("tab-me").addEventListener("click",()=>{location.hash="account";route();window.scrollTo(0,0)});
 window.addEventListener("hashchange",route);
 route();
 </script>
