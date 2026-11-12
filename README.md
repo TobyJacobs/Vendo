@@ -10,6 +10,8 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 - **For venues**: a host dashboard with room-hire income, enquiries to accept or decline, upcoming bookings and an earnings estimator.
 - **Map**: switch to a map of venues, pick a town or use your location, and see what is nearby within a chosen radius.
 - **Guest accounts and ratings**: a guest's account page shows their rating from venue owners, what venues said about them, and their bookings. Venues see each guest's rating on enquiries and rate guests after events.
+- **List your venue**: a sign-up page for venue owners with how it works, an earnings estimator, FAQs and a short form.
+- **Search by date** and **full prices including fees** on every card, plus guest reviews and a shareable link for each venue.
 - **Event moods**: the colours change with the occasion. For example, weddings switch the app to black and white.
 
 All venues, hosts, bookings and figures are fictional examples.
