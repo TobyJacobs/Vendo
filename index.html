@@ -8,6 +8,15 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#5DA9E9">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vendo">
+<meta property="og:title" content="Vendo: book pubs, bars, halls and clubs for your event">
+<meta property="og:description" content="Function rooms, village halls, private bars and nightclubs for weddings, parties and wakes. Book by date. Every price includes all fees.">
+<meta property="og:image" content="og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Vendo logo beside an illustrated barn with festoon lights, and the line: Every great party needs a room. Find yours.">
+<meta name="twitter:card" content="summary_large_image">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Vendo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -391,6 +400,59 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .faq details{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .faq summary{font-weight:700;cursor:pointer}
 .faq p{margin:8px 0 0;color:var(--muted);font-size:14px}
+.cw{position:relative;min-width:0}
+.cw .card{width:100%}
+.band .btn,.lyv-cta .btn{text-decoration:none}
+.heart{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 2px 8px rgba(23,50,77,.18)}
+.heart svg{width:20px;height:20px;fill:none;stroke:#17324D;stroke-width:2}
+.heart[aria-pressed="true"] svg{fill:#E0567A;stroke:#E0567A}
+.heart.on-hero{top:14px;right:auto;left:14px;width:40px;height:40px}
+.srow .heart{position:static;box-shadow:none;background:var(--sunk)}
+.savedlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.srow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px 8px 8px;min-width:0}
+.srow-main{display:flex;gap:12px;align-items:center;border:0;background:none;padding:0;text-align:left;color:inherit;flex:1;min-width:0}
+.fchips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fchip{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;color:var(--muted)}
+.fchip[aria-pressed="true"]{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-text)}
+.fchip[aria-pressed="true"]::before{content:"✓ "}
+.fprice{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:700;color:var(--muted)}
+.fprice select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font-weight:600;font-size:13px}
+.how{display:grid;gap:16px;padding-block:8px 32px}
+.how h2{font-size:30px}
+.faq.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.faq.two{grid-template-columns:1fr}}
+.brow-acts{display:flex;gap:14px;justify-content:flex-end}
+.chat-ov{align-items:center}
+.chat{background:var(--bg);width:min(520px,100%);height:min(640px,86vh);border-radius:18px;display:grid;grid-template-rows:auto 1fr auto auto;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.chat-h{display:flex;justify-content:space-between;gap:10px;align-items:start;padding:16px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.chat-h b{display:block;font-family:var(--f-display);font-weight:500;font-size:19px}
+.chat-h span{font-size:12.5px;color:var(--muted)}
+.chat-x{border:0;background:var(--sunk);width:34px;height:34px;border-radius:50%;font-size:20px;color:var(--ink);flex:none}
+.msgs{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:80%;display:grid;gap:3px}
+.msg p{margin:0;padding:10px 13px;border-radius:14px;font-size:14.5px;background:var(--surface);border:1px solid var(--line)}
+.msg span{font-size:11px;color:var(--muted)}
+.msg.mine{align-self:flex-end;text-align:right}
+.msg.mine p{background:var(--accent);color:var(--on-accent);border-color:var(--accent);text-align:left}
+.chat-safe{margin:0;padding:8px 16px;font-size:12px;color:var(--muted);text-align:center}
+.chat-safe.warn{color:var(--warn);font-weight:700}
+.chat-f{display:flex;gap:8px;padding:12px;background:var(--surface);border-top:1px solid var(--line)}
+.chat-f input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;background:var(--bg);color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.page{padding-block:36px 60px;display:grid;gap:14px;max-width:820px}
+.page h1{font-size:clamp(32px,4.6vw,48px)}
+.page .lead{margin:0;font-size:17px;color:var(--muted);max-width:60ch}
+.prose{display:grid;gap:12px;max-width:68ch}
+.prose h2{font-size:22px;margin-top:10px}
+.prose p,.prose li{font-size:15.5px;margin:0}
+.prose ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.contact-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.contact-cards .panel{gap:4px}
+.contact-cards b{font-size:15px}.contact-cards span{font-size:13.5px;color:var(--muted)}
+.contact-cards .addr{color:var(--accent-text);font-weight:700;user-select:all}
+@media (max-width:760px){.contact-cards{grid-template-columns:1fr}}
+.foot{align-items:center}
+.foot-links{display:flex;gap:16px;flex-wrap:wrap}
 footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:13px}
 </style>
 
@@ -416,7 +478,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 <div id="modal-root"></div>
 <div id="toast" class="toast" hidden></div>
 
-<footer><div class="wrap foot"><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span><a href="#list-your-venue">List your venue</a></div></footer>
+<footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a></nav><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
@@ -607,8 +669,18 @@ const GB=[[51.13,1.31],[51.38,1.45],[51.50,0.70],[51.53,0.71],[51.78,1.15],[51.9
 function miles(a,b,c,d){const r=x=>x*Math.PI/180,R=3958.8,dl=r(c-a),dg=r(d-b),h=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
 const milesText=d=>d<1?"Under 1 mile":`${Math.round(d)} ${Math.round(d)===1?"mile":"miles"}`;
 
+const FLAGS={plough:{stepfree:1,bar:1,outdoor:1},wenham:{stepfree:1,bar:0,outdoor:0},copper:{stepfree:0,bar:1,outdoor:0},velvet:{stepfree:0,bar:1,outdoor:1},lantern:{stepfree:1,bar:1,outdoor:1},neon:{stepfree:1,bar:1,outdoor:0},saltmarsh:{stepfree:1,bar:0,outdoor:0},granary:{stepfree:1,bar:1,outdoor:1},hartwell:{stepfree:1,bar:1,outdoor:1},riverside:{stepfree:1,bar:1,outdoor:1},stmarys:{stepfree:1,bar:0,outdoor:1}};
+VENUES.forEach(v=>{v.flags=FLAGS[v.id];});
+const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar","Licensed bar"],["outdoor","Outdoor space"]];
+
 /* ---------- State ---------- */
-const state = {view:"find", event:"All events", guests:"", region:"Anywhere", q:"", date:"", sort:"recommended", open:null, mode:"list", near:null, radius:50};
+const state = {view:"find", event:"All events", guests:"", region:"Anywhere", q:"", date:"", sort:"recommended", open:null, mode:"list", near:null, radius:50, f:{instant:false,stepfree:false,bar:false,outdoor:false,max:0}};
+const saved=new Set((()=>{try{return JSON.parse(localStorage.getItem("vendo-saved")||"[]");}catch(e){return [];}})());
+function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
+  const v=VENUES.find(x=>x.id===id);toast(saved.has(id)?`Saved ${v.name}. Find it in My account.`:`Removed ${v.name} from saved venues.`);
+  document.querySelectorAll(`[data-heart="${id}"]`).forEach(b=>{b.setAttribute("aria-pressed",saved.has(id));b.setAttribute("aria-label",(saved.has(id)?"Remove ":"Save ")+v.name);});}
+function heartBtn(v,cls){return `<button type="button" class="heart ${cls||""}" data-heart="${v.id}" aria-pressed="${saved.has(v.id)}" aria-label="${saved.has(v.id)?"Remove":"Save"} ${v.name}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.4 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.5 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg></button>`;}
+document.addEventListener("click",e=>{const h=e.target.closest&&e.target.closest("[data-heart]");if(h){e.stopPropagation();toggleSaved(h.dataset.heart);if(state.view==="account")renderAccount();}});
 const isoDay=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const dayFromIso=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};
 function searchDay(){if(!state.date) return null;const d=dayFromIso(state.date);return isNaN(d)||d<TODAY?null:d;}
@@ -629,6 +701,9 @@ function filtered(){
     if(state.region!=="Anywhere" && v.region!==state.region) return false;
     if(state.q){const q=state.q.toLowerCase(); if(!(v.name+v.place+v.kind).toLowerCase().includes(q)) return false;}
     const sd=searchDay(); if(sd && bookedDay(v,sd)) return false;
+    const f=state.f; if(f.instant&&!v.instant) return false;
+    if(f.stepfree&&!v.flags.stepfree) return false; if(f.bar&&!v.flags.bar) return false; if(f.outdoor&&!v.flags.outdoor) return false;
+    if(f.max&&full(v.hour)>f.max) return false;
     return true;
   });
   list.forEach(v=>{v.dist=state.near?miles(state.near.lat,state.near.lng,v.lat,v.lng):null;});
@@ -654,6 +729,8 @@ function renderFind(){
       <button class="go" type="submit">Search</button>
     </form>
     <div class="chips" role="group" aria-label="Event type">${EVENTS.map(e=>`<button class="chip" data-ev="${e}" aria-pressed="${e===state.event}">${e}</button>`).join("")}</div>
+    <div class="fchips" role="group" aria-label="More filters">${FILTERS.map(([k,l])=>`<button type="button" class="fchip" data-f="${k}" aria-pressed="${state.f[k]}">${l}</button>`).join("")}
+      <label class="fprice">Price <select id="fmax"><option value="0">Any price</option>${[50,100,150,200].map(m=>`<option value="${m}" ${state.f.max===m?"selected":""}>Up to £${m} an hour</option>`).join("")}</select></label></div>
     <div class="mood-note" id="mood-note" hidden><i aria-hidden="true"></i><span></span></div>
   </section>
   <section class="wrap">
@@ -668,6 +745,22 @@ function renderFind(){
       </div></div>
     <div class="grid" id="grid"></div>
     <div class="mapview" id="mapview" hidden><div id="map" role="region" aria-label="Map of venues"></div><div class="maplist" id="maplist"></div></div>
+    <div class="how">
+      <h2>How Vendo works</h2>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><h3>Find your room</h3><p>Search by date, guests and place. Every price includes all fees.</p></div>
+        <div class="step"><span class="n">2</span><h3>Build your quote</h3><p>Choose hours and extras like food, bar staff or a DJ, and see the total straight away.</p></div>
+        <div class="step"><span class="n">3</span><h3>Book and relax</h3><p>Pay securely on Vendo. Message the venue any time before the big day.</p></div>
+      </div>
+      <div class="faq two">
+        <details><summary>What is the booking fee?</summary><p>4% of the booking, already included in every price you see. There are no other charges.</p></details>
+        <details><summary>How do deposits work?</summary><p>Most venues hold a refundable damage deposit. It's returned within 7 days of your event if all is well.</p></details>
+        <details><summary>Can I cancel?</summary><p>Each venue sets its own cancellation policy, shown before you pay. Many offer a full refund up to 30 days before.</p></details>
+        <details><summary>Can we have a bar?</summary><p>Every listing says whether it has a licensed bar or if you can bring your own. Use the Licensed bar filter to find them.</p></details>
+        <details><summary>What is a guest rating?</summary><p>Venues you've booked rate how your event went. A good rating helps you get a yes next time. You can reply to any rating.</p></details>
+        <details><summary>Can I see the venue first?</summary><p>Yes. Message the venue to arrange a viewing before you book.</p></details>
+      </div>
+    </div>
     <div class="band"><div><b>Own a pub, bar, club or hall?</b><span>List your venue on Vendo for free and pay only when you get a booking.</span></div><a class="btn primary" href="#list-your-venue">List your venue</a></div>
   </section>`;
   document.getElementById("sort").value=state.sort;
@@ -678,6 +771,8 @@ function renderFind(){
   ["q","guests"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{readSearch();drawGrid();}));
   document.getElementById("region").addEventListener("change",()=>{readSearch();drawGrid();});
   document.getElementById("sdate").addEventListener("change",()=>{readSearch();drawGrid();});
+  app.querySelectorAll(".fchip").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.f;state.f[k]=!state.f[k];b.setAttribute("aria-pressed",state.f[k]);drawGrid();}));
+  document.getElementById("fmax").addEventListener("change",e=>{state.f.max=+e.target.value;drawGrid();});
   document.getElementById("sort").addEventListener("change",e=>{state.sort=e.target.value;drawGrid();});
   const nearSel=document.getElementById("near");
   nearSel.value=state.near?(state.near.name==="you"?"__me":state.near.name):"";
@@ -726,7 +821,7 @@ function drawGrid(){
   const empty=state.near?`<div class="empty">No venues within ${state.radius} miles. Try a bigger radius or another town.</div>`:`<div class="empty">No venues match those filters. Try fewer guests or a different region.</div>`;
   grid.hidden=state.mode==="map"; mv.hidden=state.mode!=="map";
   if(state.mode==="map"){drawMap(list,empty);return;}
-  grid.innerHTML = list.length? list.map(v=>`
+  grid.innerHTML = list.length? list.map(v=>`<div class="cw">${heartBtn(v)}
     <button class="card" data-id="${v.id}" aria-label="View ${v.name}">
       <div class="pic">${scene(v,"c")}${v.instant?'<span class="badge instant">Instant book</span>':'<span class="badge">Request to book</span>'}<span class="kind">${v.kind}</span></div>
       <div class="row1"><h3>${v.name}</h3><span class="rating num">${v.rating.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${v.reviews})</span></span></div>
@@ -734,7 +829,7 @@ function drawGrid(){
       ${v.dist!=null?`<div class="dist">${milesText(v.dist)} away</div>`:""}
       <div class="meta"><span><b class="num">${v.seated}</b> seated</span><span><b class="num">${v.standing}</b> standing</span></div>
       <div class="price"><b class="num">${gbp(full(v.hour))}</b>/hour · <span class="num">${gbp(full(v.day))}</span> full day <span class="incl">incl. fees</span></div>
-    </button>`).join("") : empty;
+    </button></div>`).join("") : empty;
   grid.querySelectorAll(".card").forEach(c=>c.addEventListener("click",()=>openVenue(c.dataset.id)));
 }
 
@@ -827,7 +922,7 @@ function openVenue(id,fromRoute){
   const sd=searchDay(), free=sd&&!bookedDay(v,sd);
   quote.month=free?new Date(sd.getFullYear(),sd.getMonth(),1):new Date(2026,11,1); quote.date=free?sd:null; quote.hours=Math.max(5,v.minH); quote.guests=Math.min(60,v.seated); quote.addons={}; quote.sent=null;
   modalRoot.innerHTML = `<div class="overlay" id="ov"><article class="sheet" role="dialog" aria-modal="true" aria-label="${v.name}">
-    <div class="hero">${scene(v,"h")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close">×</button></div>
+    <div class="hero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close">×</button></div>
     <div class="sheet-body">
       <div>
         <div class="vhead"><div class="eyebrow">${v.kind} · ${v.region}</div><h2>${v.name}</h2>
@@ -858,7 +953,7 @@ function closeVenue(keepHash){
   modalRoot.innerHTML="";document.body.style.overflow="";state.open=null;
   if(!keepHash){try{history.replaceState(null,"","#"+(state.view==="find"?"find":state.view==="list"?"list-your-venue":state.view));}catch(e){}}
 }
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&state.open)closeVenue()});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const c=document.getElementById("chat-root");if(c&&c.innerHTML){c.innerHTML="";return;}if(state.open)closeVenue();});
 
 function drawBook(){
   const v=state.open, el=document.getElementById("book");
@@ -1020,8 +1115,9 @@ function drawEnq(){
   el.innerHTML=host.enquiries.map((q,i)=>`<div class="enq-item"><div class="t"><b>${q.n}</b><span class="pill ${q.s==="new"?"new":q.s==="ok"?"ok":"no"}">${q.s==="new"?"New":q.s==="ok"?"Accepted":"Declined"}</span></div>
     <div class="s">${q.e} · ${q.d} · ${q.g} guests · <span class="num">${gbp(q.val)}</span></div>
     ${enqRating(q)}
-    ${q.s==="new"?`<div class="acts"><button class="btn primary" data-a="ok" data-i="${i}">Accept</button><button class="btn" data-a="no" data-i="${i}">Decline</button></div>`:""}</div>`).join("");
-  el.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{const q=host.enquiries[b.dataset.i];q.s=b.dataset.a;
+    <div class="acts">${q.s==="new"?`<button class="btn primary" data-a="ok" data-i="${i}">Accept</button><button class="btn" data-a="no" data-i="${i}">Decline</button>`:""}<button class="btn" data-msg="${i}">Message</button></div></div>`).join("");
+  el.querySelectorAll("[data-msg]").forEach(b=>b.addEventListener("click",()=>openChat(hostThread(+b.dataset.msg))));
+  el.querySelectorAll("button[data-a]").forEach(b=>b.addEventListener("click",()=>{const q=host.enquiries[b.dataset.i];q.s=b.dataset.a;
     toast(q.s==="ok"?`Accepted. ${q.n.split(" ")[0]} has been sent a confirmation (demo).`:`Declined. Suggested your free dates instead (demo).`);
     const open=host.enquiries.filter(e=>e.s==="new"), p=open.reduce((a,e)=>a+e.val,0);
     document.getElementById("k-open").textContent=open.length;
@@ -1066,8 +1162,11 @@ function renderAccount(){
         </ul></div>
       <div class="panel"><div class="panel-head"><h2>Your bookings</h2><span class="eyebrow">${ME.bookings.length} upcoming</span></div>
         <div>${ME.bookings.map(b=>`<div class="brow"><b>${b.event}</b><span class="pill ${b.status==="Confirmed"?"ok":"new"}">${b.status}</span>
-          <span>${b.venue} · ${b.date} · ${b.guests} guests</span><button class="linkbtn" data-open="${b.id}">View venue</button></div>`).join("")}</div></div>
+          <span>${b.venue} · ${b.date} · ${b.guests} guests</span><span class="brow-acts"><button class="linkbtn" data-chat="b-${b.id}">Message</button><button class="linkbtn" data-open="${b.id}">View venue</button></span></div>`).join("")}</div></div>
     </div>
+    <div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
+      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
+      :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>
     <div class="panel"><div class="panel-head"><h2>What venue owners say about you</h2><span class="eyebrow">${n} reviews</span></div>
       <div class="revs">${ME.reviews.map((r,i)=>`<div class="rev"><div class="t"><b>${r.venue}</b>${starsHTML(r.stars)}</div>
         <span class="s">${r.event} · ${r.date}</span><p>${r.text}</p>${tagHTML(r.tags)}<span class="by">${r.host}</span>
@@ -1076,6 +1175,7 @@ function renderAccount(){
   document.getElementById("edit-profile").addEventListener("click",()=>toast("Demo: this would open your profile settings"));
   document.getElementById("sign-out").addEventListener("click",()=>toast("Demo: you'd be signed out here"));
   app.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
+  app.querySelectorAll("[data-chat]").forEach(b=>b.addEventListener("click",()=>openChat(b.dataset.chat)));
   app.querySelectorAll("[data-reply]").forEach(b=>b.addEventListener("click",()=>toast(`Demo: reply to ${ME.reviews[b.dataset.reply].host.split(",")[0]}`)));
 }
 
@@ -1198,6 +1298,102 @@ function drawLyvForm(){
     lyv.sent=true; drawLyvForm(); document.getElementById("lyv-form").scrollIntoView({block:"start",behavior:"smooth"});
   });
 }
+/* ---------- Messages ---------- */
+const THREADS={
+  "b-lantern":{title:"Ellie Brennan",sub:"The Lantern Rooftop · Sister's 21st · Sat 6 Feb 2027",side:"guest",msgs:[["them","Hi Sophie, you're all booked in for the 6th. Would you like the heaters on from the start?","Mon 09:12"],["me","Yes please. Could we also bring a birthday cake?","Mon 09:40"],["them","Of course. We'll keep it in the fridge behind the bar and bring it out when you're ready.","Mon 10:02"]]},
+  "b-plough":{title:"Jo & Martin Ellery",sub:"The Plough & Harrow · Wedding reception · Sat 13 Jun 2027",side:"guest",msgs:[["me","Hi Jo, we'd love the Long Room and a garden marquee for 110 guests. Is a hog roast possible?","Sun 19:30"],["them","Congratulations! A hog roast is one of our favourites. I'll send a full quote tomorrow.","Sun 20:05"]]}
+};
+const CONTACT_RE=/(\+?\d[\d\s().-]{8,}\d)|([^\s@]+@[^\s@]+\.[^\s@]+)/;
+function hostThread(i){
+  const k="e-"+i; if(THREADS[k]) return k; const q=host.enquiries[i];
+  THREADS[k]={title:q.n,sub:`${q.e} · ${q.d} · ${q.g} guests`,side:"host",msgs:[["them",`Hello! We're planning a ${q.e.toLowerCase()} on ${q.d} for ${q.g} guests. Is the date still free?`,"Today 08:31"]]};
+  return k;
+}
+function openChat(key){
+  const t=THREADS[key]; let root=document.getElementById("chat-root");
+  if(!root){root=document.createElement("div");root.id="chat-root";document.body.appendChild(root);}
+  root.innerHTML=`<div class="overlay chat-ov" id="chat-ov"><section class="chat" role="dialog" aria-modal="true" aria-label="Messages with ${t.title}">
+    <header class="chat-h"><div><b>${t.title}</b><span>${t.sub}</span></div><button type="button" class="chat-x" id="chat-x" aria-label="Close messages">×</button></header>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <p class="chat-safe" id="chat-safe">Keep payments and messages on Vendo. We'll never ask you to pay anywhere else.</p>
+    <form class="chat-f" id="chat-f"><label class="sr" for="chat-in">Message</label><input id="chat-in" autocomplete="off" placeholder="Write a message"><button class="btn primary" type="submit">Send</button></form>
+  </section></div>`;
+  const draw=()=>{const m=document.getElementById("msgs");m.innerHTML=t.msgs.map(([who,txt,at])=>`<div class="msg ${who==="me"?"mine":"theirs"}"><p>${txt.replace(/</g,"&lt;")}</p><span>${at}</span></div>`).join("");m.scrollTop=m.scrollHeight;};
+  draw();
+  const close=()=>{root.innerHTML="";};
+  document.getElementById("chat-x").addEventListener("click",close);
+  document.getElementById("chat-ov").addEventListener("click",e=>{if(e.target.id==="chat-ov")close();});
+  const input=document.getElementById("chat-in"), safe=document.getElementById("chat-safe");
+  input.addEventListener("input",()=>{safe.classList.remove("warn");safe.textContent="Keep payments and messages on Vendo. We'll never ask you to pay anywhere else.";});
+  document.getElementById("chat-f").addEventListener("submit",e=>{
+    e.preventDefault(); const txt=input.value.trim(); if(!txt) return;
+    if(CONTACT_RE.test(txt)){safe.classList.add("warn");safe.textContent="To keep you protected, phone numbers and emails are shared once a booking is confirmed. Please remove them and send again.";return;}
+    t.msgs.push(["me",txt,"Just now"]); input.value=""; draw();
+    setTimeout(()=>{if(!document.getElementById("msgs"))return;t.msgs.push(["them",t.side==="guest"?"Thanks! I'll check and come back to you shortly.":"Brilliant, thank you. We'll confirm numbers this week.","Just now"]);draw();},1400);
+  });
+  input.focus();
+}
+/* ---------- Info pages ---------- */
+const PAGES={
+ about:{title:"About Vendo",lead:"Vendo helps pubs, bars, nightclubs, village halls, clubs and leisure centres earn from rooms that sit empty most nights.",body:`
+  <h2>Why we exist</h2><p>Thousands of function rooms, halls and clubhouses across the UK are quiet on most evenings, while people planning a party, wedding or wake struggle to find a room, a price and a free date. Vendo puts all three in one place.</p>
+  <h2>How we make money</h2><p>Listing is free. We take a small commission when a booking is paid, and guests pay a 4% booking fee that's always shown in the price. That's it.</p>
+  <h2>What we care about</h2><ul><li>Honest prices with nothing added at checkout.</li><li>Fair two-way reviews, so good guests and good venues both stand out.</li><li>Keeping local venues open and busy.</li></ul>`},
+ contact:{title:"Contact us",lead:"We usually reply within one working day.",body:"contact"},
+ terms:{title:"Terms of use",lead:"Draft for the demo. These terms must be reviewed by a solicitor before Vendo takes real bookings.",body:`
+  <h2>1. Who we are</h2><p>Vendo runs a website that lets people book rooms at venues. The venue provides the room and the event services. Vendo acts as the venue's booking agent.</p>
+  <h2>2. Bookings</h2><p>A booking is confirmed when the venue accepts your request, or straight away for instant book venues. You'll get a confirmation by email.</p>
+  <h2>3. Prices and fees</h2><p>Prices include a 4% Vendo booking fee. Venues may also hold a refundable damage deposit, shown before you pay.</p>
+  <h2>4. Cancellations</h2><p>Each venue sets its own cancellation policy, shown on its listing and before you pay. Refunds follow that policy.</p>
+  <h2>5. Your event</h2><p>You agree to follow the venue's house rules, keep to the guest numbers you booked, and leave the venue as you found it.</p>
+  <h2>6. Ratings and reviews</h2><p>Guests and venues can rate each other after an event. Reviews must be honest and about the booking. You can reply to any review, and report one you think breaks these terms.</p>
+  <h2>7. Payments</h2><p>Always pay through Vendo. We can't protect bookings paid for any other way.</p>`},
+ privacy:{title:"Privacy notice",lead:"Draft for the demo. This notice must be reviewed before Vendo collects real personal data.",body:`
+  <h2>What we collect</h2><p>Your name, contact details, booking details, messages with venues, payment records, and ratings and reviews linked to your bookings.</p>
+  <h2>Why we use it</h2><p>To run your bookings, take payments, help venues decide on requests, prevent fraud, and meet our legal duties, such as reporting to HMRC.</p>
+  <h2>Who sees it</h2><p>A venue sees your name, guest rating, event details and messages when you send it a request. Your contact details are shared only once a booking is confirmed. Our payment provider processes card details. We never sell your data.</p>
+  <h2>Ratings</h2><p>Ratings from venues are personal data. You can see every rating about you in My account, reply publicly, and ask us to review or remove one you think is unfair or inaccurate.</p>
+  <h2>How long we keep it</h2><p>Booking and payment records for 6 years for tax purposes. Messages for 2 years after your last booking.</p>
+  <h2>Your rights</h2><p>You can ask to see, correct or delete your data, or object to how we use it. You can also complain to the Information Commissioner's Office.</p>`},
+ cookies:{title:"Cookies",lead:"This demo sets no tracking or advertising cookies.",body:`
+  <h2>What this site stores</h2><p>Your saved venues are kept in your own browser, so they're still there next time you visit on the same device. Nothing is sent to us.</p>
+  <h2>The map</h2><p>The map loads images from OpenStreetMap, which sees your IP address when it sends them.</p>
+  <h2>In future</h2><p>If we add analytics that use cookies, we'll ask for your permission first and you can say no.</p>`}
+};
+const contactForm={sent:false,name:"",email:"",topic:"I'm planning an event",msg:""};
+function renderPage(key){
+  const pg=PAGES[key];
+  app.innerHTML=`<section class="wrap page"><div class="eyebrow">Vendo</div><h1>${pg.title}</h1><p class="lead">${pg.lead}</p>
+    <div class="prose" id="page-body">${pg.body==="contact"?"":pg.body}</div></section>`;
+  if(pg.body==="contact") drawContact();
+  window.scrollTo(0,0);
+}
+function drawContact(){
+  const el=document.getElementById("page-body"), c=contactForm;
+  const lines=`<div class="contact-cards">
+      <div class="panel"><b>Planning an event</b><span>Help with a booking or finding a venue.</span><span class="addr">guests@vendo.example</span></div>
+      <div class="panel"><b>Venue owners</b><span>Listing your venue, payouts or your calendar.</span><span class="addr">venues@vendo.example</span></div>
+      <div class="panel"><b>Press and partners</b><span>Pub companies, breweries, hall networks and media.</span><span class="addr">hello@vendo.example</span></div>
+    </div><p class="small" style="text-align:left">Demo addresses. Replace them with your real ones before launch.</p>`;
+  if(c.sent){el.innerHTML=lines+`<div class="panel"><div class="done"><div class="tick">✓</div><h3>Thanks, ${c.name.split(" ")[0]}.</h3><p style="margin:0">We'll reply to ${c.email} within one working day.</p><p class="small">Demo only. Nothing was sent.</p></div></div>`;return;}
+  el.innerHTML=lines+`<div class="panel"><h2 style="margin:0">Send us a message</h2>
+    <form class="lform" id="cform" novalidate>
+      <div class="lf"><label for="cf-name">Your name</label><input id="cf-name" autocomplete="name" value="${c.name}"><span class="err" id="ce-name"></span></div>
+      <div class="lf"><label for="cf-email">Email</label><input id="cf-email" type="email" autocomplete="email" value="${c.email}"><span class="err" id="ce-email"></span></div>
+      <div class="lf full"><label for="cf-topic">What's it about?</label><select id="cf-topic">${["I'm planning an event","I own or run a venue","A booking I've made","Something else"].map(t=>`<option ${t===c.topic?"selected":""}>${t}</option>`).join("")}</select></div>
+      <div class="lf full"><label for="cf-msg">Message</label><textarea id="cf-msg">${c.msg}</textarea><span class="err" id="ce-msg"></span></div>
+      <div class="lf full"><button class="cta" type="submit">Send message</button></div>
+    </form></div>`;
+  const map={name:"cf-name",email:"cf-email",topic:"cf-topic",msg:"cf-msg"};
+  Object.entries(map).forEach(([k,id])=>document.getElementById(id).addEventListener("input",e=>{c[k]=e.target.value;const er=document.getElementById("ce-"+k);if(er)er.textContent="";}));
+  document.getElementById("cform").addEventListener("submit",e=>{e.preventDefault();const er={};
+    if(!c.name.trim()) er.name="Enter your name.";
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) er.email="Enter an email address like name@example.com.";
+    if(c.msg.trim().length<10) er.msg="Write a message of at least 10 characters.";
+    ["name","email","msg"].forEach(k=>document.getElementById("ce-"+k).textContent=er[k]||"");
+    const f=Object.keys(er)[0]; if(f){document.getElementById(map[f]).focus();return;}
+    c.sent=true; drawContact();});
+}
 let tt; function toast(msg,ms){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,ms||2800);}
 
 /* ---------- Routing ---------- */
@@ -1213,12 +1409,12 @@ function route(){
       openVenue(id,true); return;
     }
   }
-  const v=h==="#host"?"host":h==="#account"?"account":h==="#list-your-venue"?"list":"find"; state.view=v;
+  const pk=h.slice(1); const v=h==="#host"?"host":h==="#account"?"account":h==="#list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
   document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account");
   if(state.open) closeVenue(true);
-  v==="host"?renderHost():v==="account"?renderAccount():v==="list"?(renderList(),window.scrollTo(0,0)):renderFind();
+  v==="host"?renderHost():v==="account"?renderAccount():v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
 }
 document.getElementById("tab-find").addEventListener("click",()=>{location.hash="find";route();window.scrollTo(0,0)});
 document.getElementById("tab-host").addEventListener("click",()=>{location.hash="host";route();window.scrollTo(0,0)});

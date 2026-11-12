@@ -12,6 +12,9 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 - **Guest accounts and ratings**: a guest's account page shows their rating from venue owners, what venues said about them, and their bookings. Venues see each guest's rating on enquiries and rate guests after events.
 - **List your venue**: a sign-up page for venue owners with how it works, an earnings estimator, FAQs and a short form.
 - **Search by date** and **full prices including fees** on every card, plus guest reviews and a shareable link for each venue.
+- **Saved venues, filters and messaging**: heart venues to save them, filter by price, instant book, step-free access, licensed bar or outdoor space, and message venues (contact details are held back until a booking is confirmed).
+- **How it works, FAQs and footer pages**: About, Contact, Terms, Privacy and Cookies. Terms and Privacy are drafts and need a solicitor's review before launch.
+- **Link previews**: `og-image.jpg` shows when the site is shared.
 - **Event moods**: the colours change with the occasion. For example, weddings switch the app to black and white.
 
 All venues, hosts, bookings and figures are fictional examples.
