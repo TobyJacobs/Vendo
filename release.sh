@@ -17,7 +17,7 @@ fi
 if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
   echo "v$VERSION already exists. Pick a new version number." >&2; exit 1
 fi
-OTHER=$(git status --porcelain --untracked-files=no | grep -vE '^.. (index\.html|sw\.js|CHANGELOG\.md|README\.md)$' || true)
+OTHER=$(git status --porcelain --untracked-files=no | grep -vE '^.. (index\.html|sw\.js|CHANGELOG\.md|README\.md|package\.json)$' || true)
 if [[ -n "$OTHER" ]]; then
   echo "Commit or put away these changes first:" >&2; echo "$OTHER" >&2; exit 1
 fi
@@ -43,11 +43,16 @@ process.stdout.write(releases[0].t);
 JS
 )
 
+# Keep package.json (the iPhone app's version) in step.
+if [[ -f package.json ]]; then
+  sed -i.bak -E "s/^  \"version\": \"[0-9.]+\",/  \"version\": \"$VERSION\",/" package.json && rm -f package.json.bak
+fi
+
 # Keep the offline cache name in step, so phones pick up the new version.
 sed -i.bak -E "s/^const VERSION = \"[0-9.]+\";/const VERSION = \"$VERSION\";/" sw.js && rm -f sw.js.bak
 grep -q "const VERSION = \"$VERSION\";" sw.js || { echo "Couldn't update the version in sw.js." >&2; exit 1; }
 
-git add index.html sw.js CHANGELOG.md README.md release.sh
+git add index.html sw.js CHANGELOG.md README.md release.sh $( [[ -f package.json ]] && echo package.json )
 git commit -q -m "Release v$VERSION: $TITLE"
 git tag -a "v$VERSION" -m "Vendo $VERSION: $TITLE"
 echo "Released v$VERSION ($TITLE). Push with: git push origin main --follow-tags"

@@ -1,0 +1,5 @@
+# The website is plain HTML served from the repository root: no build step.
+# package.json is only for the iPhone app (Capacitor).
+[build]
+  publish = "."
+  command = ""
