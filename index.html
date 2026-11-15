@@ -8,6 +8,10 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#5DA9E9">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vendo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vendo">
 <meta property="og:title" content="Vendo: book pubs, bars, halls and clubs for your event">
@@ -17,8 +21,109 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Vendo logo beside an illustrated barn with festoon lights, and the line: Every great party needs a room. Find yours.">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "#organization",
+   "name": "Vendo",
+   "logo": "icon-512.png",
+   "description": "Vendo helps pubs, bars, village halls, clubs and leisure centres rent out their rooms for weddings, parties, wakes and christenings.",
+   "areaServed": "GB"
+  },
+  {
+   "@type": "WebSite",
+   "@id": "#website",
+   "name": "Vendo",
+   "inLanguage": "en-GB",
+   "publisher": {
+    "@id": "#organization"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "What is the booking fee?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "4% of the booking, already included in every price you see. There are no other charges."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do deposits work?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Most venues hold a refundable damage deposit. It's returned within 7 days of your event if all is well."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I cancel?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Each venue sets its own cancellation policy, shown before you pay. Many offer a full refund up to 30 days before."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can we have a bar?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Every listing says whether it has a licensed bar or if you can bring your own. Use the Licensed bar filter to find them."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What is a guest rating?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Venues you've booked rate how your event went. A good rating helps you get a yes next time. You can reply to any rating."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I see the venue first?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Message the venue to arrange a viewing before you book."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What is Booking Protection?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Your money is held until after your event. If a venue cancels, we'll help you find a similar room or refund you in full."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I get Vendo on my phone?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Open Vendo in your phone's browser and add it to your home screen. On iPhone, tap Share, then Add to Home Screen. On Android, tap Install."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Are venues checked?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Venues with a Verified badge have had the owner's ID, premises licence and insurance checked by Vendo."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Vendo</title>
+<title>Vendo: book pubs, bars, halls and clubs for your event</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,9 +131,9 @@
 <style>
 /* Layout: marketplace app — sticky bar, search strip, venue grid; host view is a two-column dashboard. */
 :root{
-  --bg:#F6F1E6; --surface:#FFFFFF; --sunk:#EEE6D4; --ink:#17324D; --muted:#5E7187; --line:#E2D8C3;
-  --accent:#5DA9E9; --accent-text:#2B74B3; --accent-soft:#E3F0FB; --on-accent:#0F2338; --brass:#C29A4E;
-  --logo-pin:#5DA9E9; --logo-door:#E2C98F; --map-sea:#D6E8F6; --map-land:#FBF8F1; --map-coast:#CDBB8E; --good:#2D7650; --good-soft:#E0F0E6; --warn:#A35A12;
+  --bg:#F6F1E6; --surface:#FFFFFF; --sunk:#EEE6D4; --ink:#17324D; --muted:#53647A; --line:#E2D8C3;
+  --accent:#5DA9E9; --accent-text:#23669F; --accent-soft:#E3F0FB; --on-accent:#0F2338; --brass:#C29A4E;
+  --logo-pin:#5DA9E9; --logo-door:#E2C98F; --map-sea:#D6E8F6; --map-land:#FBF8F1; --map-coast:#CDBB8E; --good:#286A48; --good-soft:#E0F0E6; --warn:#93500F;
   --scrim:rgba(14,20,18,.55); --shadow:0 1px 2px rgba(22,32,30,.06),0 8px 28px rgba(22,32,30,.08);
   --f-display:"Fraunces",Georgia,"Times New Roman",serif;
   --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -37,9 +142,9 @@
 }
 /* Event moods: picking an occasion re-colours the app. Wedding = black primary, white secondary. */
 :root[data-mood="wedding"]{--bg:#F6F6F4;--surface:#FFFFFF;--sunk:#ECECEA;--ink:#0D0D0D;--muted:#5E5E5E;--line:#DADAD8;--accent:#0D0D0D;--accent-text:#0D0D0D;--accent-soft:#EFEFEF;--on-accent:#FFFFFF;--brass:#8C8C8C}
-:root[data-mood="birthday"]{--bg:#FBF3F6;--sunk:#F6E4EB;--line:#EBD3DC;--accent:#D12F6A;--accent-text:#D12F6A;--accent-soft:#FCE1EB;--on-accent:#FFFFFF;--brass:#D99A00}
+:root[data-mood="birthday"]{--bg:#FBF3F6;--sunk:#F6E4EB;--line:#EBD3DC;--accent:#D12F6A;--accent-text:#B42559;--accent-soft:#FCE1EB;--on-accent:#FFFFFF;--brass:#D99A00}
 :root[data-mood="wake"]{--bg:#EDEFF2;--sunk:#E1E5EA;--line:#D2D8E0;--accent:#3D4A60;--accent-text:#3D4A60;--accent-soft:#E2E6EE;--on-accent:#FFFFFF;--brass:#7D8798}
-:root[data-mood="christening"]{--bg:#F1F5FA;--sunk:#E2EBF5;--line:#D3DFEC;--accent:#3F74AE;--accent-text:#3F74AE;--accent-soft:#E1ECF8;--on-accent:#FFFFFF;--brass:#B89B5E}
+:root[data-mood="christening"]{--bg:#F1F5FA;--sunk:#E2EBF5;--line:#D3DFEC;--accent:#3F74AE;--accent-text:#34659C;--accent-soft:#E1ECF8;--on-accent:#FFFFFF;--brass:#B89B5E}
 :root[data-mood="corporate"]{--bg:#EEF1F5;--sunk:#E1E6EE;--line:#D1D8E2;--accent:#1D3557;--accent-text:#1D3557;--accent-soft:#E0E7F1;--on-accent:#FFFFFF;--brass:#8B929C}
 :root[data-mood="clubs"]{--bg:#EDF3EF;--sunk:#DEEAE2;--line:#CFDFD4;--accent:#28724A;--accent-text:#28724A;--accent-soft:#DDEFE4;--on-accent:#FFFFFF;--brass:#B08A2E}
 :root[data-theme="dark"]{
@@ -241,7 +346,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .hday .n{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3}
 .hday.today .n{color:var(--accent-text)}
 .hday.today .n::after{content:" today";font-size:10.5px;font-weight:700;color:var(--accent-text)}
-.hday.past{opacity:.5}
+.hday.past{background:var(--sunk)}
+.hday.past .ev{opacity:.75}
 .hday[aria-pressed="true"]{outline:2px solid var(--accent-text);outline-offset:-2px}
 .ev{display:block;font-size:11px;font-weight:700;border-radius:5px;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
 .ev.vendo{background:var(--accent);color:var(--on-accent)}
@@ -265,7 +371,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .hform{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
 .hform .lform{gap:12px}
 .hnote{font-size:12.5px;color:var(--muted);margin:0}
-.up-row .tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--logo-door);color:#3A2C0C;vertical-align:1px}
+.up-row .w .tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--logo-door);color:#3A2C0C;vertical-align:1px}
 .up-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--line)}
 .up-row:first-child{border-top:0}
 .date{text-align:center;border:1px solid var(--line);border-radius:10px;padding:5px 0;line-height:1.1}
@@ -302,7 +408,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .leaflet-bar a{display:block;width:34px;height:34px;line-height:34px;text-align:center;text-decoration:none;background:var(--surface);color:var(--ink);font:700 18px/34px var(--f-body)}
 .leaflet-bar a+a{border-top:1px solid var(--line)}.leaflet-bar a.leaflet-disabled{color:var(--muted);cursor:default}
 .leaflet-control-attribution{background:rgba(255,255,255,.8);color:#333;padding:0 6px;font-size:10.5px;line-height:1.6}
-.leaflet-control-attribution a{color:#2B74B3}
+.leaflet-control-attribution a{color:#23669F}
 .leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}
 .leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:14px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .leaflet-popup-content{margin:14px 16px;line-height:1.35;min-height:1px}
@@ -371,6 +477,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .linkbtn{justify-self:start;border:0;background:none;padding:0;color:var(--accent-text);font-weight:700;font-size:13px}
 .brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding-block:12px;border-top:1px solid var(--line)}
 .brow:first-child{border-top:0}
+.brow .pill{justify-self:end}
 .brow b{font-size:15px}.brow span{font-size:13px;color:var(--muted)}
 .grate{font-size:12.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .grate .stars{font-size:12.5px}
@@ -489,11 +596,179 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 @media (max-width:760px){.contact-cards{grid-template-columns:1fr}}
 .foot{align-items:center}
 .foot-links{display:flex;gap:16px;flex-wrap:wrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:80;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+#app:focus{outline:none}
 footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:13px}
+.install{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* trust badges */
+.vb{display:flex;flex-wrap:wrap;gap:6px}
+.vb span{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--sunk);color:var(--ink)}
+.vb .vb-verified{background:var(--good-soft);color:var(--good)}
+.vb .vb-verified::before{content:"✓"}
+.vb .vb-fast::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.vb .vb-top::before{content:"★";color:var(--brass)}
+.card-vb{margin-top:-4px}.card-vb span{font-size:11.5px;padding:3px 8px}
+.vhead .vb{margin-top:10px}
+/* good to know */
+.gtk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px;margin:0}
+.gtk div{display:grid;gap:2px}
+.gtk dt{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.gtk dd{margin:0;font-size:14.5px}
+@media (max-width:640px){.gtk{grid-template-columns:1fr}}
+/* guest photos */
+.gphotos{display:grid;gap:8px}
+.gp-h{display:flex;justify-content:space-between;font-size:13.5px}.gp-h span{color:var(--muted)}
+.gp-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.gp-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gp{position:relative;border:0;padding:0;border-radius:10px;overflow:hidden;aspect-ratio:4/3;background:var(--sunk);color:#fff}
+.gp svg{width:100%;height:100%;display:block}
+.gp>span{position:absolute;left:7px;bottom:5px;font-size:11.5px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.gp.more{display:grid;place-items:center;align-content:center;gap:2px;color:var(--accent-text);border:1px dashed var(--line);background:var(--surface)}
+.gp.more>span{position:static;text-shadow:none;font-size:12px}
+.gp.more .plus{font-size:24px;line-height:1}
+.rv-photo{border:0;padding:0;width:128px;aspect-ratio:4/3;border-radius:8px;overflow:hidden;margin-top:6px}
+.rv-photo svg{width:100%;height:100%;display:block}
+.lb{position:fixed;inset:0;background:rgba(10,16,24,.84);z-index:70;display:grid;place-items:center;padding:20px}
+.lb figure{margin:0;width:min(720px,100%);display:grid;gap:10px}
+.lb figure svg{width:100%;height:auto;border-radius:14px;display:block;aspect-ratio:4/3}
+.lb figcaption{color:#fff;font-weight:700;text-align:center}
+/* alternative dates and waiting lists */
+.cal button.booked{cursor:pointer}
+.cal button.want{outline:2px solid var(--warn);outline-offset:-2px;opacity:1}
+.wantbox{display:grid;gap:8px;border:1px solid var(--line);background:var(--sunk);border-radius:12px;padding:12px 14px;font-size:13.5px}
+.dchips{display:flex;flex-wrap:wrap;gap:6px}
+.dchip{border:1px solid var(--accent-text);background:var(--surface);color:var(--accent-text);border-radius:999px;padding:5px 11px;font-weight:700;font-size:12.5px}
+.dchip:hover{background:var(--accent-soft)}
+.btn.wait[aria-pressed="true"]{background:var(--good-soft);color:var(--good);border-color:var(--good-soft)}
+.altbox{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:20px;display:grid;gap:10px;margin:-30px 0 40px}
+.altbox h2{font-size:22px}.altbox>p{margin:0;color:var(--muted);font-size:14px}
+.altlist{display:grid}
+.altrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;align-items:center;padding-block:10px;border-top:1px solid var(--line)}
+.alt-name{font-size:15px}.alt-where{font-size:12.5px;color:var(--muted);grid-column:1}
+.alt-dates{grid-column:2;grid-row:1/3;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:640px){.altrow{grid-template-columns:1fr}.alt-dates{grid-column:1;grid-row:auto;justify-content:flex-start;margin-top:4px}}
+/* similar and recently viewed */
+.simlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.simlist{grid-template-columns:1fr}}
+.mrow.mini{grid-template-columns:84px minmax(0,1fr)}
+.minfo .free{color:var(--good);font-weight:700}.minfo .taken{color:var(--muted);font-weight:700}
+.recent{display:grid;gap:10px;padding-top:26px}
+.recent-h{display:flex;justify-content:space-between;align-items:baseline}.recent-h h2{font-size:20px}
+.recent-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,300px);gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.recent-row>*{scroll-snap-align:start}
+/* booking protection */
+.protect{display:flex;gap:10px;align-items:flex-start;background:var(--good-soft);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.45}
+.protect svg{flex:none;width:20px;height:20px;color:var(--good);margin-top:1px}
+.protect b{display:block;font-size:13.5px;color:var(--good)}
+/* rooms on the booking card */
+.seg.roomseg{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:4px}
+.roomseg button{display:grid;gap:1px;text-align:left;padding:7px 9px}
+.roomseg small{font-size:11px;font-weight:600;color:var(--muted)}
+/* budget planner */
+.planner{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:22px;display:grid;gap:18px;margin-bottom:40px;min-width:0}
+.pl-intro h2{font-size:28px}.pl-intro p{margin:6px 0 0;color:var(--muted)}
+.pl-ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:18px;align-items:end}
+@media (max-width:860px){.pl-ctl{grid-template-columns:1fr}}
+.pl-tog{display:flex;gap:8px;flex-wrap:wrap}
+.pl-sum{font-weight:700;margin:0 0 10px}
+.pl-list{display:grid;gap:8px}
+.plrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:3px 14px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;color:inherit;min-width:0}
+.plrow:hover{border-color:var(--accent)}
+.plrow b{font-size:15px;overflow-wrap:anywhere}.plrow .s{grid-column:1;font-size:12.5px;color:var(--muted)}
+.plrow .tot{grid-column:2;grid-row:1/3;font-weight:800;font-variant-numeric:tabular-nums}
+.plrow .pill{grid-column:3;grid-row:1/3}
+.pill.over{background:var(--sunk);color:var(--warn)}
+@media (max-width:560px){.plrow{grid-template-columns:minmax(0,1fr) auto}.plrow .tot{grid-column:2;grid-row:1}.plrow .pill{grid-column:2;grid-row:2;justify-self:end}}
+/* event checklist */
+.ck{list-style:none;margin:0;padding:0;display:grid}
+.ck-when{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 0 2px}
+.ck label{display:flex;gap:10px;align-items:center;padding:7px 0;font-size:14.5px;cursor:pointer}
+.ck input{width:18px;height:18px;flex:none;accent-color:var(--good)}
+.ck input:checked+span{text-decoration:line-through;color:var(--muted)}
+.ck-prog{display:grid;gap:6px;font-size:13.5px;color:var(--muted)}.ck-prog b{color:var(--ink)}
+.ck-prog i{display:block;height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}.ck-prog i b{display:block;height:100%;background:var(--good);border-radius:99px}
+.seg.wrapseg{flex-wrap:wrap;justify-self:start}
+.pnote{margin:0;color:var(--muted);font-size:14px}
+.sub-h{font-size:17px;margin:0 0 10px}
+/* host tabs */
+.dash>*{min-width:0}
+.htabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;min-width:0}
+.htabs::-webkit-scrollbar{display:none}
+.htabs button{border:0;background:none;padding:10px 14px;font-weight:700;font-size:14.5px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.htabs button:hover{color:var(--ink)}
+.htabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.dash-body{display:grid;gap:22px;min-width:0}
+.nudge{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px}
+.nudge b{display:block}.nudge span{font-size:13.5px;color:var(--muted)}
+.seg.hroom{flex-wrap:wrap;justify-self:start;margin:10px 0 2px;width:fit-content;max-width:100%}
+/* rooms and prices */
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.roomcard{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;background:var(--surface);text-align:left;color:inherit;min-width:0}
+.roomcard.off{background:var(--sunk)}
+.roomcard .t{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.roomcard .t b{font-size:16px}
+.roomcard .s{font-size:13px;color:var(--muted)}
+.rm-facts{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}.rm-facts b{color:var(--ink)}
+.roomcard .acts{display:flex;gap:8px;flex-wrap:wrap}.roomcard .acts .btn{padding:7px 12px;font-size:13px}
+.roomcard.add{border-style:dashed;place-content:center;justify-items:center;text-align:center;min-height:150px}
+.roomcard.add .plus{font-size:26px;color:var(--accent-text);line-height:1}
+.insight{background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:14px}
+.insight .linkbtn{display:inline;font-size:14px}
+.dp{display:grid}
+.dp-row{display:grid;grid-template-columns:minmax(0,1fr) 170px 160px;gap:12px;align-items:center;padding-block:10px;border-top:1px solid var(--line)}
+.dp-row:first-child{border-top:0}
+.dp-row label{font-weight:700;font-size:14.5px}.dp-row small{font-weight:600;color:var(--muted)}
+.dp-row select{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:600}
+.dp-ex{font-size:13px;color:var(--muted);text-align:right}
+@media (max-width:640px){.dp-row{grid-template-columns:1fr 1fr}.dp-row label{grid-column:1/-1}.dp-ex{text-align:left}}
+/* listing quality */
+.qs{display:grid;grid-template-columns:150px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:640px){.qs{grid-template-columns:1fr}}
+.ring{position:relative;width:140px;height:140px}.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:36px;font-weight:500}
+.qlist{list-style:none;margin:0;padding:0;display:grid}
+.qlist li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding-block:10px;border-top:1px solid var(--line)}
+.qlist li:first-child{border-top:0}
+.qlist .ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.qlist .ok .ic{background:var(--good-soft);color:var(--good)}
+.qlist .todo .ic{color:var(--warn);box-shadow:inset 0 0 0 1.5px var(--warn)}
+.qlist b{display:block;font-size:14.5px}.qlist .s{font-size:13px;color:var(--muted)}
+.qlist .btn{padding:6px 12px;font-size:13px;white-space:nowrap}
+@media (max-width:520px){.qlist li{grid-template-columns:22px minmax(0,1fr)}.qlist .btn{grid-column:2;justify-self:start}}
+/* analytics */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+.stat{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:2px}
+.stat .v{font-family:var(--f-display);font-size:28px;font-weight:500;font-variant-numeric:tabular-nums}
+.stat .d{font-size:12.5px;font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:9px 6px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp thead th{border-top:0;font-size:12px;color:var(--muted);font-weight:700}
+.cmp .better{color:var(--good);font-weight:800}
+.spark svg{width:100%;height:auto;display:block}
+.searches{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.searches li{display:grid;grid-template-columns:minmax(0,1fr) 40px;gap:4px 10px;font-size:14px}
+.searches i{grid-column:1/-1;height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;display:block}
+.searches i b{display:block;height:100%;background:var(--accent);border-radius:99px}
+.searches .n{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+/* payouts */
+.ptiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.ptiles{grid-template-columns:1fr}}
+.tablewrap{overflow-x:auto;min-width:0}
+.ptable{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+.ptable th,.ptable td{padding:10px 8px;border-top:1px solid var(--line);text-align:left;vertical-align:top}
+.ptable thead th{border-top:0;font-size:12px;color:var(--muted);font-weight:700}
+.ptable .r{text-align:right;font-variant-numeric:tabular-nums}
+.ptable td small{display:block;color:var(--muted);font-size:12px}
+.pill.held{background:var(--sunk);color:var(--muted)}
+.bank{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px}
 </style>
 
 </head>
 <body>
+<a class="skip" href="#app" id="skip">Skip to main content</a>
 <header class="top">
   <div class="wrap">
     <a class="logo" href="#find" aria-label="Vendo home"><svg viewBox="22 18 168 68" aria-hidden="true">
@@ -514,7 +789,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 <div id="modal-root"></div>
 <div id="toast" class="toast" hidden></div>
 
-<footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a></nav><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
+<footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a></nav><button type="button" class="install" id="install" hidden>Install the Vendo app</button><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
@@ -707,10 +982,92 @@ const milesText=d=>d<1?"Under 1 mile":`${Math.round(d)} ${Math.round(d)===1?"mil
 
 const FLAGS={plough:{stepfree:1,bar:1,outdoor:1},wenham:{stepfree:1,bar:0,outdoor:0},copper:{stepfree:0,bar:1,outdoor:0},velvet:{stepfree:0,bar:1,outdoor:1},lantern:{stepfree:1,bar:1,outdoor:1},neon:{stepfree:1,bar:1,outdoor:0},saltmarsh:{stepfree:1,bar:0,outdoor:0},granary:{stepfree:1,bar:1,outdoor:1},hartwell:{stepfree:1,bar:1,outdoor:1},riverside:{stepfree:1,bar:1,outdoor:1},stmarys:{stepfree:1,bar:0,outdoor:1}};
 VENUES.forEach(v=>{v.flags=FLAGS[v.id];});
+/* ---------- Good to know, trust badges, rooms and day pricing ---------- */
+const VINFO={
+ plough:{finish:"Bar closes at 1am",music:"Music down by 11:30pm",park:"30 free spaces on site",go:"Moreton-in-Marsh station is 4 miles away, with taxis from the rank",own:"Your own cake is fine. Decorations welcome, but no confetti indoors",rain:"Use the garden marquee, or move into the Long Room"},
+ wenham:{finish:"Finish by midnight",music:"Music until midnight, doors closed after 10pm",park:"Free parking on the green for about 25 cars",go:"The 88 bus from Stowmarket stops outside",own:"Bring your own cake, food and decorations",rain:null},
+ copper:{finish:"Open until 2am",music:"DJ until 1:30am",park:"No parking. NCP Ancoats is 3 minutes' walk",go:"Manchester Piccadilly is 10 minutes' walk",own:"Cakes allowed with notice. No outside food or drink",rain:null},
+ velvet:{finish:"Late licence to 3am",music:"No volume limit inside",park:"No parking. Crown Point car park is 6 minutes' walk",go:"Leeds station is 8 minutes' walk, with night buses from Boar Lane",own:"Cakes allowed. Decorations by arrangement",rain:"Covered smoking terrace"},
+ lantern:{finish:"Open until midnight",music:"Terrace music off at 11pm",park:"Jewellery Quarter multi-storey, 2 minutes' walk",go:"Jewellery Quarter station is 3 minutes' walk",own:"Your own cake is fine. Balloons on the terrace must be weighted",rain:"Move into the glass-walled bar, with a refund on terrace extras"},
+ neon:{finish:"Open until 2am",music:"Karaoke until 1:30am",park:"Eldon Square car park, 4 minutes' walk",go:"Monument Metro is 2 minutes' walk",own:"Cakes welcome. We'll light the candles",rain:null},
+ saltmarsh:{finish:"Close by 10pm",music:"No volume limit in the sports hall",park:"200 free spaces",go:"Whitstable station is 15 minutes' walk",own:"Bring your own cake and decorations. No glitter near the pool",rain:null},
+ granary:{finish:"Music ends at midnight",music:"Live bands welcome, with a sound limiter fitted",park:"80 spaces in the paddock",go:"Ipswich station is 25 minutes by taxi, and we can book minibuses",own:"Your own cake and florist are welcome",rain:"The ceremony moves into the barn, with drinks under the orchard canopy"},
+ hartwell:{finish:"Finish by 11pm",music:"Music down by 10:30pm",park:"40 spaces by the pavilion",go:"Northampton station is 15 minutes by taxi",own:"Bring your own cake. Outside food by arrangement",rain:"The veranda is covered"},
+ riverside:{finish:"Finish by 11:30pm",music:"Quiet on the balcony after 11pm",park:"20 spaces, with overflow at Mill Meadows",go:"Henley station is 6 minutes' walk",own:"Your own cake is fine. No confetti on the balcony",rain:"The clubroom has full-height windows over the river"},
+ stmarys:{finish:"Finish by 10:30pm",music:"Background music only after 9pm",park:"On-street pay and display",go:"The 8 bus from Temple Meads stops at the corner",own:"Bring your own food, cake and decorations",rain:"Garden parties move into the hall"}
+};
+function vBadges(v){const b=[["verified","Verified venue","Owner ID, premises licence and insurance checked by Vendo"]];
+  if(/within 1 hour/.test(v.reply)) b.push(["fast","Replies within an hour","Answers most messages within an hour"]);
+  if(v.rating>=4.8&&v.reviews>=50) b.push(["top","Top host","Rated 4.8 or more across 50+ bookings"]);
+  return b;}
+function badgesHTML(v,card){const b=vBadges(v).filter(x=>!card||x[0]!=="verified");
+  return b.length?`<div class="vb${card?" card-vb":""}">${b.map(([k,l,t])=>`<span class="vb-${k}" title="${t}">${l}</span>`).join("")}</div>`:"";}
+function goodToKnow(v){const i=VINFO[v.id]; if(!i) return "";
+  const rows=[["Finish time",i.finish],["Music",i.music],["Parking",i.park],["Getting there",i.go],["Your own cake and decorations",i.own],["If it rains",i.rain]].filter(r=>r[1]);
+  return `<div class="section"><h3>Good to know</h3><dl class="gtk">${rows.map(([k,x])=>`<div><dt>${k}</dt><dd>${x}</dd></div>`).join("")}</dl></div>`;}
+
+const ROOMS={plough:[
+  {name:"Long Room",seated:80,standing:140,hour:95,day:850,minH:4,note:"Beamed room above the bar with its own staircase"},
+  {name:"Walled garden",seated:120,standing:200,hour:120,day:1100,minH:4,note:"Marquee pitch and garden bar, May to September"},
+  {name:"The Snug",seated:20,standing:30,hour:35,day:280,minH:2,note:"Fireside room for small wakes, meetings and drinks"}]};
+const SETUP_KEY="vendo-host-setup";
+const hostSetup=(()=>{const d={listed:[true,true,false],pricing:{wk:0,fri:0,sat:0,sun:0,dec:0}};
+  try{const x=JSON.parse(localStorage.getItem(SETUP_KEY));if(x&&x.pricing&&Array.isArray(x.listed))return {listed:x.listed,pricing:{...d.pricing,...x.pricing}};}catch(e){}return d;})();
+function saveSetup(){try{localStorage.setItem(SETUP_KEY,JSON.stringify(hostSetup));}catch(e){}}
+function hostRooms(){const r=ROOMS.plough.filter((x,i)=>hostSetup.listed[i]);return r.length?r:[ROOMS.plough[0]];}
+function roomsOf(v){return v.id==="plough"?hostRooms():[{name:v.space,seated:v.seated,standing:v.standing,hour:v.hour,day:v.day,minH:v.minH}];}
+const BANDS={wk:"Monday to Thursday",fri:"Friday",sat:"Saturday",sun:"Sunday",dec:"December"};
+function bandOf(d){const w=d.getDay();return w===5?"fri":w===6?"sat":w===0?"sun":"wk";}
+function priceMult(v,d){if(v.id!=="plough"||!d) return 1;const p=hostSetup.pricing;let m=1+(p[bandOf(d)]||0)/100;if(d.getMonth()===11) m*=1+(p.dec||0)/100;return m;}
+function costFor(r,h,m){return (h>=8?r.day:Math.max(h,r.minH)*r.hour)*(m||1);}
+function pricingNote(v){if(v.id!=="plough") return "";const p=hostSetup.pricing;
+  const parts=Object.keys(BANDS).filter(k=>p[k]).map(k=>`${k==="wk"?"Mon–Thu":k==="dec"?"December":BANDS[k]+"s"} ${p[k]>0?"+":""}${p[k]}%`);
+  return parts.length?`<p class="small" style="text-align:left;margin-top:-10px">Prices change by day: ${parts.join(" · ")}</p>`:"";}
+
+function loadList(k){try{const x=JSON.parse(localStorage.getItem(k));return Array.isArray(x)?x:[];}catch(e){return [];}}
+function saveList(k,a){try{localStorage.setItem(k,JSON.stringify(a));}catch(e){}}
+let recent=loadList("vendo-recent").filter(id=>VENUES.some(v=>v.id===id));
+function addRecent(id){recent=[id,...recent.filter(x=>x!==id)].slice(0,8);saveList("vendo-recent",recent);}
+let waitlist=loadList("vendo-waitlist").filter(w=>w&&VENUES.some(v=>v.id===w.id));
+const onWait=(id,d)=>waitlist.some(w=>w.id===id&&w.date===isoDay(d));
+function toggleWait(id,d,room){const k=isoDay(d);
+  if(onWait(id,d)) waitlist=waitlist.filter(w=>!(w.id===id&&w.date===k)); else waitlist.push({id,date:k,room:room||""});
+  saveList("vendo-waitlist",waitlist);}
+function nearestFree(v,d,n,ri){const busy=x=>ri==null?!anyFree(v,x):bookedDay(v,x,ri), out=[];
+  for(let i=1;i<=60&&out.length<n;i++) for(const sgn of [1,-1]){const x=new Date(d);x.setDate(x.getDate()+sgn*i);if(x>=TODAY&&!busy(x)&&out.length<n) out.push(x);}
+  return out.sort((a,b)=>a-b);}
+
+/* Illustrated guest photos for reviews */
+const PP=[["#F4DDBA","#E07A5F","#3D405B"],["#DCE8F4","#5DA9E9","#17324D"],["#F7E2EA","#D12F6A","#4A2C3A"],["#E5EFE4","#3F8F5F","#2E3B2F"],["#F1E6D3","#C99A3B","#3B2F22"]];
+function partyPic(seed,uid){
+  const [wall,acc,dark]=PP[seed%PP.length], id="pp"+uid, cols=[dark,acc,"#7A6A5A","#4F6D8A",dark,"#8E5B6A"];
+  let bulbs="",bunt="",ppl="",bal="";
+  for(let i=0;i<=10;i++){const t=i/10,x=(160*t).toFixed(1),y=(12+18*t*(1-t)*4/1.6).toFixed(1);bulbs+=`<circle cx="${x}" cy="${y}" r="5" fill="#FFE7A3" opacity=".28"/><circle cx="${x}" cy="${y}" r="2.1" fill="#FFF1C4"/>`;}
+  for(let i=0;i<10;i++){const a=i/10,b=(i+1)/10,ya=36+12*a*(1-a)*4/1.6,yb=36+12*b*(1-b)*4/1.6,xm=(a+b)*80;
+    bunt+=`<path d="M${(a*160).toFixed(1)} ${ya.toFixed(1)}L${(b*160).toFixed(1)} ${yb.toFixed(1)}L${xm.toFixed(1)} ${((ya+yb)/2+10).toFixed(1)}Z" fill="${[acc,"#fff","#F2C14E"][(i+seed)%3]}" opacity=".95"/>`;}
+  for(let i=0;i<6;i++){const x=14+i*26+((seed*7+i*5)%9),h=58+((seed+i*3)%3)*4;
+    ppl+=`<path d="M${x-10} 100L${x-10} ${h+15}Q${x-10} ${h+8} ${x-3} ${h+8}L${x+3} ${h+8}Q${x+10} ${h+8} ${x+10} ${h+15}L${x+10} 100Z" fill="${cols[(i+seed)%cols.length]}"/><rect x="${x-2}" y="${h+3}" width="4" height="6" fill="${["#E8C4A0","#C68E65","#8D5A3B","#F1D3B6"][(i+seed)%4]}"/><circle cx="${x}" cy="${h}" r="5.6" fill="${["#E8C4A0","#C68E65","#8D5A3B","#F1D3B6"][(i+seed)%4]}"/>`;}
+  [[146,44,acc],[136,52,"#fff"],[152,56,"#F2C14E"]].forEach(([x,y,c])=>{bal+=`<path d="M${x} ${y+7}L${x-4} 86" stroke="#fff" stroke-width=".6" opacity=".7"/><ellipse cx="${x}" cy="${y}" rx="6" ry="7.2" fill="${c}"/>`;});
+  return `<svg viewBox="0 0 160 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="${id}" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#FFF4D6" stop-opacity=".25"/><stop offset="1" stop-color="${dark}" stop-opacity=".22"/></radialGradient></defs>
+    <rect width="160" height="120" fill="${wall}"/><rect y="96" width="160" height="24" fill="${dark}" opacity=".22"/>${bunt}${bulbs}${bal}${ppl}
+    <ellipse cx="38" cy="106" rx="22" ry="5.5" fill="#fff" opacity=".92"/><ellipse cx="124" cy="108" rx="20" ry="5" fill="#fff" opacity=".92"/><rect x="117" y="96" width="14" height="9" rx="1.5" fill="#fff"/><rect x="119" y="91" width="10" height="6" rx="1.5" fill="${acc}"/>
+    <rect width="160" height="120" fill="url(#${id})"/></svg>`;
+}
+function lightbox(inner,cap){
+  const d=document.createElement("div");d.className="lb";d.id="lb";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-label",cap);
+  const back=document.activeElement;
+  d.innerHTML=`<figure>${inner}<figcaption>${escH(cap)}</figcaption></figure><button type="button" class="close" aria-label="Close photo">×</button>`;
+  document.body.appendChild(d);
+  const close=()=>{d.remove();if(back&&back.focus)back.focus();};
+  d.addEventListener("click",e=>{if(e.target===d||e.target.closest(".close"))close();});
+  d.querySelector(".close").focus();
+}
+function miniCard(v,extra){return `<button type="button" class="mrow mini" data-open="${v.id}"><span class="mthumb">${scene(v,"m"+v.id)}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span>${extra||""}</span></button>`;}
 const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar","Licensed bar"],["outdoor","Outdoor space"]];
 
 /* ---------- State ---------- */
 const state = {view:"find", event:"All events", guests:"", region:"Anywhere", q:"", date:"", sort:"recommended", open:null, mode:"list", near:null, radius:50, f:{instant:false,stepfree:false,bar:false,outdoor:false,max:0}};
+state.plan={budget:1500,guests:60,hours:5,food:true,drinks:true};
 const saved=new Set((()=>{try{return JSON.parse(localStorage.getItem("vendo-saved")||"[]");}catch(e){return [];}})());
 function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
   const v=VENUES.find(x=>x.id===id);toast(saved.has(id)?`Saved ${v.name}. Find it in My account.`:`Removed ${v.name} from saved venues.`);
@@ -721,22 +1078,21 @@ const isoDay=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${
 const dayFromIso=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};
 function searchDay(){if(!state.date) return null;const d=dayFromIso(state.date);return isNaN(d)||d<TODAY?null:d;}
 const niceDay=d=>d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
-const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null};
+const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null, room:0, want:null};
 
 const app = document.getElementById("app");
 const modalRoot = document.getElementById("modal-root");
 
 const FEE=0.04; const full=n=>n*(1+FEE);
-function hireCost(v,h){return h>=8? v.day : Math.max(h,v.minH)*v.hour}
 
 /* ---------- Find view ---------- */
-function filtered(){
+function filtered(ignoreDate){
   let list = VENUES.filter(v=>{
     if(state.event!=="All events" && !v.suits.includes(state.event)) return false;
     const g=parseInt(state.guests,10); if(g && Math.max(v.seated,v.standing)<g) return false;
     if(state.region!=="Anywhere" && v.region!==state.region) return false;
     if(state.q){const q=state.q.toLowerCase(); if(!(v.name+v.place+v.kind).toLowerCase().includes(q)) return false;}
-    const sd=searchDay(); if(sd && bookedDay(v,sd)) return false;
+    const sd=ignoreDate?null:searchDay(); if(sd && !anyFree(v,sd)) return false;
     const f=state.f; if(f.instant&&!v.instant) return false;
     if(f.stepfree&&!v.flags.stepfree) return false; if(f.bar&&!v.flags.bar) return false; if(f.outdoor&&!v.flags.outdoor) return false;
     if(f.max&&full(v.hour)>f.max) return false;
@@ -770,6 +1126,7 @@ function renderFind(){
     <div class="mood-note" id="mood-note" hidden><i aria-hidden="true"></i><span></span></div>
   </section>
   <section class="wrap">
+    <div id="recent"></div>
     <div class="resultbar"><span class="count" id="count"></span>
       <div class="tools">
         <div class="seg" role="group" aria-label="Show venues as"><button type="button" id="v-list" aria-pressed="${state.mode==="list"}">List</button><button type="button" id="v-map" aria-pressed="${state.mode==="map"}">Map</button></div>
@@ -780,7 +1137,18 @@ function renderFind(){
           <option value="price">Lowest price</option><option value="capacity">Largest capacity</option></select></label>
       </div></div>
     <div class="grid" id="grid"></div>
+    <div id="booked-alt"></div>
     <div class="mapview" id="mapview" hidden><div id="map" role="region" aria-label="Map of venues"></div><div class="maplist" id="maplist"></div></div>
+    <div class="planner" aria-labelledby="pl-title">
+      <div class="pl-intro"><h2 id="pl-title">What can I get for my budget?</h2><p>Set a budget and guest numbers. We'll add up the room, food and drinks at each venue.</p></div>
+      <div class="pl-ctl">
+        <div class="ctl"><label for="pl-b">Total budget <span id="pl-b-v"></span></label><input id="pl-b" type="range" min="200" max="8000" step="50"></div>
+        <div class="ctl"><label for="pl-g">Guests <span id="pl-g-v"></span></label><input id="pl-g" type="range" min="10" max="300" step="5"></div>
+        <div class="ctl"><label for="pl-h">Hours <span id="pl-h-v"></span></label><input id="pl-h" type="range" min="2" max="12"></div>
+        <div class="pl-tog"><label class="addon" for="pl-f"><input type="checkbox" id="pl-f">Food</label><label class="addon" for="pl-d"><input type="checkbox" id="pl-d">Drinks</label></div>
+      </div>
+      <div id="pl-out" aria-live="polite"></div>
+    </div>
     <div class="how">
       <h2>How Vendo works</h2>
       <div class="steps">
@@ -795,6 +1163,9 @@ function renderFind(){
         <details><summary>Can we have a bar?</summary><p>Every listing says whether it has a licensed bar or if you can bring your own. Use the Licensed bar filter to find them.</p></details>
         <details><summary>What is a guest rating?</summary><p>Venues you've booked rate how your event went. A good rating helps you get a yes next time. You can reply to any rating.</p></details>
         <details><summary>Can I see the venue first?</summary><p>Yes. Message the venue to arrange a viewing before you book.</p></details>
+        <details><summary>What is Booking Protection?</summary><p>Your money is held until after your event. If a venue cancels, we'll help you find a similar room or refund you in full.</p></details>
+        <details><summary>Can I get Vendo on my phone?</summary><p>Yes. Open Vendo in your phone's browser and add it to your home screen. On iPhone, tap Share, then Add to Home Screen. On Android, tap Install.</p></details>
+        <details><summary>Are venues checked?</summary><p>Venues with a Verified badge have had the owner's ID, premises licence and insurance checked by Vendo.</p></details>
       </div>
     </div>
     <div class="band"><div><b>Own a pub, bar, club or hall?</b><span>List your venue on Vendo for free and pay only when you get a booking.</span></div><a class="btn primary" href="#list-your-venue">List your venue</a></div>
@@ -823,6 +1194,63 @@ function renderFind(){
   document.getElementById("v-map").addEventListener("click",()=>setMode("map"));
   app.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{state.event=c.dataset.ev;
     app.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));applyMood();drawGrid();}));
+  drawRecent(); bindPlanner();
+}
+function drawRecent(){const el=document.getElementById("recent"); if(!el) return;
+  const list=recent.map(id=>VENUES.find(v=>v.id===id)).filter(Boolean);
+  if(!list.length){el.innerHTML="";return;}
+  el.innerHTML=`<div class="recent"><div class="recent-h"><h2>Recently viewed</h2><button type="button" class="linkbtn" id="clear-recent">Clear</button></div>
+    <div class="recent-row">${list.map(v=>miniCard(v)).join("")}</div></div>`;
+  el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
+  document.getElementById("clear-recent").addEventListener("click",()=>{recent=[];saveList("vendo-recent",recent);drawRecent();});
+}
+function drawBookedAlt(list,sd){const el=document.getElementById("booked-alt"); if(!el) return;
+  const taken=sd&&state.mode!=="map"?filtered(true).filter(v=>!list.includes(v)):[];
+  if(!taken.length){el.innerHTML="";return;}
+  el.innerHTML=`<div class="altbox"><h2>Booked on ${niceDay(sd)}</h2><p>These match your search but are taken that day. Pick a nearby date, or open the venue to join its waiting list.</p>
+    <div class="altlist">${taken.map(v=>`<div class="altrow"><button type="button" class="linkbtn alt-name" data-open="${v.id}">${v.name}</button><span class="alt-where">${v.kind} · ${v.place.split(",").pop().trim()}</span>
+      <span class="alt-dates" aria-label="Nearest free dates at ${v.name}">${nearestFree(v,sd,3).map(d=>`<button type="button" class="dchip" data-open="${v.id}" data-date="${isoDay(d)}">${niceDay(d)}</button>`).join("")}</span></div>`).join("")}</div></div>`;
+  el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open,false,b.dataset.date?dayFromIso(b.dataset.date):sd)));
+}
+const FOOD_RE=/buffet|platter|food|breakfast|canap|pizza|ploughman/i, DRINK_RE=/prosecco|cocktail|spritz|drinks|jugs/i;
+function planCost(v,p){
+  const rs=roomsOf(v), fit=rs.map((r,i)=>[r,i]).filter(([r])=>Math.max(r.seated,r.standing)>=p.guests);
+  if(!fit.length) return null;
+  const [r,ri]=fit.reduce((a,b)=>costFor(b[0],p.hours)<costFor(a[0],p.hours)?b:a);
+  const hire=costFor(r,p.hours), parts=[`${rs.length>1?r.name:"Room"} ${gbp(full(hire))}`];
+  let viaVendo=hire, outside=0, est=false, fi=-1, di=-1;
+  if(p.food){fi=v.addons.findIndex(a=>a.head&&FOOD_RE.test(a.l));
+    if(fi>=0){const c=v.addons[fi].p*p.guests;viaVendo+=c;parts.push(`${v.addons[fi].l.toLowerCase()} ${gbp(full(c))}`);}
+    else {const c=12*p.guests;outside+=c;est=true;parts.push(`your own caterer, about ${gbp(c)}`);}}
+  if(p.drinks){di=v.addons.findIndex(a=>a.head&&DRINK_RE.test(a.l));
+    if(di>=0){const c=v.addons[di].p*p.guests;viaVendo+=c;parts.push(`${v.addons[di].l.toLowerCase()} ${gbp(full(c))}`);}
+    else if(v.flags.bar){parts.push("drinks from the bar on the night");}
+    else {const c=8*p.guests;outside+=c;est=true;parts.push(`your own drinks, about ${gbp(c)}`);}}
+  return {v,r,ri,fi,di,parts,est,total:full(viaVendo)+outside};
+}
+function bindPlanner(){const p=state.plan;
+  const show=()=>{document.getElementById("pl-b-v").textContent=gbp(p.budget);document.getElementById("pl-g-v").textContent=p.guests;document.getElementById("pl-h-v").textContent=p.hours+" hrs";};
+  [["pl-b","budget"],["pl-g","guests"],["pl-h","hours"]].forEach(([id,k])=>{const i=document.getElementById(id);i.value=p[k];i.addEventListener("input",()=>{p[k]=+i.value;show();drawPlanner();});});
+  [["pl-f","food"],["pl-d","drinks"]].forEach(([id,k])=>{const i=document.getElementById(id);i.checked=p[k];i.addEventListener("change",()=>{p[k]=i.checked;drawPlanner();});});
+  show(); drawPlanner();
+}
+function drawPlanner(){const p=state.plan, el=document.getElementById("pl-out"); if(!el) return;
+  const pool=VENUES.filter(v=>state.event==="All events"||v.suits.includes(state.event));
+  const res=pool.map(v=>planCost(v,p)).filter(Boolean);
+  const fit=res.filter(r=>r.total<=p.budget).sort((a,b)=>b.v.rating-a.v.rating||a.total-b.total);
+  const over=res.filter(r=>r.total>p.budget).sort((a,b)=>a.total-b.total).slice(0,Math.max(2,6-fit.length));
+  const small=pool.length-res.length;
+  el.innerHTML=`<p class="pl-sum">${fit.length?`${fit.length} of ${pool.length} venues fit ${gbp(p.budget)} for ${p.guests} guests`:`Nothing fits ${gbp(p.budget)} yet. These are the closest.`}${small?` <span style="color:var(--muted);font-weight:600">· ${small} too small for ${p.guests}</span>`:""}</p>
+    <div class="pl-list">${[...fit,...over].map(r=>{const ok=r.total<=p.budget;return `<button type="button" class="plrow${ok?"":" over"}" data-plan="${r.v.id}"><b>${r.v.name}${roomsOf(r.v).length>1?" · "+r.r.name:""}</b><span class="s">${r.parts.join(" + ")}</span><span class="tot">${gbp(r.total)}</span><span class="pill ${ok?"ok":"over"}">${ok?gbp(p.budget-r.total)+" spare":gbp(r.total-p.budget)+" over"}</span></button>`;}).join("")}</div>
+    <p class="small" style="text-align:left;margin-top:10px">Totals include Vendo's 4% fee on anything booked through Vendo. Costs for your own caterer or drinks are rough guides.</p>`;
+  el.querySelectorAll("[data-plan]").forEach(b=>b.addEventListener("click",()=>openFromPlan(b.dataset.plan)));
+}
+function openFromPlan(id){const v=VENUES.find(x=>x.id===id), r=planCost(v,state.plan); openVenue(id); if(!r) return;
+  const rr=roomsOf(v)[r.ri]; quote.room=r.ri; quote.hours=Math.min(12,Math.max(state.plan.hours,rr.minH));
+  quote.guests=Math.min(state.plan.guests,Math.max(rr.seated,rr.standing)); quote.addons={};
+  if(r.fi>=0) quote.addons[r.fi]=true; if(r.di>=0) quote.addons[r.di]=true;
+  if(quote.date&&bookedDay(v,quote.date,r.ri)){quote.want=quote.date;quote.date=null;}
+  drawBook();
 }
 function readSearch(){state.date=document.getElementById("sdate").value;state.q=document.getElementById("q").value.trim();state.guests=document.getElementById("guests").value;state.region=document.getElementById("region").value;}
 function setNear(n){
@@ -856,12 +1284,14 @@ function drawGrid(){
   document.getElementById("count").textContent = `${list.length} ${list.length===1?"venue":"venues"}${state.event!=="All events"?" for "+state.event.toLowerCase():""}${where}`;
   const empty=state.near?`<div class="empty">No venues within ${state.radius} miles. Try a bigger radius or another town.</div>`:`<div class="empty">No venues match those filters. Try fewer guests or a different region.</div>`;
   grid.hidden=state.mode==="map"; mv.hidden=state.mode!=="map";
+  drawBookedAlt(list,sd); drawPlanner();
   if(state.mode==="map"){drawMap(list,empty);return;}
   grid.innerHTML = list.length? list.map(v=>`<div class="cw">${heartBtn(v)}
     <button class="card" data-id="${v.id}" aria-label="View ${v.name}">
       <div class="pic">${scene(v,"c")}${v.instant?'<span class="badge instant">Instant book</span>':'<span class="badge">Request to book</span>'}<span class="kind">${v.kind}</span></div>
       <div class="row1"><h3>${v.name}</h3><span class="rating num">${v.rating.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${v.reviews})</span></span></div>
       <div class="where">${v.place}</div>
+      ${badgesHTML(v,true)}
       ${v.dist!=null?`<div class="dist">${milesText(v.dist)} away</div>`:""}
       <div class="meta"><span><b class="num">${v.seated}</b> seated</span><span><b class="num">${v.standing}</b> standing</span></div>
       <div class="price"><b class="num">${gbp(full(v.hour))}</b>/hour · <span class="num">${gbp(full(v.day))}</span> full day <span class="incl">incl. fees</span></div>
@@ -944,41 +1374,60 @@ const REVIEWS={
  stmarys:[["Daniel M.","Christening lunch","Oct 2026",5,"Affordable, clean and a lovely garden for the children."],["Joan H.","Wake","Sep 2026",5,"Margaret was gentle and helpful. The hall felt warm and peaceful."],["Kofi A.","Kids' birthday party","Jul 2026",4,"Great space for the price. Bring your own tablecloths to dress it up."]]
 };
 function reviewsHTML(v){
-  const list=REVIEWS[v.id]||[];
+  const list=REVIEWS[v.id]||[], seed=i=>v.id.length+i*3;
   return `<div class="section"><div class="rv-head"><h3>Reviews</h3><span>${starsHTML(v.rating)} <b>${v.rating.toFixed(1)}</b> from ${v.reviews} guests</span></div>
-    <div class="rv-list">${list.map(([n,e,d,st,t,reply])=>`<div class="rv"><div class="rv-t"><b>${n}</b>${starsHTML(st)}</div><span class="rv-s">${e} · ${d} · Booked on Vendo</span><p>${t}</p>${reply?`<div class="rv-reply"><b>Reply from ${v.host.split(",")[0]}</b><p>${reply}</p></div>`:""}</div>`).join("")}</div>
+    <div class="gphotos"><div class="gp-h"><b>Photos from guests</b><span>${list.length*7+5} photos</span></div>
+      <div class="gp-row">${list.map(([n,e],i)=>`<button type="button" class="gp" data-photo="${seed(i)}" data-cap="${escH(n+" · "+e)}" aria-label="Photo from ${escH(n)}, ${escH(e)}">${partyPic(seed(i),v.id+"g"+i)}<span>${e}</span></button>`).join("")}
+        <button type="button" class="gp more" id="add-photo"><span class="plus" aria-hidden="true">+</span><span>Add your photos</span></button></div></div>
+    <div class="rv-list">${list.map(([n,e,d,st,t,reply],i)=>`<div class="rv"><div class="rv-t"><b>${n}</b>${starsHTML(st)}</div><span class="rv-s">${e} · ${d} · Booked on Vendo</span><p>${t}</p>${i<2?`<button type="button" class="rv-photo" data-photo="${seed(i)}" data-cap="${escH(n+" · "+e)}" aria-label="Enlarge photo from ${escH(n)}">${partyPic(seed(i),v.id+"r"+i)}</button>`:""}${reply?`<div class="rv-reply"><b>Reply from ${v.host.split(",")[0]}</b><p>${reply}</p></div>`:""}</div>`).join("")}</div>
     <button type="button" class="linkbtn" id="all-reviews">Read all ${v.reviews} reviews</button></div>`;
 }
 
 /* ---------- Venue detail ---------- */
-function bookedDay(v,d){if(v.id===HOST_ID&&hostDayBusy(d))return true;return baseBooked(v,d);}
+function bookedDay(v,d,ri){if(v.id===HOST_ID){const rs=hostRooms(),r=rs[ri||0]||rs[0];return hostDayBusy(d,r.name)||(r.name==="Long Room"?baseBooked(v,d):altBooked(d,r.name));}return baseBooked(v,d);}
+function altBooked(d,name){const k=name.length*11+d.getDate()*7+d.getMonth()*3+d.getDay()*5;return k%9===0;}
+function anyFree(v,d){return roomsOf(v).some((r,i)=>!bookedDay(v,d,i));}
 function baseBooked(v,d){const k=v.id.length*7+d.getDate()*13+d.getMonth()*5+d.getDay()*3;return k%6===0 || (d.getDay()===6 && k%3===0);}
-function openVenue(id,fromRoute){
-  const v=VENUES.find(x=>x.id===id); if(!v) return; state.open=v;
+function openVenue(id,fromRoute,pref){
+  const v=VENUES.find(x=>x.id===id); if(!v) return;
+  const ae=document.activeElement; if(ae&&ae!==document.body&&!modalRoot.contains(ae)) state.opener=ae;
+  state.open=v; addRecent(id); document.title=`${v.name} · Vendo`;
   if(!fromRoute){try{history.replaceState(null,"","#venue-"+v.id);}catch(e){}}
-  const sd=searchDay(), free=sd&&!bookedDay(v,sd);
-  quote.month=free?new Date(sd.getFullYear(),sd.getMonth(),1):new Date(2026,11,1); quote.date=free?sd:null; quote.hours=Math.max(5,v.minH); quote.guests=Math.min(60,v.seated); quote.addons={}; quote.sent=null;
-  modalRoot.innerHTML = `<div class="overlay" id="ov"><article class="sheet" role="dialog" aria-modal="true" aria-label="${v.name}">
-    <div class="hero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close">×</button></div>
+  const sd=pref||searchDay(), rs=roomsOf(v);
+  let ri=0; if(sd){const i=rs.findIndex((r,k)=>!bookedDay(v,sd,k)); if(i>=0) ri=i;}
+  const free=!!sd&&!bookedDay(v,sd,ri);
+  quote.room=ri; quote.want=sd&&!free?sd:null; quote.date=free?sd:null;
+  quote.month=sd?new Date(sd.getFullYear(),sd.getMonth(),1):new Date(2026,11,1);
+  quote.hours=Math.max(5,rs[ri].minH); quote.guests=Math.min(60,rs[ri].seated); quote.addons={}; quote.sent=null;
+  modalRoot.innerHTML = `<div class="overlay" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="hero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close ${v.name}">×</button></div>
     <div class="sheet-body">
       <div>
-        <div class="vhead"><div class="eyebrow">${v.kind} · ${v.region}</div><h2>${v.name}</h2>
-          <div class="sub">${v.place} · <span class="rating num">${v.rating.toFixed(1)}</span> from ${v.reviews} reviews</div></div>
+        <div class="vhead"><div class="eyebrow">${v.kind} · ${v.region}</div><h2 id="sheet-title">${v.name}</h2>
+          <div class="sub">${v.place} · <span class="rating num">${v.rating.toFixed(1)}</span> from ${v.reviews} reviews</div>${badgesHTML(v)}</div>
         <div class="facts"><div><b>${v.seated}</b><span>seated</span></div><div><b>${v.standing}</b><span>standing</span></div><div><b>${gbp(full(v.hour))}</b><span>per hour, incl. fees</span></div><div><b>${v.minH} hrs</b><span>minimum hire</span></div></div>
         <div class="section"><h3>${v.space}</h3><p class="blurb">${v.blurb}</p><div class="suits">${v.suits.map(s=>`<span>${s}</span>`).join("")}</div></div>
         <div class="section"><h3>What's included</h3><ul class="features">${v.features.map(f=>`<li>${f}</li>`).join("")}</ul></div>
         <div class="section"><h3>House rules</h3><ul class="rules">${v.rules.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+        ${goodToKnow(v)}
         ${reviewsHTML(v)}
-        <div class="section"><div class="host"><div class="avatar">${v.hostShort}</div><div><b>Hosted by ${v.host}</b><div style="color:var(--muted);font-size:13.5px">${v.reply}</div></div></div></div>
+        <div class="section"><div class="host"><div class="avatar" aria-hidden="true">${v.hostShort}</div><div><b>Hosted by ${v.host}</b><div style="color:var(--muted);font-size:13.5px">${v.reply}</div></div></div></div>
+        <div class="section" id="similar"></div>
       </div>
-      <aside class="book" id="book"></aside>
-    </div></article></div>`;
+      <aside class="book" id="book" aria-label="Book ${v.name}"></aside>
+    </div></div></div>`;
   document.body.style.overflow="hidden";
   drawBook();
   const ov=document.getElementById("ov");
   ov.addEventListener("click",e=>{if(e.target===ov)closeVenue()});
+  ov.addEventListener("keydown",e=>{if(e.key!=="Tab"||document.getElementById("lb")) return;
+    const f=[...ov.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent!==null);
+    if(!f.length) return; const a=f[0], z=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();} else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}});
   document.getElementById("close").addEventListener("click",()=>closeVenue());
   document.getElementById("all-reviews").addEventListener("click",()=>toast(`Demo: this would show all ${v.reviews} reviews`));
+  document.getElementById("add-photo").addEventListener("click",()=>toast("After your event, you can add photos to your review."));
+  modalRoot.querySelectorAll("[data-photo]").forEach(b=>b.addEventListener("click",()=>lightbox(partyPic(+b.dataset.photo,"lb"),b.dataset.cap)));
   document.getElementById("share").addEventListener("click",()=>{
     const link=location.href.split("#")[0]+"#venue-"+v.id;
     const fallback=()=>toast("Copy this link: "+link,6000);
@@ -986,65 +1435,107 @@ function openVenue(id,fromRoute){
   });
   document.getElementById("close").focus();
 }
+function drawSimilar(){const el=document.getElementById("similar"); if(!el) return; const v=state.open, d=quote.want||quote.date;
+  const sc=x=>(x.type===v.type?3:0)+x.suits.filter(s=>v.suits.includes(s)).length+(x.region===v.region?2:0)-Math.abs(x.standing-v.standing)/120-Math.abs(x.hour-v.hour)/80;
+  let list=VENUES.filter(x=>x.id!==v.id).sort((a,b)=>sc(b)-sc(a)).slice(0,6);
+  if(quote.want) list.sort((a,b)=>anyFree(b,quote.want)-anyFree(a,quote.want));
+  list=list.slice(0,3);
+  el.innerHTML=`<h3>${quote.want?"Similar venues":"You might also like"}</h3><div class="simlist">${list.map(x=>{const f=d&&anyFree(x,d);return miniCard(x,d?`<span class="${f?"free":"taken"}">${f?"Free":"Booked"} on ${niceDay(d)}</span>`:"");}).join("")}</div>`;
+  el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open,false,d||undefined)));
+}
 function closeVenue(keepHash){
   modalRoot.innerHTML="";document.body.style.overflow="";state.open=null;
+  if(state.view==="find") drawRecent();
+  setTitle();
+  const o=state.opener; state.opener=null; if(o&&document.contains(o)) o.focus({preventScroll:true});
   if(!keepHash){try{history.replaceState(null,"","#"+(state.view==="find"?"find":state.view==="list"?"list-your-venue":state.view));}catch(e){}}
 }
-document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const c=document.getElementById("chat-root");if(c&&c.innerHTML){c.innerHTML="";return;}if(state.open)closeVenue();});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const lb=document.getElementById("lb");if(lb){lb.querySelector(".close").click();return;}const c=document.getElementById("chat-root");if(c&&c.innerHTML){c.innerHTML="";return;}if(state.open)closeVenue();});
 
 function drawBook(){
-  const v=state.open, el=document.getElementById("book");
+  const v=state.open, el=document.getElementById("book"), rs=roomsOf(v), r=rs[quote.room]||rs[0], multi=rs.length>1;
   if(quote.sent){
-    el.innerHTML=`<div class="done"><div class="tick">✓</div><h3>${v.instant?"Booking confirmed":"Request sent"}</h3>
-      <p style="margin:0;color:var(--muted)">${quote.date.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})} · ${quote.hours} hours · ${quote.guests} guests</p>
+    el.innerHTML=`<div class="done" role="status"><div class="tick" aria-hidden="true">✓</div><h3>${v.instant?"Booking confirmed":"Request sent"}</h3>
+      <p style="margin:0;color:var(--muted)">${quote.date.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})} · ${multi?r.name+" · ":""}${quote.hours} hours · ${quote.guests} guests</p>
       <span class="ref">${quote.sent}</span>
       <p style="margin:0">${v.instant?`${v.host} has your booking. Your deposit secures the date.`:`${v.host} will reply soon. ${v.reply}.`}</p>
-      <p class="small">Demo only. Nothing was sent or charged.</p>
+      <p class="small">Covered by Vendo Booking Protection. Demo only: nothing was sent or charged.</p>
       <button class="btn" id="again">Plan another event</button></div>`;
     document.getElementById("again").addEventListener("click",()=>{quote.sent=null;quote.date=null;drawBook();});
-    return;
+    drawSimilar(); return;
   }
   const m=quote.month, first=new Date(m.getFullYear(),m.getMonth(),1), days=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
   const offset=(first.getDay()+6)%7; let cells="";
   for(let i=0;i<offset;i++) cells+="<span></span>";
   for(let d=1;d<=days;d++){
-    const dt=new Date(m.getFullYear(),m.getMonth(),d), past=dt<TODAY, booked=!past&&bookedDay(v,dt);
-    const sel=quote.date&&dt.getTime()===quote.date.getTime();
-    cells+=`<button type="button" data-d="${d}" class="${past?"past":booked?"booked":""}" ${past||booked?"disabled":""} aria-pressed="${!!sel}" aria-label="${d} ${MONTHS_L[m.getMonth()]}${booked?", booked":""}">${d}</button>`;
+    const dt=new Date(m.getFullYear(),m.getMonth(),d), past=dt<TODAY, booked=!past&&bookedDay(v,dt,quote.room);
+    const sel=quote.date&&dt.getTime()===quote.date.getTime(), want=quote.want&&dt.getTime()===quote.want.getTime();
+    cells+=`<button type="button" data-d="${d}" class="${past?"past":booked?"booked":""}${want?" want":""}" ${past?"disabled":""} aria-pressed="${!!sel}" aria-label="${d} ${MONTHS_L[m.getMonth()]}${booked?", booked. Select to see other dates":""}">${d}</button>`;
   }
   const atMin = m.getFullYear()===TODAY.getFullYear() && m.getMonth()===TODAY.getMonth();
-  const hire=hireCost(v,quote.hours);
+  const maxG=Math.max(r.seated,r.standing); quote.guests=Math.min(quote.guests,maxG); quote.hours=Math.max(quote.hours,r.minH);
+  const mult=priceMult(v,quote.date), hire=costFor(r,quote.hours,mult);
   const add=v.addons.map((a,i)=>quote.addons[i]?(a.head?a.p*quote.guests:a.p):0).reduce((x,y)=>x+y,0);
-  const fee=(hire+add)*0.04, total=hire+add+fee, deposit=Math.min(250,Math.round(v.day*0.25/10)*10||100);
-  const maxG=Math.max(v.seated,v.standing);
+  const fee=(hire+add)*0.04, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100);
+  const pct=Math.round((mult-1)*100);
+  let want="";
+  if(quote.want){
+    const w=quote.want, alts=nearestFree(v,w,4,quote.room), others=rs.map((x,i)=>i).filter(i=>i!==quote.room&&!bookedDay(v,w,i)), on=onWait(v.id,w);
+    want=`<div class="wantbox" role="status"><b>${multi?r.name+" is":"This venue is"} booked on ${niceDay(w)}</b>
+      ${others.length?`<span>Free that day:</span><div class="dchips">${others.map(i=>`<button type="button" class="dchip" data-room-alt="${i}">${rs[i].name}</button>`).join("")}</div>`:""}
+      <span>Nearest free dates${multi?" for "+r.name:""}:</span><div class="dchips">${alts.map(d=>`<button type="button" class="dchip" data-alt="${isoDay(d)}">${niceDay(d)}</button>`).join("")}</div>
+      <button type="button" class="btn wait" id="wait" aria-pressed="${on}">${on?"✓ You're on the waiting list":"Tell me if it frees up"}</button>
+      <span class="small" style="text-align:left">${on?"We'll message you straight away if this date is cancelled.":"If the booking is cancelled, people on the waiting list hear first."}</span>
+      <button type="button" class="linkbtn" id="see-sim">See similar venues for ${niceDay(w)}</button></div>`;
+  }
   el.innerHTML=`
-    <div class="from"><span><b class="num">${gbp(full(v.hour))}</b> / hour</span><span style="font-size:13px;color:var(--muted)">Day rate ${gbp(full(v.day))}</span></div>
+    <div class="from"><span><b class="num">${gbp(full(r.hour))}</b> / hour</span><span style="font-size:13px;color:var(--muted)">Day rate ${gbp(full(r.day))}</span></div>
     <p class="small" style="text-align:left;margin-top:-10px">Prices include Vendo's 4% booking fee. No other charges.</p>
+    ${pricingNote(v)}
+    ${multi?`<div class="ctl"><span class="ctl-l" id="room-l" style="font-size:13px;font-weight:700">Choose a space</span><div class="seg roomseg" role="group" aria-labelledby="room-l">${rs.map((x,i)=>`<button type="button" data-room="${i}" aria-pressed="${i===quote.room}">${x.name}<small>Up to ${Math.max(x.seated,x.standing)} · ${gbp(full(x.hour))}/hr</small></button>`).join("")}</div></div>`:""}
     <div>
-      <div class="cal-head"><button type="button" id="prev" aria-label="Previous month" ${atMin?"disabled":""}>‹</button><span>${MONTHS_L[m.getMonth()]} ${m.getFullYear()}</span><button type="button" id="next" aria-label="Next month">›</button></div>
-      <div class="cal" style="margin-top:8px">${["M","T","W","T","F","S","S"].map(d=>`<span class="dow">${d}</span>`).join("")}${cells}</div>
-      <div class="legend" style="margin-top:6px"><span><s>12</s> already booked</span><span>Pick a free date</span></div>
+      <div class="cal-head"><button type="button" id="prev" aria-label="Previous month" ${atMin?"disabled":""}>‹</button><span aria-live="polite">${MONTHS_L[m.getMonth()]} ${m.getFullYear()}</span><button type="button" id="next" aria-label="Next month">›</button></div>
+      <div class="cal" style="margin-top:8px">${["M","T","W","T","F","S","S"].map(d=>`<span class="dow" aria-hidden="true">${d}</span>`).join("")}${cells}</div>
+      <div class="legend" style="margin-top:6px"><span><s>12</s> booked: tap for other dates</span><span>Pick a free date</span></div>
     </div>
-    <div class="ctl"><label for="hrs">Hours <span>${quote.hours} hrs${quote.hours>=8?" · day rate":""}</span></label><input id="hrs" type="range" min="${v.minH}" max="12" value="${quote.hours}"></div>
+    ${want}
+    <div class="ctl"><label for="hrs">Hours <span>${quote.hours} hrs${quote.hours>=8?" · day rate":""}</span></label><input id="hrs" type="range" min="${r.minH}" max="12" value="${quote.hours}"></div>
     <div class="ctl"><label for="gst">Guests <span>${quote.guests} of ${maxG} max</span></label><input id="gst" type="range" min="10" max="${maxG}" step="5" value="${quote.guests}"></div>
     <div class="addons">${v.addons.map((a,i)=>`<label class="addon" for="ad${i}"><input type="checkbox" id="ad${i}" data-i="${i}" ${quote.addons[i]?"checked":""}>${a.l}<span class="p">${gbp(a.p)}${a.head?" pp":""}</span></label>`).join("")}</div>
-    <div class="lines num">
-      <div><span>Venue hire${quote.hours>=8?" (day rate)":` (${quote.hours} × ${gbp(v.hour)})`}</span><span>${gbp(hire)}</span></div>
+    <div class="lines num" aria-live="polite">
+      <div><span>${multi?r.name:"Venue hire"}${quote.hours>=8?" (day rate)":` (${quote.hours} × ${gbp(r.hour*mult)})`}</span><span>${gbp(hire)}</span></div>
+      ${pct?`<div class="note"><span>${BANDS[bandOf(quote.date)]}${quote.date.getMonth()===11&&hostSetup.pricing.dec?" in December":""} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
       ${add?`<div><span>Extras</span><span>${gbp(add)}</span></div>`:""}
       <div><span>Booking fee (4%)</span><span>${gbp(fee)}</span></div>
       <div class="tot"><span>Total</span><span>${gbp(total)}</span></div>
       <div class="note"><span>Refundable damage deposit, held separately</span><span>${gbp(deposit)}</span></div>
     </div>
+    <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>
     <button class="cta" id="req" ${quote.date?"":"disabled"}>${quote.date?(v.instant?"Book ":"Request ")+quote.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"}):"Choose a date to continue"}</button>
     <p class="small">${v.instant?"Instant book: confirmed straight away.":"You won't be charged until "+v.host.split(",")[0]+" accepts."} Your guest rating, ★ ${guestScore().toFixed(1)}, is shared with the venue.</p>`;
-  el.querySelectorAll(".cal button").forEach(b=>b.addEventListener("click",()=>{quote.date=new Date(m.getFullYear(),m.getMonth(),+b.dataset.d);drawBook();}));
+  const setRoom=i=>{quote.room=i;const nr=rs[i];quote.hours=Math.max(quote.hours,nr.minH);
+    if(quote.date&&bookedDay(v,quote.date,i)){quote.want=quote.date;quote.date=null;}
+    else if(quote.want&&!bookedDay(v,quote.want,i)){quote.date=quote.want;quote.want=null;}
+    drawBook();};
+  el.querySelectorAll(".cal button").forEach(b=>b.addEventListener("click",()=>{const d=new Date(m.getFullYear(),m.getMonth(),+b.dataset.d);
+    if(b.classList.contains("booked")){quote.want=d;quote.date=null;}else{quote.date=d;quote.want=null;} drawBook();}));
+  el.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>setRoom(+b.dataset.room)));
+  el.querySelectorAll("[data-room-alt]").forEach(b=>b.addEventListener("click",()=>setRoom(+b.dataset.roomAlt)));
+  el.querySelectorAll("[data-alt]").forEach(b=>b.addEventListener("click",()=>{const d=dayFromIso(b.dataset.alt);quote.date=d;quote.want=null;quote.month=new Date(d.getFullYear(),d.getMonth(),1);drawBook();
+    const c=document.getElementById("req"); if(c) c.focus();}));
+  const wb=document.getElementById("wait");
+  if(wb) wb.addEventListener("click",()=>{toggleWait(v.id,quote.want,multi?r.name:"");const on=onWait(v.id,quote.want);
+    toast(on?`You're on the waiting list for ${niceDay(quote.want)}. Find it in My account.`:"Removed from the waiting list.");drawBook();document.getElementById("wait").focus();});
+  const ss=document.getElementById("see-sim"); if(ss) ss.addEventListener("click",()=>{const s=document.getElementById("similar");s.scrollIntoView({behavior:"smooth",block:"start"});const f=s.querySelector("button");if(f)f.focus({preventScroll:true});});
   document.getElementById("prev").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()-1,1);drawBook();});
   document.getElementById("next").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()+1,1);drawBook();});
   const hrs=document.getElementById("hrs"), gst=document.getElementById("gst");
   hrs.addEventListener("input",()=>{quote.hours=+hrs.value;drawBook();document.getElementById("hrs").focus();});
   gst.addEventListener("input",()=>{quote.guests=+gst.value;drawBook();document.getElementById("gst").focus();});
-  el.querySelectorAll(".addon input").forEach(c=>c.addEventListener("change",()=>{quote.addons[c.dataset.i]=c.checked;drawBook();}));
+  el.querySelectorAll(".addon input").forEach(c=>c.addEventListener("change",()=>{quote.addons[c.dataset.i]=c.checked;drawBook();document.getElementById(c.id).focus();}));
   document.getElementById("req").addEventListener("click",()=>{quote.sent="VND-"+(48213+quote.date.getDate()*17+v.id.length);drawBook();});
+  drawSimilar();
 }
 
 /* ---------- Host view ---------- */
@@ -1086,24 +1577,30 @@ const CAL_SEED=[
 ];
 let hcal=(()=>{try{const x=JSON.parse(localStorage.getItem(CAL_KEY));if(Array.isArray(x))return x;}catch(e){}return CAL_SEED.map(e=>({...e}));})();
 function saveCal(){try{localStorage.setItem(CAL_KEY,JSON.stringify(hcal));}catch(e){}}
-const calUI={month:new Date(TODAY.getFullYear(),TODAY.getMonth(),1),sel:new Date(TODAY),mode:"booking",
-  f:{name:"",event:"",from:"19:00",to:"23:00",guests:"",src:"Phone",price:"",note:"",reason:""}};
+const calUI={month:new Date(TODAY.getFullYear(),TODAY.getMonth(),1),sel:new Date(TODAY),mode:"booking",room:"all",
+  f:{room:"Long Room",name:"",event:"",from:"19:00",to:"23:00",guests:"",src:"Phone",price:"",note:"",reason:""}};
 const PAST_EVENTS=["Birthday party","Engagement party","Wake","Club dinner","Christening lunch","Anniversary party","Leaving do","Quiz night"];
 function fmtT(t){if(!t)return"";const[h,m]=t.split(":").map(Number);if(h===0&&m===0)return"midnight";if(h===12&&m===0)return"noon";
   return (h%12||12)+(m?":"+String(m).padStart(2,"0"):"")+(h<12?"am":"pm");}
 function manualOn(d){const k=isoD(d);return hcal.filter(e=>e.date===k);}
-function hostDayBusy(d){return manualOn(d).length>0||host.upcoming.some(u=>sameDay(u.d,d));}
+function entryRooms(e){return e.kind==="block"||e.room==="Whole venue"?null:[e.room||"Long Room"];}
+function upRooms(u){return /garden/i.test(u.x)?["Long Room","Walled garden"]:["Long Room"];}
+function hostDayBusy(d,room){room=room||"Long Room";
+  return manualOn(d).some(e=>{const r=entryRooms(e);return !r||r.includes(room);})||host.upcoming.some(u=>sameDay(u.d,d)&&upRooms(u).includes(room));}
 function dayEntries(d){
-  const out=host.upcoming.filter(u=>sameDay(u.d,d)).map(u=>({kind:"vendo",title:u.t,sub:u.x,price:u.v}));
-  if(!out.length&&baseBooked(VENUES[0],d)){const g=PAST_EVENTS[(d.getDate()+d.getMonth())%PAST_EVENTS.length];
-    out.push({kind:"vendo",title:g,sub:"Long Room · booked through Vendo",price:null});}
-  manualOn(d).forEach(e=>out.push(e.kind==="block"?{kind:"block",title:e.event||"Blocked",sub:"Not available to book",id:e.id}
-    :{kind:"manual",title:`${e.name}${e.event?" · "+e.event:""}`,sub:[e.from&&`${fmtT(e.from)}–${fmtT(e.to)}`,e.guests&&`${e.guests} guests`,e.src&&`Booked ${e.src==="Other"?"another way":e.src==="Phone"?"by phone":e.src==="Email"?"by email":"in person"}`].filter(Boolean).join(" · "),note:e.note,price:e.price,id:e.id}));
-  return out;
+  const out=host.upcoming.filter(u=>sameDay(u.d,d)).map(u=>({kind:"vendo",title:u.t,sub:u.x,price:u.v,rooms:upRooms(u)}));
+  hostRooms().forEach(r=>{if(out.some(e=>e.rooms&&e.rooms.includes(r.name))) return;
+    if(r.name==="Long Room"?baseBooked(VENUES[0],d):altBooked(d,r.name)){
+      out.push({kind:"vendo",title:PAST_EVENTS[(d.getDate()+d.getMonth()+r.name.length)%PAST_EVENTS.length],sub:`${r.name} · booked through Vendo`,price:null,rooms:[r.name]});}});
+  manualOn(d).forEach(e=>{const rooms=entryRooms(e);
+    out.push(e.kind==="block"?{kind:"block",title:e.event||"Blocked",sub:"Whole venue · not available to book",id:e.id,rooms:null}
+    :{kind:"manual",title:`${e.name}${e.event?" · "+e.event:""}`,sub:[rooms?rooms[0]:"Whole venue",e.from&&`${fmtT(e.from)}–${fmtT(e.to)}`,e.guests&&`${e.guests} guests`,e.src&&`Booked ${e.src==="Other"?"another way":e.src==="Phone"?"by phone":e.src==="Email"?"by email":"in person"}`].filter(Boolean).join(" · "),note:e.note,price:e.price,id:e.id,rooms});});
+  return calUI.room==="all"?out:out.filter(e=>!e.rooms||e.rooms.includes(calUI.room));
 }
 const SRC_LABEL={vendo:"Vendo",manual:"Your booking",block:"Blocked"};
 function drawHostCal(){
   const el=document.getElementById("hcal"); if(!el) return;
+  if(calUI.room!=="all"&&!hostRooms().some(r=>r.name===calUI.room)) calUI.room="all";
   const m=calUI.month, y=m.getFullYear(), mo=m.getMonth(), days=new Date(y,mo+1,0).getDate(), off=(new Date(y,mo,1).getDay()+6)%7;
   let cells="", nV=0,nM=0,nB=0,nFree=0;
   for(let i=0;i<off;i++) cells+="<span></span>";
@@ -1118,6 +1615,7 @@ function drawHostCal(){
   const atMin=y===TODAY.getFullYear()&&mo===TODAY.getMonth();
   el.innerHTML=`<div>
       <div class="cal-head"><button type="button" id="hc-prev" aria-label="Previous month" ${atMin?"disabled":""}>‹</button><span>${MONTHS_L[mo]} ${y}</span><button type="button" id="hc-next" aria-label="Next month">›</button></div>
+      ${hostRooms().length>1?`<div class="seg hroom" role="group" aria-label="Show bookings for">${["all",...hostRooms().map(r=>r.name)].map(r=>`<button type="button" data-room="${r}" aria-pressed="${calUI.room===r}">${r==="all"?"All rooms":r}</button>`).join("")}</div>`:""}
       <div class="hcal-sum"><span><b>${nV}</b> booked on Vendo</span><span><b>${nM}</b> taken by phone or in person</span><span><b>${nB}</b> blocked</span><span><b>${nFree}</b> days still free</span></div>
       <div class="hgrid">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<span class="dow">${d}</span>`).join("")}${cells}</div>
       <div class="hkey"><span><i style="background:var(--accent)"></i>Booked on Vendo</span><span><i style="background:var(--logo-door)"></i>Phone or in-person booking</span><span><i style="background:repeating-linear-gradient(135deg,var(--sunk) 0 3px,var(--surface) 3px 6px);box-shadow:inset 0 0 0 1px var(--line)"></i>Blocked</span></div>
@@ -1126,6 +1624,7 @@ function drawHostCal(){
   el.querySelectorAll(".hday").forEach(b=>b.addEventListener("click",()=>{calUI.sel=new Date(y,mo,+b.dataset.d);drawHostCal();
     if(matchMedia("(max-width:980px)").matches) document.getElementById("hside").scrollIntoView({behavior:"smooth",block:"start"});}));
   document.getElementById("hc-prev").addEventListener("click",()=>{calUI.month=new Date(y,mo-1,1);drawHostCal();});
+  el.querySelectorAll("[data-room]").forEach(b=>b.addEventListener("click",()=>{calUI.room=b.dataset.room;drawHostCal();}));
   document.getElementById("hc-next").addEventListener("click",()=>{calUI.month=new Date(y,mo+1,1);drawHostCal();});
   drawHostSide();
 }
@@ -1144,6 +1643,7 @@ function drawHostSide(){
         <div class="lf full"><label for="hc-name">Who's it for?</label><input id="hc-name" autocomplete="off" placeholder="e.g. Karen Lloyd" value="${escH(f.name)}"><span class="err" id="hc-err"></span></div>
         <div class="lf full"><label for="hc-event">Event (optional)</label><input id="hc-event" list="hc-events" placeholder="e.g. 60th birthday" value="${escH(f.event)}">
           <datalist id="hc-events">${["Birthday party","Wedding reception","Wake","Christening","Engagement party","Christmas party","Club dinner","Meeting"].map(x=>`<option value="${x}">`).join("")}</datalist></div>
+        <div class="lf full"><label for="hc-room">Room</label><select id="hc-room">${[...hostRooms().map(r=>r.name),"Whole venue"].map(x=>`<option ${x===f.room?"selected":""}>${x}</option>`).join("")}</select></div>
         <div class="lf"><label for="hc-from">From</label><input id="hc-from" type="time" value="${escH(f.from)}"></div>
         <div class="lf"><label for="hc-to">Until</label><input id="hc-to" type="time" value="${escH(f.to)}"></div>
         <div class="lf"><label for="hc-guests">Guests</label><input id="hc-guests" type="number" min="1" max="999" inputmode="numeric" value="${escH(f.guests)}"></div>
@@ -1163,13 +1663,13 @@ function drawHostSide(){
     toast(e&&e.kind==="block"?"Date unblocked. Guests can book it again.":"Booking removed. The date is open on Vendo again.");}));
   if(past) return;
   el.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{calUI.mode=b.dataset.mode;drawHostSide();}));
-  const bind={name:"hc-name",event:"hc-event",from:"hc-from",to:"hc-to",guests:"hc-guests",price:"hc-price",src:"hc-src",note:"hc-note",reason:"hc-reason"};
+  const bind={room:"hc-room",name:"hc-name",event:"hc-event",from:"hc-from",to:"hc-to",guests:"hc-guests",price:"hc-price",src:"hc-src",note:"hc-note",reason:"hc-reason"};
   Object.entries(bind).forEach(([k,id])=>{const i=document.getElementById(id);if(i)i.addEventListener("input",()=>{f[k]=i.value;const er=document.getElementById("hc-err");if(er)er.textContent="";});});
   document.getElementById("hc-form").addEventListener("submit",ev=>{ev.preventDefault();
     const id="m"+Date.now().toString(36), date=isoD(d);
     if(calUI.mode==="booking"){
       if(!f.name.trim()){document.getElementById("hc-err").textContent="Enter a name so you know who booked.";document.getElementById("hc-name").focus();return;}
-      hcal.push({id,date,kind:"booking",name:f.name.trim().slice(0,80),event:f.event.trim().slice(0,80),from:f.from,to:f.to,
+      hcal.push({id,date,kind:"booking",room:f.room,name:f.name.trim().slice(0,80),event:f.event.trim().slice(0,80),from:f.from,to:f.to,
         guests:Math.max(0,Math.min(999,parseInt(f.guests)||0))||"",src:f.src,price:Math.max(0,Math.round(+f.price||0))||"",note:f.note.trim().slice(0,300)});
       toast(`Added ${f.name.trim()} on ${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}. The date is now closed on your listing.`);
       Object.assign(f,{name:"",event:"",guests:"",price:"",note:""});
@@ -1185,7 +1685,7 @@ function upcomingRows(){
   const end=new Date(TODAY);end.setDate(end.getDate()+28);
   const rows=host.upcoming.filter(u=>u.d>=TODAY&&u.d<=end).map(u=>({d:u.d,t:u.t,x:u.x,v:u.v,tag:""}));
   hcal.filter(e=>e.kind==="booking").forEach(e=>{const d=new Date(e.date+"T00:00");if(d>=TODAY&&d<=end)
-    rows.push({d,t:e.name+(e.event?" · "+e.event:""),x:["Long Room",e.guests&&e.guests+" guests",e.from&&fmtT(e.from)+"–"+fmtT(e.to)].filter(Boolean).join(" · "),v:e.price||null,tag:e.src==="Phone"?"Phone":e.src==="In person"?"In person":e.src});});
+    rows.push({d,t:e.name+(e.event?" · "+e.event:""),x:[e.room||"Long Room",e.guests&&e.guests+" guests",e.from&&fmtT(e.from)+"–"+fmtT(e.to)].filter(Boolean).join(" · "),v:e.price||null,tag:e.src==="Phone"?"Phone":e.src==="In person"?"In person":e.src});});
   return rows.sort((a,b)=>a.d-b.d);
 }
 function drawUpcoming(){
@@ -1213,12 +1713,38 @@ function chartSVG(){
     ${bars}
     <text x="${lx}" y="${y(last)-8}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-text)" font-family="Nunito, sans-serif">${gbp(last)}</text></svg>`;
 }
+const HTABS=[["overview","Overview"],["calendar","Calendar"],["rooms","Rooms & prices"],["listing","Listing & insights"],["payouts","Payouts"]];
+host.tab="overview"; host.qdone={desc:1,gtk:1,cancel:1,reply:1,verify:1};
 function renderHost(){
-  const v=VENUES[0], open=host.enquiries.filter(e=>e.s==="new").length;
-  const pipeline=host.enquiries.filter(e=>e.s==="new").reduce((a,e)=>a+e.val,0);
+  const v=VENUES[0];
   app.innerHTML=`<section class="wrap dash">
-    <div class="dash-head"><div><div class="eyebrow">Host dashboard · November 2026</div><h1>Good afternoon, Jo.</h1><p>${v.name} · ${v.space}</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="preview">View your listing</button><button class="btn primary" id="addspace">Add another space</button></div></div>
+    <div class="dash-head"><div><div class="eyebrow">Host dashboard · November 2026</div><h1>Good afternoon, Jo.</h1><p>${v.name} · ${hostRooms().length} ${hostRooms().length===1?"room":"rooms"} on Vendo</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="preview">View your listing</button><button class="btn primary" id="addspace">Add another venue</button></div></div>
+    <div class="htabs" role="tablist" aria-label="Dashboard sections">${HTABS.map(([k,l])=>`<button type="button" role="tab" id="ht-${k}" data-ht="${k}" aria-controls="hbody" aria-selected="${host.tab===k}" tabindex="${host.tab===k?0:-1}">${l}</button>`).join("")}</div>
+    <div id="hbody" class="dash-body" role="tabpanel" tabindex="-1"></div>
+    </section>`;
+  const tabs=[...app.querySelectorAll("[data-ht]")];
+  tabs.forEach((b,i)=>{b.addEventListener("click",()=>goTab(b.dataset.ht));
+    b.addEventListener("keydown",e=>{const k={ArrowRight:1,ArrowLeft:-1}[e.key]; let n=null;
+      if(k) n=tabs[(i+k+tabs.length)%tabs.length]; else if(e.key==="Home") n=tabs[0]; else if(e.key==="End") n=tabs[tabs.length-1];
+      if(n){e.preventDefault();goTab(n.dataset.ht);n.focus();}});});
+  document.getElementById("preview").addEventListener("click",()=>openVenue("plough"));
+  document.getElementById("addspace").addEventListener("click",()=>{location.hash="list-your-venue";});
+  drawHostTab();
+}
+function goTab(k){host.tab=k;drawHostTab();}
+function drawHostTab(){
+  const b=document.getElementById("hbody"); if(!b) return;
+  app.querySelectorAll("[data-ht]").forEach(x=>{const on=x.dataset.ht===host.tab;x.setAttribute("aria-selected",on);x.tabIndex=on?0:-1;});
+  b.setAttribute("aria-labelledby","ht-"+host.tab);
+  ({overview:hostOverview,calendar:hostCalendarTab,rooms:hostRoomsTab,listing:hostListingTab,payouts:hostPayoutsTab})[host.tab](b);
+  b.querySelectorAll("[data-goto]").forEach(x=>x.addEventListener("click",()=>{goTab(x.dataset.goto);document.getElementById("ht-"+x.dataset.goto).focus();}));
+}
+function hostOverview(b){
+  const open=host.enquiries.filter(e=>e.s==="new").length;
+  const pipeline=host.enquiries.filter(e=>e.s==="new").reduce((a,e)=>a+e.val,0);
+  const sc=qScore(), todo=QUALITY.filter(q=>!qDone(q[0])).length;
+  b.innerHTML=`${todo?`<div class="nudge"><div><b>Your listing is ${sc}% complete</b><span>${todo} quick ${todo===1?"fix":"fixes"} could bring you more bookings.</span></div><button type="button" class="btn" data-goto="listing">Improve your listing</button></div>`:""}
     <div class="kpis">
       <div class="kpi"><span class="eyebrow">Room hire, Nov</span><span class="v">${gbp(6420)}</span><span class="d up">+444% on Nov 2025</span></div>
       <div class="kpi"><span class="eyebrow">Bar & food from events</span><span class="v">${gbp(4180)}</span><span class="d up">Avg £31 per guest</span></div>
@@ -1227,13 +1753,10 @@ function renderHost(){
     </div>
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>Room hire income</h2><span class="eyebrow">Last 12 months</span></div>
-        <div class="chart">${chartSVG()}</div>
+        <div class="chart" tabindex="0" role="region" aria-label="Room hire income chart">${chartSVG()}</div>
         <div class="key"><span><i style="background:var(--muted);opacity:.45"></i>Before listing</span><span><i style="background:var(--accent)"></i>With Vendo</span><span>Dashed line: old monthly average, ${gbp(1127)}</span></div></div>
       <div class="panel"><div class="panel-head"><h2>Enquiries</h2><span class="eyebrow" id="enq-count">${open} new</span></div><div class="enq" id="enq"></div></div>
     </div>
-    <div class="panel"><div class="panel-head"><h2>Your calendar</h2><span class="eyebrow">Vendo and your own bookings in one place</span></div>
-      <p style="margin:0;color:var(--muted);font-size:14px">Add bookings you take by phone or in person, or block dates you're closed. Vendo keeps your listing in step, so you're never double-booked.</p>
-      <div class="hcal" id="hcal"></div></div>
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>What could your space earn?</h2><span class="eyebrow">Estimator</span></div>
         <div class="est">
@@ -1252,14 +1775,125 @@ function renderHost(){
     </div>
     <div class="panel"><div class="panel-head"><h2>Rate your recent guests</h2><span class="eyebrow" id="rate-count"></span></div>
       <p style="margin:0;color:var(--muted);font-size:14px">Your ratings help other venues decide who to say yes to. Be fair and specific: guests can reply publicly.</p>
-      <div class="rate-list" id="rate"></div></div>
-    </section>`;
-  drawEnq(); drawEst(); drawRate(); drawHostCal(); drawUpcoming();
+      <div class="rate-list" id="rate"></div></div>`;
+  drawEnq(); drawEst(); drawRate(); drawUpcoming();
   ["et","ep","er","eg"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{
     if(id==="et"){host.est.type=e.target.value;const t=EST_TYPES[host.est.type];host.est.rate=t[1];document.getElementById("er").value=t[1];}
     host.est.per=+document.getElementById("ep").value;host.est.rate=+document.getElementById("er").value;host.est.guests=+document.getElementById("eg").value;drawEst();}));
-  document.getElementById("preview").addEventListener("click",()=>openVenue("plough"));
-  document.getElementById("addspace").addEventListener("click",()=>{location.hash="list-your-venue";});
+}
+function hostCalendarTab(b){
+  b.innerHTML=`<div class="panel"><div class="panel-head"><h2>Your calendar</h2><span class="eyebrow">Vendo and your own bookings in one place</span></div>
+      <p style="margin:0;color:var(--muted);font-size:14px">Add bookings you take by phone or in person, or block dates you're closed. Vendo keeps your listing in step, so you're never double-booked.</p>
+      <div class="hcal" id="hcal"></div></div>`;
+  drawHostCal();
+}
+function hostRoomsTab(b){
+  const p=hostSetup.pricing, lr=ROOMS.plough[0];
+  b.innerHTML=`<div class="panel"><div class="panel-head"><h2>Your rooms</h2><span class="eyebrow">${hostRooms().length} of ${ROOMS.plough.length} listed</span></div>
+      <p class="pnote">Each room has its own capacity, prices and calendar. Guests choose the room when they book.</p>
+      <div class="rooms">${ROOMS.plough.map((r,i)=>{const on=hostSetup.listed[i];return `<div class="roomcard${on?"":" off"}"><div class="t"><b>${r.name}</b><span class="pill ${on?"ok":"no"}">${on?"Listed":"Hidden"}</span></div>
+        <span class="s">${r.note}</span>
+        <div class="rm-facts"><span><b>${r.seated}</b> seated</span><span><b>${r.standing}</b> standing</span><span><b>${gbp(r.hour)}</b> an hour</span><span><b>${gbp(r.day)}</b> a day</span></div>
+        <div class="acts"><button type="button" class="btn" data-list="${i}">${on?"Hide from Vendo":"List on Vendo"}</button>${on?`<button type="button" class="btn" data-cal="${r.name}">View calendar</button>`:""}<button type="button" class="btn" data-edit="${i}">Edit</button></div></div>`;}).join("")}
+        <button type="button" class="roomcard add" id="add-room"><span class="plus" aria-hidden="true">+</span><b>Add a room</b><span class="s">A snug, a terrace, a second bar</span></button></div></div>
+    <div class="panel"><div class="panel-head"><h2>Price by day</h2><span class="eyebrow">All rooms</span></div>
+      <p class="pnote">Charge less on quiet nights and more when you're busy. Guests see the price for the day they pick.</p>
+      <div class="insight"><b>Tip:</b> Saturdays in December are 90% booked at pubs near you, and similar venues charge about 15% more on those nights. ${p.sat===15?"<b>Applied.</b>":`<button type="button" class="linkbtn" id="apply-tip">Add 15% to Saturdays</button>`}</div>
+      <div class="dp">${Object.entries(BANDS).map(([k,l])=>`<div class="dp-row"><label for="dp-${k}">${l}${k==="dec"?" <small>on top of the day's price</small>":""}</label>
+        <select id="dp-${k}" data-band="${k}">${[-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30].map(x=>`<option value="${x}" ${x===(p[k]||0)?"selected":""}>${x===0?"Standard price":(x>0?"+":"")+x+"%"}</option>`).join("")}</select>
+        <span class="dp-ex" id="dpx-${k}"></span></div>`).join("")}</div>
+      <p class="pnote" id="dp-sum" aria-live="polite"></p></div>`;
+  const drawDp=()=>{Object.keys(BANDS).forEach(k=>{const m=k==="dec"?(1+(p.sat||0)/100)*(1+(p.dec||0)/100):1+(p[k]||0)/100;
+      document.getElementById("dpx-"+k).textContent=`Long Room ${gbp(lr.hour*m)}/hr${k==="dec"?" on a Saturday":""}`;});
+    const lo=Math.min(...["wk","fri","sat","sun"].map(k=>p[k]||0)), hi=(1+(p.sat||0)/100)*(1+(p.dec||0)/100);
+    document.getElementById("dp-sum").textContent=`Guests pay from ${gbp(full(lr.hour*(1+lo/100)))} to ${gbp(full(lr.hour*Math.max(hi,1+Math.max(...["wk","fri","sat","sun"].map(k=>p[k]||0))/100)))} an hour for the Long Room, including Vendo's fee.`;};
+  drawDp();
+  b.querySelectorAll("[data-band]").forEach(sel=>sel.addEventListener("change",()=>{p[sel.dataset.band]=+sel.value;saveSetup();drawDp();toast("Prices saved. Guests see the new price straight away.");}));
+  b.querySelectorAll("[data-list]").forEach(x=>x.addEventListener("click",()=>{const i=+x.dataset.list;
+    if(hostSetup.listed[i]&&hostRooms().length===1){toast("Keep at least one room listed.");return;}
+    hostSetup.listed[i]=!hostSetup.listed[i];saveSetup();toast(`${ROOMS.plough[i].name} ${hostSetup.listed[i]?"is now listed on Vendo":"is hidden from guests"}.`);hostRoomsTab(b);}));
+  b.querySelectorAll("[data-cal]").forEach(x=>x.addEventListener("click",()=>{calUI.room=x.dataset.cal;goTab("calendar");document.getElementById("ht-calendar").focus();}));
+  b.querySelectorAll("[data-edit]").forEach(x=>x.addEventListener("click",()=>toast("Demo: this would open the room's photos, capacity and prices.")));
+  document.getElementById("add-room").addEventListener("click",()=>toast("Demo: this would open a short form for the new room."));
+  const t=document.getElementById("apply-tip"); if(t) t.addEventListener("click",()=>{p.sat=15;saveSetup();toast("Saturdays are now 15% above your standard price.");hostRoomsTab(b);});
+}
+const QUALITY=[
+ ["photos","Photos","6 of 10 photos. Listings with 10 or more get about twice as many enquiries.","Add 4 photos"],
+ ["desc","Description","Clear and detailed.",null],
+ ["access","Step-free and accessibility details","Say where the step-free entrance, accessible toilet and hearing loop are.","Add details"],
+ ["rooms","Rooms","List every space you hire out, each with its own price.","Add a room"],
+ ["pricing","Price by day","Lower midweek prices help fill quiet nights.","Set prices"],
+ ["cal","Calendar up to date","Phone and in-person bookings are on your calendar.","Open calendar"],
+ ["gtk","Good-to-know details","Finish time, parking and transport are filled in.",null],
+ ["cancel","Cancellation policy","Moderate: 50% refund up to 30 days before.",null],
+ ["reply","Reply time","You usually reply within an hour.",null],
+ ["verify","ID and licence checked","Your Verified venue badge is showing.",null],
+ ["gphotos","Guest photos","Ask recent guests to add photos to their reviews.","Ask guests"]];
+function qDone(k){if(k==="rooms") return hostRooms().length>1; if(k==="pricing") return Object.values(hostSetup.pricing).some(x=>x); if(k==="cal") return hcal.some(e=>e.kind==="booking"); return !!host.qdone[k];}
+function qScore(){return Math.round(QUALITY.filter(q=>qDone(q[0])).length/QUALITY.length*100);}
+const STATS={views:[212,236,251,240,268,281,276,302,318,296,311,334],me:{views:1284,saves:96,enq:31,book:11,reply:"38 min",avg:1140},peer:{views:910,saves:58,enq:17,book:5,reply:"3 hrs",avg:980},
+  searches:[["pub function room near Cheltenham",214],["wake venue Cotswolds",131],["wedding reception pub garden",118],["christening lunch Gloucestershire",76],["60th birthday party room",64]]};
+function hostListingTab(b){
+  const sc=qScore(), C=2*Math.PI*60, s=STATS, todo=QUALITY.filter(q=>!qDone(q[0])).length;
+  const rate=(a,c)=>Math.round(a/c*1000)/10;
+  const rows=[["Views",s.me.views.toLocaleString("en-GB"),s.peer.views.toLocaleString("en-GB")],["Saves",s.me.saves,s.peer.saves],["Views that enquire",rate(s.me.enq,s.me.views)+"%",rate(s.peer.enq,s.peer.views)+"%"],["Enquiries that book",Math.round(s.me.book/s.me.enq*100)+"%",Math.round(s.peer.book/s.peer.enq*100)+"%"],["Average reply time",s.me.reply,s.peer.reply],["Average booking",gbp(s.me.avg),gbp(s.peer.avg)]];
+  const W=600,H=160,L=36,R=12,T=12,B=24,max=400,n=s.views.length,x=i=>L+i*(W-L-R)/(n-1),y=v=>T+(H-T-B)*(1-v/max);
+  const line=s.views.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join("");
+  const area=line+`L${x(n-1).toFixed(1)} ${y(0)}L${x(0)} ${y(0)}Z`;
+  const grid=[0,100,200,300,400].map(t=>`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${t}</text>`).join("");
+  const xl=s.views.map((v,i)=>i%4===0||i===n-1?`<text x="${x(i)}" y="${H-6}" text-anchor="${i===n-1?"end":i===0?"start":"middle"}" font-size="11" fill="var(--muted)">${i===n-1?"This week":(n-1-i)+" weeks ago"}</text>`:"").join("");
+  const top=s.searches[0][1];
+  b.innerHTML=`<div class="panel"><div class="panel-head"><h2>Listing quality</h2><span class="eyebrow">${todo?todo+" to improve":"Complete"}</span></div>
+      <div class="qs"><div class="ring" role="img" aria-label="Listing ${sc}% complete"><svg viewBox="0 0 140 140" aria-hidden="true"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--sunk)" stroke-width="12"/><circle cx="70" cy="70" r="60" fill="none" stroke="${sc>=80?"var(--good)":"var(--accent)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(C*sc/100).toFixed(1)} ${C.toFixed(1)}"/></svg><b aria-hidden="true">${sc}%</b></div>
+        <div><p class="pnote" style="margin-bottom:6px">Complete listings show higher in search and get more enquiries.</p>
+        <ul class="qlist">${QUALITY.map(([k,l,d,f])=>{const ok=qDone(k);return `<li class="${ok?"ok":"todo"}"><span class="ic" aria-hidden="true">${ok?"✓":"!"}</span><div><b>${l}<span class="sr-only">${ok?" (done)":" (to do)"}</span></b><span class="s">${d}</span></div>${!ok&&f?`<button type="button" class="btn" data-fix="${k}">${f}</button>`:"<span></span>"}</li>`;}).join("")}</ul></div></div></div>
+    <div class="panel"><div class="panel-head"><h2>How your listing is doing</h2><span class="eyebrow">Last 30 days</span></div>
+      <div class="stats">
+        <div class="stat"><span class="eyebrow">Views</span><span class="v">${s.me.views.toLocaleString("en-GB")}</span><span class="d up">+18% on last month</span></div>
+        <div class="stat"><span class="eyebrow">Saves</span><span class="v">${s.me.saves}</span><span class="d up">+9% on last month</span></div>
+        <div class="stat"><span class="eyebrow">Enquiries</span><span class="v">${s.me.enq}</span><span class="d up">+24% on last month</span></div>
+        <div class="stat"><span class="eyebrow">Bookings</span><span class="v">${s.me.book}</span><span class="d up">3 more than last month</span></div></div>
+      <div class="cols">
+        <div><h3 class="sub-h">Weekly views</h3><div class="spark"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weekly listing views over the last 12 weeks, rising from 212 to 334">${grid}<path d="${area}" fill="var(--accent)" opacity=".12"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="${x(n-1)}" cy="${y(s.views[n-1])}" r="4" fill="var(--accent)"/><text x="${x(n-1)-8}" y="${y(s.views[n-1])-8}" text-anchor="end" font-size="12" font-weight="700" fill="var(--accent-text)">${s.views[n-1]}</text>${xl}</svg></div></div>
+        <div><h3 class="sub-h">Searches that found you</h3><ul class="searches">${s.searches.map(([q,c])=>`<li><span>${q}</span><span class="n">${c}</span><i aria-hidden="true"><b style="width:${c/top*100}%"></b></i></li>`).join("")}</ul></div></div>
+      <div><h3 class="sub-h">Compared with similar pubs within 20 miles</h3>
+        <div class="tablewrap"><table class="cmp"><thead><tr><th scope="col">Last 30 days</th><th scope="col">You</th><th scope="col">Similar venues</th></tr></thead><tbody>${rows.map(([l,a,p])=>`<tr><th scope="row" style="font-weight:600">${l}</th><td class="better">${a}</td><td>${p}</td></tr>`).join("")}</tbody></table></div></div>
+      <div class="insight"><b>Quiet nights:</b> Monday to Wednesday get 70% fewer enquiries than weekends. A lower midweek price could fill them. <button type="button" class="linkbtn" data-goto="rooms">Set prices by day</button></div></div>`;
+  const msg={photos:"Photos added. Your listing now has 10.",access:"Accessibility details added.",gphotos:"We've asked your last 5 guests to add photos to their reviews."};
+  b.querySelectorAll("[data-fix]").forEach(x=>x.addEventListener("click",()=>{const k=x.dataset.fix;
+    if(k==="rooms"||k==="pricing"){goTab("rooms");document.getElementById("ht-rooms").focus();return;}
+    if(k==="cal"){goTab("calendar");document.getElementById("ht-calendar").focus();return;}
+    host.qdone[k]=1;toast((msg[k]||"Done")+" (demo)");hostListingTab(b);}));
+}
+function addWorking(d,n){const x=new Date(d);while(n>0){x.setDate(x.getDate()+1);if(x.getDay()%6) n--;}return x;}
+const HOST_FEE=0.08;
+function payoutRows(){
+  const paid=[{ev:new Date(2026,10,7),t:"Amira Hassan · 30th birthday",g:1240},{ev:new Date(2026,9,31),t:"Daniel Okafor · Engagement party",g:1820},
+    {ev:new Date(2026,9,23),t:"Bourton Running Club · Awards night",g:1460},{ev:new Date(2026,9,17),t:"Priya & Sam Kaur · Wedding reception",g:5240}].map(r=>({...r,d:addWorking(r.ev,2),st:"Paid"}));
+  const up=host.upcoming.filter(u=>u.d>=TODAY).map((u,i)=>({ev:u.d,t:u.t,g:u.v,d:addWorking(u.d,2),st:i===0?"Scheduled":"Held until event"}));
+  return [...up,...paid].sort((a,b)=>b.d-a.d);
+}
+function hostPayoutsTab(b){
+  const rows=payoutRows(), net=g=>g*(1-HOST_FEE), sched=rows.filter(r=>r.st==="Scheduled").pop(), held=rows.filter(r=>r.st==="Held until event");
+  const year=host.revenue.slice(host.joined).reduce((a,x)=>a+x,0)*(1-HOST_FEE);
+  const day=d=>d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+  b.innerHTML=`<div class="ptiles">
+      <div class="stat"><span class="eyebrow">Paid out in 2026</span><span class="v">${gbp(year)}</span><span class="d" style="color:var(--muted)">Since you joined in March</span></div>
+      <div class="stat"><span class="eyebrow">Next payout</span><span class="v">${sched?gbp(net(sched.g)):"None"}</span><span class="d up">${sched?day(sched.d):""}</span></div>
+      <div class="stat"><span class="eyebrow">Held for upcoming events</span><span class="v">${gbp(held.reduce((a,r)=>a+net(r.g),0))}</span><span class="d" style="color:var(--muted)">${held.length} bookings</span></div></div>
+    <div class="panel"><div class="panel-head"><h2>Payouts</h2><button type="button" class="btn" id="statement">Download statement (CSV)</button></div>
+      <div class="bank"><span>Paid to your bank account ending 4417</span><button type="button" class="linkbtn" id="bank">Change bank account</button></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Payouts table"><table class="ptable"><caption class="sr-only">Payouts, newest first</caption>
+        <thead><tr><th scope="col">Payout date</th><th scope="col">Booking</th><th scope="col" class="r">Room hire</th><th scope="col" class="r">Vendo fee (8%)</th><th scope="col" class="r">You receive</th><th scope="col">Status</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td>${day(r.d)}</td><td>${r.t}<small>Event on ${day(r.ev)}</small></td><td class="r">${gbp(r.g)}</td><td class="r">−${gbp(r.g*HOST_FEE)}</td><td class="r"><b>${gbp(net(r.g))}</b></td><td><span class="pill ${r.st==="Paid"?"ok":r.st==="Scheduled"?"new":"held"}">${r.st}</span></td></tr>`).join("")}</tbody></table></div>
+      <p class="pnote">Payouts reach your bank 2 working days after each event. Vendo's 8% fee is on room hire only: money you take at the bar or for food on the night is all yours. VAT invoices for Vendo's fees are in each monthly statement.</p></div>`;
+  document.getElementById("bank").addEventListener("click",()=>toast("Demo: bank details are changed through Stripe's secure page, never on Vendo."));
+  document.getElementById("statement").addEventListener("click",()=>{
+    const q=x=>`"${String(x).replace(/"/g,'""')}"`;
+    const csv=[["Payout date","Booking","Event date","Room hire","Vendo fee","You receive","Status"],...rows.map(r=>[isoDay(r.d),r.t,isoDay(r.ev),r.g.toFixed(2),(r.g*HOST_FEE).toFixed(2),net(r.g).toFixed(2),r.st])].map(a=>a.map(q).join(",")).join("\r\n");
+    try{const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"})),a=document.createElement("a");a.href=url;a.download="vendo-statement-november-2026.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast("Statement downloaded.");}
+    catch(e){toast("Your browser blocked the download.");}
+  });
 }
 function drawEst(){
   const e=host.est, perHead=EST_TYPES[e.type][2];
@@ -1303,6 +1937,33 @@ function starsHTML(n){const k=Math.round(n);return `<span class="stars" aria-lab
 function tagCounts(){const c={};ME.reviews.forEach(r=>r.tags.forEach(t=>{if(GOOD_TAGS.includes(t))c[t]=(c[t]||0)+1;}));return GOOD_TAGS.filter(t=>c[t]).map(t=>[t,c[t]]).sort((a,b)=>b[1]-a[1]);}
 function tagHTML(tags){return `<div class="gtags">${tags.map(t=>`<span class="${BAD_TAGS.includes(t)?"bad":""}">${t}</span>`).join("")}</div>`;}
 
+const CHECKS={
+ wedding:[["12 months before","Book the venue",1],["9 months before","Book a photographer"],["9 months before","Send save-the-dates"],["6 months before","Choose the menu with the venue"],["6 months before","Book a band or DJ"],["3 months before","Send invitations"],["1 month before","Confirm final numbers with the venue"],["1 month before","Plan the seating"],["2 weeks before","Check the balance has been paid (it's taken automatically)"],["1 week before","Share parking and taxi details with guests"]],
+ birthday:[["2 months before","Book the venue",1],["6 weeks before","Send invitations"],["4 weeks before","Choose food and drink extras"],["4 weeks before","Order the cake"],["2 weeks before","Confirm numbers with the venue"],["2 weeks before","Sort music or a DJ"],["1 week before","Buy decorations"],["1 week before","Share parking and taxi details"],["On the day","Arrive early to set up"]],
+ wake:[["Straight away","Book the venue",1],["Straight away","Give the venue a rough guest number"],["2–3 days before","Choose the food"],["2–3 days before","Print the order of service"],["2–3 days before","Gather photos for a display"],["1–2 days before","Share the address and parking with the funeral director"],["1–2 days before","Confirm final numbers"],["On the day","Ask someone to greet guests"]],
+ christening:[["2 months before","Book the venue",1],["2 months before","Confirm the service time with the church"],["6 weeks before","Send invitations"],["4 weeks before","Order the cake"],["4 weeks before","Choose the food"],["2 weeks before","Ask for high chairs and a play corner"],["1 week before","Confirm numbers"],["Afterwards","Send thank-you cards"]],
+ other:[["Early on","Book the venue",1],["4 weeks before","Send invitations"],["2 weeks before","Confirm numbers"],["1 week before","Share parking and transport details"],["On the day","Arrive early to set up"]]};
+function checkType(e){e=e.toLowerCase();return /wedding/.test(e)?"wedding":/wake|funeral/.test(e)?"wake":/christening/.test(e)?"christening":/birthday|\d+(st|nd|rd|th)\b|party/.test(e)?"birthday":"other";}
+let checks=(()=>{try{const x=JSON.parse(localStorage.getItem("vendo-checklist"));return x&&typeof x==="object"?x:{};}catch(e){return {};}})();
+let checkSel=0;
+function drawChecklist(){const el=document.getElementById("checklist"); if(!el) return;
+  const b=ME.bookings[checkSel], key=b.id+"|"+b.event, items=CHECKS[checkType(b.event)];
+  const done=checks[key]||(checks[key]=items.map((x,i)=>x[2]?i:null).filter(x=>x!=null));
+  let last="";
+  el.innerHTML=`<div class="seg wrapseg" role="group" aria-label="Choose an event">${ME.bookings.map((x,i)=>`<button type="button" data-ck="${i}" aria-pressed="${i===checkSel}">${x.event}</button>`).join("")}</div>
+    <div class="ck-prog"><span><b>${done.length} of ${items.length}</b> done · ${b.venue}, ${b.date}</span><i aria-hidden="true"><b style="width:${done.length/items.length*100}%"></b></i></div>
+    <ul class="ck">${items.map(([w,t],i)=>{const h=w!==last?`<li class="ck-when" aria-hidden="true">${w}</li>`:"";last=w;return h+`<li><label><input type="checkbox" data-i="${i}" ${done.includes(i)?"checked":""}><span>${t}<span class="sr-only">, ${w}</span></span></label></li>`;}).join("")}</ul>`;
+  el.querySelectorAll("[data-ck]").forEach(x=>x.addEventListener("click",()=>{checkSel=+x.dataset.ck;drawChecklist();el.querySelector(`[data-ck="${checkSel}"]`).focus();}));
+  el.querySelectorAll(".ck input").forEach(c=>c.addEventListener("change",()=>{const i=+c.dataset.i, d=checks[key];
+    checks[key]=c.checked?[...new Set([...d,i])]:d.filter(x=>x!==i);
+    try{localStorage.setItem("vendo-checklist",JSON.stringify(checks));}catch(e){}
+    drawChecklist();el.querySelector(`.ck input[data-i="${i}"]`).focus();}));
+}
+function waitHTML(){if(!waitlist.length) return "";
+  return `<div class="panel"><div class="panel-head"><h2>Waiting lists</h2><span class="eyebrow">${waitlist.length} ${waitlist.length===1?"date":"dates"}</span></div>
+    <p class="pnote">We'll message you straight away if any of these dates frees up.</p>
+    <div>${waitlist.map((w,i)=>{const v=VENUES.find(x=>x.id===w.id);return `<div class="brow"><b>${v.name}</b><span class="pill new">Waiting</span>
+      <span>${niceDay(dayFromIso(w.date))}${w.room?" · "+w.room:""}</span><span class="brow-acts"><button class="linkbtn" data-open="${v.id}">View venue</button><button class="linkbtn" data-unwait="${i}">Leave list</button></span></div>`;}).join("")}</div></div>`;}
 function renderAccount(){
   const sc=guestScore(), n=ME.reviews.length;
   app.innerHTML=`<section class="wrap dash">
@@ -1323,6 +1984,8 @@ function renderAccount(){
         <div>${ME.bookings.map(b=>`<div class="brow"><b>${b.event}</b><span class="pill ${b.status==="Confirmed"?"ok":"new"}">${b.status}</span>
           <span>${b.venue} · ${b.date} · ${b.guests} guests</span><span class="brow-acts"><button class="linkbtn" data-chat="b-${b.id}">Message</button><button class="linkbtn" data-open="${b.id}">View venue</button></span></div>`).join("")}</div></div>
     </div>
+    <div class="panel"><div class="panel-head"><h2>Event checklist</h2><span class="eyebrow">Your to-do list</span></div><div id="checklist" style="display:grid;gap:12px"></div></div>
+    ${waitHTML()}
     <div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
       ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
       :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>
@@ -1336,6 +1999,8 @@ function renderAccount(){
   app.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
   app.querySelectorAll("[data-chat]").forEach(b=>b.addEventListener("click",()=>openChat(b.dataset.chat)));
   app.querySelectorAll("[data-reply]").forEach(b=>b.addEventListener("click",()=>toast(`Demo: reply to ${ME.reviews[b.dataset.reply].host.split(",")[0]}`)));
+  app.querySelectorAll("[data-unwait]").forEach(b=>b.addEventListener("click",()=>{waitlist.splice(+b.dataset.unwait,1);saveList("vendo-waitlist",waitlist);toast("Removed from the waiting list.");renderAccount();}));
+  drawChecklist();
 }
 
 function enqRating(q){
@@ -1376,6 +2041,7 @@ function renderList(){
       <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 8% only when a booking is paid.</p>
       <div class="lyv-cta"><a class="btn primary" href="#lyv-form">List your venue free</a><a class="btn" href="#lyv-earn">See what you could earn</a></div>
     </div>
+    <h2 class="sr-only">How it works</h2>
     <div class="steps">
       <div class="step"><span class="n">1</span><h3>Tell us about your space</h3><p>Fill in the short form below. We'll call within two working days.</p></div>
       <div class="step"><span class="n">2</span><h3>We build your listing</h3><p>A Vendo team member takes photos, sets prices and loads your calendar. You approve it.</p></div>
@@ -1555,7 +2221,36 @@ function drawContact(){
 }
 let tt; function toast(msg,ms){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,ms||2800);}
 
+/* ---------- Installable app ---------- */
+let deferredInstall=null;
+const installBtn=document.getElementById("install");
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
+if(isIOS&&!standalone) installBtn.hidden=false;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;installBtn.hidden=false;});
+addEventListener("appinstalled",()=>{installBtn.hidden=true;toast("Vendo is on your home screen.");});
+installBtn.addEventListener("click",async()=>{
+  if(!deferredInstall){toast("On iPhone, tap Share, then Add to Home Screen.",5000);return;}
+  deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall=null; installBtn.hidden=true;});
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))
+  addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+
+/* ---------- Structured data for search engines ---------- */
+// Venue markup is off while the listings are fictional. Turn it on once real venues are live, so
+// Google can show them with prices, location and (real) ratings.
+const PUBLISH_VENUE_SCHEMA=false;
+function addSchema(obj){const sc=document.createElement("script");sc.type="application/ld+json";sc.textContent=JSON.stringify(obj);document.head.appendChild(sc);}
+function venueSchema(v){const parts=v.place.split(",").map(x=>x.trim()), base=location.href.split("#")[0];
+  return {"@type":"EventVenue",name:v.name,description:v.blurb,url:base+"#venue-"+v.id,
+    address:{"@type":"PostalAddress",addressLocality:parts[0],addressRegion:parts[1]||v.region,addressCountry:"GB"},
+    geo:{"@type":"GeoCoordinates",latitude:v.lat,longitude:v.lng},maximumAttendeeCapacity:Math.max(v.seated,v.standing),
+    priceRange:`${gbp(full(v.hour))} an hour, ${gbp(full(v.day))} a day`,amenityFeature:v.features.map(f=>({"@type":"LocationFeatureSpecification",name:f,value:true})),
+    aggregateRating:{"@type":"AggregateRating",ratingValue:v.rating,reviewCount:v.reviews,bestRating:5}};}
+if(PUBLISH_VENUE_SCHEMA) addSchema({"@context":"https://schema.org","@type":"ItemList",name:"Venues on Vendo",itemListElement:VENUES.map((v,i)=>({"@type":"ListItem",position:i+1,item:venueSchema(v)}))});
 /* ---------- Routing ---------- */
+function setTitle(){const v=state.view;document.title=v==="host"?"Host dashboard · Vendo":v==="account"?"My account · Vendo":v==="list"?"List your venue · Vendo":PAGES[v]?`${PAGES[v].title} · Vendo`:"Vendo: book pubs, bars, halls and clubs for your event";}
+function focusMain(){const m=document.getElementById("app");m.tabIndex=-1;m.focus({preventScroll:true});}
+document.getElementById("skip").addEventListener("click",e=>{e.preventDefault();focusMain();});
 function route(){
   const h=location.hash;
   if(h.startsWith("#venue-")){
@@ -1574,10 +2269,11 @@ function route(){
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account");
   if(state.open) closeVenue(true);
   v==="host"?renderHost():v==="account"?renderAccount():v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
+  setTitle();
 }
-document.getElementById("tab-find").addEventListener("click",()=>{location.hash="find";route();window.scrollTo(0,0)});
-document.getElementById("tab-host").addEventListener("click",()=>{location.hash="host";route();window.scrollTo(0,0)});
-document.getElementById("tab-me").addEventListener("click",()=>{location.hash="account";route();window.scrollTo(0,0)});
+document.getElementById("tab-find").addEventListener("click",()=>{location.hash="find";route();window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-host").addEventListener("click",()=>{location.hash="host";route();window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-me").addEventListener("click",()=>{location.hash="account";route();window.scrollTo(0,0);focusMain();});
 window.addEventListener("hashchange",route);
 route();
 </script>
