@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Vendo: book function rooms, village halls, private bars and leisure centres for weddings, parties and events.">
+<meta name="description" content="Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. Every price includes all fees.">
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -16,7 +16,10 @@
 <meta property="og:site_name" content="Vendo">
 <meta property="og:title" content="Vendo: book pubs, bars, halls and clubs for your event">
 <meta property="og:description" content="Function rooms, village halls, private bars and nightclubs for weddings, parties and wakes. Book by date. Every price includes all fees.">
-<meta property="og:image" content="og-image.jpg">
+<meta property="og:image" content="https://vendohire.netlify.app/og-image.jpg">
+<meta property="og:url" content="https://vendohire.netlify.app/">
+<link rel="canonical" href="https://vendohire.netlify.app/">
+<meta name="robots" content="index,follow">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Vendo logo beside an illustrated barn with festoon lights, and the line: Every great party needs a room. Find yours.">
@@ -29,7 +32,8 @@
    "@type": "Organization",
    "@id": "#organization",
    "name": "Vendo",
-   "logo": "icon-512.png",
+   "url": "https://vendohire.netlify.app/",
+   "logo": "https://vendohire.netlify.app/icon-512.png",
    "description": "Vendo helps pubs, bars, village halls, clubs and leisure centres rent out their rooms for weddings, parties, wakes and christenings.",
    "areaServed": "GB"
   },
@@ -851,7 +855,6 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 
 <footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a><a href="#changelog" id="version">Version</a></nav><button type="button" class="install" id="install" hidden>Install the Vendo app</button><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 const TODAY = new Date(2026,10,11);
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -1361,11 +1364,23 @@ function drawGrid(){
 
 /* ---------- Map ---------- */
 let lmap=null, lpins=null, lnear=null; const pinById={};
+let leafletLoading=null;
+function loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(!leafletLoading) leafletLoading=new Promise((res,rej)=>{const sc=document.createElement("script");
+    sc.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js";sc.onload=res;sc.onerror=()=>{leafletLoading=null;sc.remove();rej();};document.head.appendChild(sc);});
+  return leafletLoading;
+}
 function ensureMap(){
   const el=document.getElementById("map"); if(!el) return null;
   if(lmap&&lmap.getContainer()===el) return lmap;
   if(lmap){try{lmap.remove();}catch(e){} lmap=null;}
-  if(!window.L){el.innerHTML='<div class="empty" style="margin:16px">The map could not load. Check your connection and refresh.</div>';return null;}
+  if(!window.L){
+    el.innerHTML='<div class="empty" style="margin:16px">Loading the map…</div>';
+    loadLeaflet().then(()=>{if(state.mode==="map"&&document.getElementById("map")===el) drawGrid();})
+      .catch(()=>{el.innerHTML='<div class="empty" style="margin:16px">The map could not load. Check your connection and try again.</div>';});
+    return null;}
+  el.innerHTML="";
   lmap=L.map(el,{scrollWheelZoom:false,zoomSnap:0.5,minZoom:5,maxZoom:16,attributionControl:true});
   lmap.attributionControl.setPrefix(false);
   lmap.createPane("land"); lmap.getPane("land").style.zIndex=150;
@@ -1451,8 +1466,8 @@ function baseBooked(v,d){const k=v.id.length*7+d.getDate()*13+d.getMonth()*5+d.g
 function openVenue(id,fromRoute,pref){
   const v=VENUES.find(x=>x.id===id); if(!v) return;
   const ae=document.activeElement; if(ae&&ae!==document.body&&!modalRoot.contains(ae)) state.opener=ae;
-  state.open=v; addRecent(id); document.title=`${v.name} · Vendo`;
-  if(!fromRoute){try{history.replaceState(null,"","#venue-"+v.id);}catch(e){}}
+  state.open=v; addRecent(id); setMeta("venue-"+v.id);
+  if(!fromRoute) setUrl("venue-"+v.id,false);
   const sd=pref||searchDay(), rs=roomsOf(v);
   let ri=0; if(sd){const i=rs.findIndex((r,k)=>!bookedDay(v,sd,k)); if(i>=0) ri=i;}
   const free=!!sd&&!bookedDay(v,sd,ri);
@@ -1504,7 +1519,7 @@ function closeVenue(keepHash){
   if(state.view==="find") drawRecent();
   setTitle();
   const o=state.opener; state.opener=null; if(o&&document.contains(o)) o.focus({preventScroll:true});
-  if(!keepHash){try{history.replaceState(null,"","#"+(state.view==="find"?"find":state.view==="list"?"list-your-venue":state.view==="book"&&checkout?"book-"+checkout.id:state.view));}catch(e){}}
+  if(!keepHash) setUrl(state.view==="list"?"list-your-venue":state.view==="book"&&checkout?"book-"+checkout.id:state.view==="notfound"?"find":state.view,false);
 }
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const lb=document.getElementById("lb");if(lb){lb.querySelector(".close").click();return;}const c=document.getElementById("chat-root");if(c&&c.innerHTML){c.innerHTML="";return;}if(state.open)closeVenue();});
 
@@ -1785,7 +1800,7 @@ function renderHost(){
       if(k) n=tabs[(i+k+tabs.length)%tabs.length]; else if(e.key==="Home") n=tabs[0]; else if(e.key==="End") n=tabs[tabs.length-1];
       if(n){e.preventDefault();goTab(n.dataset.ht);n.focus();}});});
   document.getElementById("preview").addEventListener("click",()=>openVenue("plough"));
-  document.getElementById("addspace").addEventListener("click",()=>{location.hash="list-your-venue";});
+  document.getElementById("addspace").addEventListener("click",()=>{nav("list-your-venue");window.scrollTo(0,0);});
   drawHostTab();
 }
 function goTab(k){host.tab=k;drawHostTab();}
@@ -2305,10 +2320,10 @@ let tt; function toast(msg,ms){const t=document.getElementById("toast");t.textCo
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
 const Plug=NATIVE?window.Capacitor.Plugins:{};
 // The public website address, used for links shared from inside the app. Set it once the site has its domain.
-const SITE_URL="";
+const SITE_URL="https://vendohire.netlify.app";
 function haptic(kind){if(!NATIVE||!Plug.Haptics) return;
   try{kind==="success"?Plug.Haptics.notification({type:"SUCCESS"}):Plug.Haptics.impact({style:kind==="medium"?"MEDIUM":"LIGHT"});}catch(e){}}
-function venueLink(id){const base=NATIVE?SITE_URL:location.href.split("#")[0];return base?base.replace(/#.*$/,"")+"#venue-"+id:"";}
+function venueLink(id){return NATIVE||PATH_MODE?SITE_URL+pathFor("venue-"+id):location.href.split("#")[0]+"#venue-"+id;}
 async function shareVenue(v){
   const link=venueLink(v.id), text=`${v.name} on Vendo: ${v.kind.toLowerCase()} in ${v.place}`;
   if(NATIVE&&Plug.Share){try{await Plug.Share.share({title:v.name,text,url:link||undefined,dialogTitle:"Share "+v.name});}catch(e){}return;}
@@ -2349,7 +2364,7 @@ function goCheckout(){
     start:prev?prev.start:(quote.hours>=8?"12:00":fromMin(Math.max(9*60,Math.min(19*60,24*60-quote.hours*60)))),
     event:ev,other:prev?prev.other:"",notes:prev?prev.notes:"",name:prev?prev.name:ME.name,email:prev?prev.email:ME.email,phone:prev?prev.phone:ME.phone,
     pay:"deposit",method:"card",agree:false,done:null};
-  saveCheckout(); closeVenue(true); location.hash="book-"+v.id;
+  saveCheckout(); closeVenue(true); nav("book-"+v.id);
 }
 function ckPrice(){
   const c=checkout, v=VENUES.find(x=>x.id===c.id), rs=roomsOf(v), r=rs[c.room]||rs[0], d=dayFromIso(c.date);
@@ -2492,12 +2507,12 @@ function renderBooked(){
         <dl class="cksum-dl" style="display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:14px">
           <dt style="color:var(--muted)">Occasion</dt><dd style="margin:0">${escH(d.label)}</dd><dt style="color:var(--muted)">Guests</dt><dd style="margin:0">${c.guests}</dd>
           <dt style="color:var(--muted)">Total</dt><dd style="margin:0">${gbp(d.total)}, including Vendo's fee</dd></dl>
-        <div class="ck-acts"><button type="button" class="btn primary" id="bk-msg">Message ${host1}</button><button type="button" class="btn" id="bk-ics">Add to calendar</button><a class="btn" href="#account">Your event checklist</a></div>
+        <div class="ck-acts"><button type="button" class="btn primary" id="bk-msg">Message ${host1}</button><button type="button" class="btn" id="bk-ics">Add to calendar</button><a class="btn" href="${PATH_MODE?"/account":"#account"}">Your event checklist</a></div>
         <button type="button" class="linkbtn" id="bk-more">Find another venue</button></div>
     </div>
     <p class="small" style="text-align:left">Demo only. Nothing was booked or charged.</p></section>`;
   document.getElementById("bk-msg").addEventListener("click",()=>openChat("b-"+v.id));
-  document.getElementById("bk-more").addEventListener("click",()=>{location.hash="find";});
+  document.getElementById("bk-more").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);});
   document.getElementById("bk-ics").addEventListener("click",()=>{
     const e=x=>String(x).replace(/[\\,;]/g,m=>"\\"+m), [h,m]=c.start.split(":").map(Number), st=new Date(p.d); st.setHours(h,m,0,0);
     const en=new Date(st.getTime()+c.hours*36e5), f=x=>`${x.getFullYear()}${pad2(x.getMonth()+1)}${pad2(x.getDate())}T${pad2(x.getHours())}${pad2(x.getMinutes())}00`;
@@ -2532,12 +2547,91 @@ function venueSchema(v){const parts=v.place.split(",").map(x=>x.trim()), base=lo
     priceRange:`${gbp(full(v.hour))} an hour, ${gbp(full(v.day))} a day`,amenityFeature:v.features.map(f=>({"@type":"LocationFeatureSpecification",name:f,value:true})),
     aggregateRating:{"@type":"AggregateRating",ratingValue:v.rating,reviewCount:v.reviews,bestRating:5}};}
 if(PUBLISH_VENUE_SCHEMA) addSchema({"@context":"https://schema.org","@type":"ItemList",name:"Venues on Vendo",itemListElement:VENUES.map((v,i)=>({"@type":"ListItem",position:i+1,item:venueSchema(v)}))});
+/* ---------- Page addresses ----------
+   On the website every page has a real address (/venues/the-plough-and-harrow, /about), so search engines
+   can list them. Inside the iPhone app and the demo artifact the same pages use # addresses instead. */
+const PATH_MODE=/^https?:$/.test(location.protocol)&&(location.hostname===new URL(SITE_URL).hostname||/\.netlify\.app$|^(localhost|127\.0\.0\.1)$/.test(location.hostname));
+// Venue pages stay out of search results while the listings are fictional. Set to true when real venues go live.
+const INDEX_VENUES=false;
+const slugOf=v=>v.name.toLowerCase().replace(/&/g,"and").replace(/['’]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",account:"/account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
+const isRouteKey=k=>k in PAGE_PATHS||/^(venue|book)-./.test(k);
+function pathFor(key){
+  const m=key.match(/^(venue|book)-(.+)$/);
+  if(m){const v=VENUES.find(x=>x.id===m[2]);return v?(m[1]==="venue"?"/venues/":"/book/")+slugOf(v):"/";}
+  return PAGE_PATHS[key]||"/";
+}
+function keyFromPath(path){
+  const p=path.replace(/\/index\.html$/,"/").replace(/\/+$/,"")||"/";
+  const m=p.match(/^\/(venues|book)\/([^/]+)$/);
+  if(m){const v=VENUES.find(x=>slugOf(x)===m[2]);return v?(m[1]==="venues"?"venue-":"book-")+v.id:"notfound";}
+  const k=Object.keys(PAGE_PATHS).find(k=>PAGE_PATHS[k]===p);
+  return k||"notfound";
+}
+function currentKey(){
+  const h=location.hash.slice(1);
+  if(PATH_MODE){if(h&&isRouteKey(h)){try{history.replaceState(null,"",pathFor(h));}catch(e){}return h;}return keyFromPath(location.pathname);}
+  return h&&(isRouteKey(h)||h==="notfound")?h:"find";
+}
+function setUrl(key,push){const u=PATH_MODE?pathFor(key):"#"+key;try{history[push?"pushState":"replaceState"](null,"",u);}catch(e){}}
+function nav(key){if(PATH_MODE){setUrl(key,true);route();}else location.hash=key;}
+function linkify(root){if(!PATH_MODE) return;
+  (root||document).querySelectorAll('a[href^="#"]').forEach(a=>{const k=a.getAttribute("href").slice(1);if(isRouteKey(k)) a.setAttribute("href",pathFor(k));});}
+document.addEventListener("click",e=>{
+  const a=e.target.closest&&e.target.closest("a[href]");
+  if(!a||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target) return;
+  const href=a.getAttribute("href"); let key=null;
+  if(href.startsWith("#")&&isRouteKey(href.slice(1))) key=href.slice(1);
+  else if(PATH_MODE&&/^\/(?!\/)/.test(href)) key=keyFromPath(href.split("#")[0]);
+  if(key&&key!=="notfound"){e.preventDefault();nav(key);window.scrollTo(0,0);}
+});
+
+/* ---------- Titles and descriptions for search engines and share cards ---------- */
+const META_DESC={
+  find:"Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. Every price includes all fees.",
+  "list-your-venue":"List your pub, bar, club, hall or leisure centre on Vendo for free. Fill your function room on quiet nights and pay a small fee only when you get a booking.",
+  about:"Vendo helps pubs, bars, village halls, clubs and leisure centres earn from rooms that sit empty most nights, and helps people find the right room for their event.",
+  contact:"Get in touch with Vendo about a booking, listing your venue, or partnering with us.",
+  terms:"The terms for booking and listing venues on Vendo.",
+  privacy:"How Vendo collects, uses and protects your personal information.",
+  cookies:"The cookies and local storage Vendo uses, and how to control them.",
+  changelog:"Every Vendo release, from the first demo to the latest version."};
+function metaFor(key){
+  const m=key.match(/^(venue|book)-(.+)$/), v=m&&VENUES.find(x=>x.id===m[2]);
+  if(v&&m[1]==="venue") return {title:`${v.name}, ${v.place.split(",")[0]}: ${v.kind.toLowerCase()} to hire · Vendo`,
+    desc:`${v.space} for up to ${Math.max(v.seated,v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, including all fees. Ideal for ${v.suits.slice(0,3).join(", ").toLowerCase()}.`,index:INDEX_VENUES};
+  if(v) return {title:`${checkout&&checkout.done?"Booked":"Book"}: ${v.name} · Vendo`,desc:META_DESC.find,index:false};
+  if(key==="host") return {title:"Host dashboard · Vendo",desc:META_DESC["list-your-venue"],index:false};
+  if(key==="account") return {title:"My account · Vendo",desc:META_DESC.find,index:false};
+  if(key==="list-your-venue") return {title:"List your venue for free · Vendo",desc:META_DESC[key],index:true};
+  if(key==="notfound") return {title:"Page not found · Vendo",desc:META_DESC.find,index:false};
+  if(PAGES[key]) return {title:`${PAGES[key].title} · Vendo`,desc:META_DESC[key]||META_DESC.find,index:true};
+  return {title:"Vendo: book pubs, bars, halls and clubs for your event",desc:META_DESC.find,index:true};
+}
+function headTag(sel,make){let el=document.head.querySelector(sel);if(!el){el=make();document.head.appendChild(el);}return el;}
+function setMeta(key){
+  const m=metaFor(key), url=SITE_URL+pathFor(key);
+  document.title=m.title;
+  const meta=(attr,name)=>headTag(`meta[${attr}="${name}"]`,()=>{const e=document.createElement("meta");e.setAttribute(attr,name);return e;});
+  meta("name","description").setAttribute("content",m.desc);
+  meta("name","robots").setAttribute("content",m.index?"index,follow":"noindex,follow");
+  meta("property","og:title").setAttribute("content",m.title.replace(/ · Vendo$/,""));
+  meta("property","og:description").setAttribute("content",m.desc);
+  meta("property","og:url").setAttribute("content",url);
+  headTag('link[rel="canonical"]',()=>{const e=document.createElement("link");e.rel="canonical";return e;}).setAttribute("href",url);
+}
+function renderNotFound(){
+  app.innerHTML=`<section class="wrap page"><div class="eyebrow">Vendo</div><h1>We couldn't find that page</h1>
+    <p class="lead">The link may be old, or the page may have moved.</p>
+    <div class="ck-acts"><a class="btn primary" href="#find">Find a venue</a><a class="btn" href="#list-your-venue">List your venue</a><a class="btn" href="#contact">Contact us</a></div></section>`;
+  linkify(app);
+}
 /* ---------- Routing ---------- */
-function setTitle(){const v=state.view;if(v==="book"&&checkout){const ve=VENUES.find(x=>x.id===checkout.id);document.title=`${checkout.done?"Booked":"Book"}: ${ve.name} · Vendo`;return;}document.title=v==="host"?"Host dashboard · Vendo":v==="account"?"My account · Vendo":v==="list"?"List your venue · Vendo":PAGES[v]?`${PAGES[v].title} · Vendo`:"Vendo: book pubs, bars, halls and clubs for your event";}
+function setTitle(){setMeta(state.open?"venue-"+state.open.id:state.view==="book"&&checkout?"book-"+checkout.id:state.view==="list"?"list-your-venue":state.view);}
 function focusMain(){const m=document.getElementById("app");m.tabIndex=-1;m.focus({preventScroll:true});}
 document.getElementById("skip").addEventListener("click",e=>{e.preventDefault();focusMain();});
 function route(){
-  const h=location.hash;
+  const key=currentKey(), h="#"+key;
   if(h.startsWith("#venue-")){
     const id=h.slice(7);
     if(VENUES.some(x=>x.id===id)){
@@ -2555,20 +2649,23 @@ function route(){
       ["tab-find","tab-host","tab-me"].forEach(t=>document.getElementById(t).setAttribute("aria-pressed",t==="tab-find"));
       renderCheckout(); setTitle(); window.scrollTo(0,0); return;
     }
-    location.replace("#venue-"+id); return;
+    setUrl("venue-"+id,false); route(); return;
   }
-  const pk=h.slice(1); const v=h==="#host"?"host":h==="#account"?"account":h==="#list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
+  if(key==="notfound"){state.view="notfound";if(state.open) closeVenue(true);["tab-find","tab-host","tab-me"].forEach(t=>document.getElementById(t).setAttribute("aria-pressed","false"));renderNotFound();setTitle();return;}
+  const pk=key; const v=pk==="host"?"host":pk==="account"?"account":pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
   document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account");
   if(state.open) closeVenue(true);
   v==="host"?renderHost():v==="account"?renderAccount():v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
-  setTitle();
+  linkify(app); setTitle();
 }
-document.getElementById("tab-find").addEventListener("click",()=>{location.hash="find";route();window.scrollTo(0,0);focusMain();});
-document.getElementById("tab-host").addEventListener("click",()=>{location.hash="host";route();window.scrollTo(0,0);focusMain();});
-document.getElementById("tab-me").addEventListener("click",()=>{location.hash="account";route();window.scrollTo(0,0);focusMain();});
-window.addEventListener("hashchange",route);
+document.getElementById("tab-find").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-host").addEventListener("click",()=>{nav("host");window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-me").addEventListener("click",()=>{nav("account");window.scrollTo(0,0);focusMain();});
+if(PATH_MODE) window.addEventListener("popstate",()=>{if(location.hash&&!isRouteKey(location.hash.slice(1))) return; route();});
+else window.addEventListener("hashchange",route);
+linkify(document.querySelector("header"));linkify(document.querySelector("footer"));
 route();
 </script>
 </body>

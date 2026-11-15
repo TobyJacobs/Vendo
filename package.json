@@ -4,6 +4,7 @@
   "private": true,
   "description": "Vendo: book pubs, bars, village halls, clubs and leisure centres for your event. Website and iPhone app.",
   "scripts": {
+    "site": "node scripts/build-site.mjs",
     "build": "node scripts/build-web.mjs",
     "ios": "npm run build && npx cap sync ios && npx cap open ios",
     "ios:sync": "npm run build && npx cap sync ios"

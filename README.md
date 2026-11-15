@@ -60,8 +60,25 @@ Every release has a git tag (`v0.9.0`, `v0.10.0` and so on), so any earlier vers
 
 ## Run it locally
 
-Open `index.html` in a browser.
+Open `index.html` in a browser for a quick look (pages use `#` addresses there).
 
-## Deploy
+To see the site as Netlify serves it, with real page addresses:
 
-The site is plain HTML, so any static host works. On Netlify, connect this repository with no build command and set the publish directory to the repository root.
+```bash
+npm run site
+python3 -m http.server 8000 --directory dist
+```
+
+Then open http://localhost:8000.
+
+## Deploy and search engines
+
+Netlify runs `node scripts/build-site.mjs` (set in `netlify.toml`) and publishes `dist/`. The build:
+
+- gives every page its own address and HTML file, such as `/about`, `/list-your-venue` and `/venues/the-plough-and-harrow`, each with its own title, description, canonical link, share card and readable content
+- writes `sitemap.xml` and `robots.txt`, and a `404.html` for unknown addresses
+- reads the site address from `SITE_URL` in `index.html` (currently https://vendohire.netlify.app)
+
+Venue pages are kept out of search results while the listings are fictional. When real venues go live, set `INDEX_VENUES` to `true` in `index.html` (and `PUBLISH_VENUE_SCHEMA` for rich results), then add the site to Google Search Console and submit the sitemap.
+
+Old `#` links (`#about`, `#venue-plough`) still work: the site moves them to the new address. The map library now loads only when someone opens the map, so pages load faster.

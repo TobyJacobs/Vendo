@@ -1,5 +1,5 @@
-# The website is plain HTML served from the repository root: no build step.
-# package.json is only for the iPhone app (Capacitor).
+# The website is built into dist/ by scripts/build-site.mjs: one HTML page per address,
+# plus sitemap.xml and robots.txt. The script needs no packages, only Node.
 [build]
-  publish = "."
-  command = ""
+  command = "node scripts/build-site.mjs"
+  publish = "dist"

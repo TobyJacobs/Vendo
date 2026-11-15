@@ -3,20 +3,46 @@
   "short_name": "Vendo",
   "description": "Book pubs, bars, village halls, clubs and leisure centres for weddings, parties, wakes and christenings.",
   "lang": "en-GB",
-  "start_url": "./#find",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F6F1E6",
   "theme_color": "#5DA9E9",
-  "categories": ["lifestyle", "travel", "business"],
+  "categories": [
+    "lifestyle",
+    "travel",
+    "business"
+  ],
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    {"name": "Find a venue", "url": "./#find"},
-    {"name": "Host dashboard", "url": "./#host"},
-    {"name": "My account", "url": "./#account"}
+    {
+      "name": "Find a venue",
+      "url": "/"
+    },
+    {
+      "name": "Host dashboard",
+      "url": "/for-venues/dashboard"
+    },
+    {
+      "name": "My account",
+      "url": "/account"
+    }
   ]
 }
