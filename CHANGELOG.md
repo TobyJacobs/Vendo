@@ -2,6 +2,15 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.11.0 · Booking page
+
+_2026-11-15_
+
+- A full booking page: event details, your details, payment and the venue's policies, with the price summary always in view.
+- Choose to pay a deposit or in full. Request-to-book venues take nothing until they accept.
+- A confirmation page with what happens next, a calendar file and a message button.
+- New bookings appear in your account with an event checklist, and on the venue's calendar.
+
 ## 0.10.0 · Version numbers
 
 _2026-11-15_

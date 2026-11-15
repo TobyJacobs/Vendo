@@ -17,6 +17,7 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 - **How it works, FAQs and footer pages**: About, Contact, Terms, Privacy and Cookies. Terms and Privacy are drafts and need a solicitor's review before launch.
 - **Link previews**: `og-image.jpg` shows when the site is shared.
 - **Help guests decide**: a budget planner that totals room, food and drinks at each venue; nearest free dates and similar venues when a date is taken; a waiting list for booked dates; recently viewed venues; and "Good to know" details (finish time, music, parking, transport, own cake, rainy-day plan) on every listing.
+- **Booking page**: a full checkout with event details, contact details, deposit or full payment, the venue's cancellation policy and house rules, then a confirmation page with what happens next and a calendar file. Payment is shown as a hand-off to Stripe; the demo asks for no card details.
 - **Event checklist**: guests get a to-do list for each booking, matched to the type of event.
 - **Venue tools**: the host dashboard has tabs for an overview, the calendar, rooms and prices (several rooms per venue, each with its own price and calendar, plus prices by day of the week), listing quality and insights (a completeness score, views, searches and a comparison with similar venues), and payouts (with a downloadable CSV statement).
 - **Trust**: Verified venue, Replies within an hour and Top host badges; Vendo Booking Protection on every booking; guest photos on reviews.
