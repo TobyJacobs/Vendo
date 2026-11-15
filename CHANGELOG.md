@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.13.1 · Cleaner page addresses
+
+_2026-11-15_
+
+- Page addresses like /about no longer redirect to /about/, so search engines see one address for each page.
+
 ## 0.13.0 · Search engines
 
 _2026-11-15_
