@@ -2,6 +2,15 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.13.0 · Search engines
+
+_2026-11-15_
+
+- Every page now has its own web address, like /about and /venues/the-plough-and-harrow, with its own title and description for Google and for link previews.
+- A sitemap and robots file help search engines find the right pages. Venue pages stay out of search results until the venues are real.
+- Pages load faster: the map only loads when you open it.
+- Old links with a # still work and move to the new address.
+
 ## 0.12.0 · iPhone app
 
 _2026-11-15_
