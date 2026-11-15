@@ -601,6 +601,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 #app:focus{outline:none}
 footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:13px}
 .rel-date{margin:-6px 0 0;color:var(--muted);font-size:13.5px}
+.native body{-webkit-tap-highlight-color:transparent}
+.native .btn,.native .cta,.native .chip,.native .fchip,.native .htabs button,.native .switch button{-webkit-user-select:none;user-select:none}
 .install{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* trust badges */
@@ -1127,7 +1129,7 @@ const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar"
 const state = {view:"find", event:"All events", guests:"", region:"Anywhere", q:"", date:"", sort:"recommended", open:null, mode:"list", near:null, radius:50, f:{instant:false,stepfree:false,bar:false,outdoor:false,max:0}};
 state.plan={budget:1500,guests:60,hours:5,food:true,drinks:true};
 const saved=new Set((()=>{try{return JSON.parse(localStorage.getItem("vendo-saved")||"[]");}catch(e){return [];}})());
-function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
+function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);haptic("light");try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
   const v=VENUES.find(x=>x.id===id);toast(saved.has(id)?`Saved ${v.name}. Find it in My account.`:`Removed ${v.name} from saved venues.`);
   document.querySelectorAll(`[data-heart="${id}"]`).forEach(b=>{b.setAttribute("aria-pressed",saved.has(id));b.setAttribute("aria-label",(saved.has(id)?"Remove ":"Save ")+v.name);});}
 function heartBtn(v,cls){return `<button type="button" class="heart ${cls||""}" data-heart="${v.id}" aria-pressed="${saved.has(v.id)}" aria-label="${saved.has(v.id)?"Remove":"Save"} ${v.name}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.4 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.5 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg></button>`;}
@@ -1486,11 +1488,7 @@ function openVenue(id,fromRoute,pref){
   document.getElementById("all-reviews").addEventListener("click",()=>toast(`Demo: this would show all ${v.reviews} reviews`));
   document.getElementById("add-photo").addEventListener("click",()=>toast("After your event, you can add photos to your review."));
   modalRoot.querySelectorAll("[data-photo]").forEach(b=>b.addEventListener("click",()=>lightbox(partyPic(+b.dataset.photo,"lb"),b.dataset.cap)));
-  document.getElementById("share").addEventListener("click",()=>{
-    const link=location.href.split("#")[0]+"#venue-"+v.id;
-    const fallback=()=>toast("Copy this link: "+link,6000);
-    try{navigator.clipboard.writeText(link).then(()=>toast("Link copied. Paste it into a message to share "+v.name+"."),fallback);}catch(e){fallback();}
-  });
+  document.getElementById("share").addEventListener("click",()=>shareVenue(v));
   document.getElementById("close").focus();
 }
 function drawSimilar(){const el=document.getElementById("similar"); if(!el) return; const v=state.open, d=quote.want||quote.date;
@@ -1949,8 +1947,7 @@ function hostPayoutsTab(b){
   document.getElementById("statement").addEventListener("click",()=>{
     const q=x=>`"${String(x).replace(/"/g,'""')}"`;
     const csv=[["Payout date","Booking","Event date","Room hire","Vendo fee","You receive","Status"],...rows.map(r=>[isoDay(r.d),r.t,isoDay(r.ev),r.g.toFixed(2),(r.g*HOST_FEE).toFixed(2),net(r.g).toFixed(2),r.st])].map(a=>a.map(q).join(",")).join("\r\n");
-    try{const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"})),a=document.createElement("a");a.href=url;a.download="vendo-statement-november-2026.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast("Statement downloaded.");}
-    catch(e){toast("Your browser blocked the download.");}
+    offerFile("vendo-statement-november-2026.csv",csv,"text/csv","Statement downloaded.");
   });
 }
 function drawEst(){
@@ -2248,6 +2245,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.12.0",d:"2026-11-15",t:"iPhone app",n:["Vendo is now an iPhone app as well as a website, built from the same code so every update reaches both.","In the app: a Vendo icon and launch screen, the iPhone share sheet for venues, a light tap feel when you save a venue or book, and calendar files and statements saved through the share sheet."]},
  {v:"0.11.0",d:"2026-11-15",t:"Booking page",n:["A full booking page: event details, your details, payment and the venue's policies, with the price summary always in view.","Choose to pay a deposit or in full. Request-to-book venues take nothing until they accept.","A confirmation page with what happens next, a calendar file and a message button.","New bookings appear in your account with an event checklist, and on the venue's calendar."]},
  {v:"0.10.0",d:"2026-11-15",t:"Version numbers",n:["Every release now has a version number, shown in the footer.","A What's new page lists every release."]},
  {v:"0.9.0",d:"2026-11-15",t:"Planning tools, venue tabs and trust",n:["Budget planner, nearest free dates, waiting lists, similar and recently viewed venues.","Good-to-know details on every listing and an event checklist for each booking.","Venue dashboard tabs: several rooms per venue, prices by day, listing score, insights and payouts.","Verified, fast-reply and top host badges, Booking Protection and guest photos on reviews.","Installable app, structured data for search engines and accessibility fixes."]},
@@ -2301,6 +2299,37 @@ function drawContact(){
 }
 let tt; function toast(msg,ms){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,ms||2800);}
 
+/* ---------- iPhone app (Capacitor) ----------
+   The same page runs inside the iPhone app. These helpers use native features there
+   and fall back to the browser on the website. */
+const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+const Plug=NATIVE?window.Capacitor.Plugins:{};
+// The public website address, used for links shared from inside the app. Set it once the site has its domain.
+const SITE_URL="";
+function haptic(kind){if(!NATIVE||!Plug.Haptics) return;
+  try{kind==="success"?Plug.Haptics.notification({type:"SUCCESS"}):Plug.Haptics.impact({style:kind==="medium"?"MEDIUM":"LIGHT"});}catch(e){}}
+function venueLink(id){const base=NATIVE?SITE_URL:location.href.split("#")[0];return base?base.replace(/#.*$/,"")+"#venue-"+id:"";}
+async function shareVenue(v){
+  const link=venueLink(v.id), text=`${v.name} on Vendo: ${v.kind.toLowerCase()} in ${v.place}`;
+  if(NATIVE&&Plug.Share){try{await Plug.Share.share({title:v.name,text,url:link||undefined,dialogTitle:"Share "+v.name});}catch(e){}return;}
+  if(navigator.share&&matchMedia("(pointer:coarse)").matches){try{await navigator.share({title:v.name,text,url:link});}catch(e){}return;}
+  const fallback=()=>toast("Copy this link: "+link,6000);
+  try{navigator.clipboard.writeText(link).then(()=>toast("Link copied. Paste it into a message to share "+v.name+"."),fallback);}catch(e){fallback();}
+}
+// Hands the person a file: a download on the website, the share sheet (Save to Files, Calendar, Mail) in the app.
+async function offerFile(name,text,mime,doneMsg){
+  if(NATIVE&&Plug.Filesystem&&Plug.Share){
+    try{const r=await Plug.Filesystem.writeFile({path:name,data:text,directory:"CACHE",encoding:"utf8"});await Plug.Share.share({title:name,files:[r.uri]});}
+    catch(e){if(!/cancel/i.test(String(e&&e.message)))toast("Couldn't open the share sheet.");}
+    return;}
+  try{const url=URL.createObjectURL(new Blob([text],{type:mime})),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast(doneMsg);}
+  catch(e){toast("Your browser blocked the download.");}
+}
+if(NATIVE){
+  document.documentElement.classList.add("native");
+  try{Plug.StatusBar&&Plug.StatusBar.setStyle({style:"LIGHT"});}catch(e){}
+  addEventListener("load",()=>{setTimeout(()=>{try{Plug.SplashScreen&&Plug.SplashScreen.hide({fadeOutDuration:250});}catch(e){}},150);});
+}
 /* ---------- Booking page (checkout) ---------- */
 const POLICIES={flexible:["Flexible","Full refund up to 14 days before your event, then 50% up to 48 hours before."],
   moderate:["Moderate","Full refund up to 30 days before your event, then 50% up to 14 days before."],
@@ -2441,7 +2470,7 @@ function submitCheckout(maxG){
   const tk="b-"+v.id; if(!THREADS[tk]) THREADS[tk]={title:v.host,sub:`${v.name} · ${label} · ${niceDay(p.d)}`,side:"guest",msgs:[]};
   THREADS[tk].msgs.push(["them",v.instant?`Hi ${c.name.split(" ")[0]}, thanks for booking! We're looking forward to your ${label.toLowerCase()}. Message us any time with questions.`:`Hi ${c.name.split(" ")[0]}, thanks for your request. We'll check the date and reply soon.`,"Just now"]);
   if(v.id===HOST_ID&&v.instant){host.upcoming.push({d:p.d,t:`${c.name.trim()} · ${label}`,x:`${p.r.name} · ${c.guests} guests · ${fmtT(c.start)}–${fmtT(p.end)}`,v:Math.round(p.hire+p.add)});host.upcoming.sort((a,b)=>a.d-b.d);}
-  quote.date=null; saveCheckout(); renderBooked(); window.scrollTo(0,0); focusMain();
+  quote.date=null; saveCheckout(); haptic("success"); renderBooked(); window.scrollTo(0,0); focusMain();
 }
 function renderBooked(){
   const c=checkout, d=c.done, p=ckPrice(), v=p.v, host1=v.host.split(",")[0];
@@ -2474,8 +2503,7 @@ function renderBooked(){
     const en=new Date(st.getTime()+c.hours*36e5), f=x=>`${x.getFullYear()}${pad2(x.getMonth()+1)}${pad2(x.getDate())}T${pad2(x.getHours())}${pad2(x.getMinutes())}00`;
     const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Vendo//Booking//EN","BEGIN:VEVENT",`UID:${d.ref}@vendo`,`DTSTAMP:${f(new Date())}`,`DTSTART:${f(st)}`,`DTEND:${f(en)}`,
       `SUMMARY:${e(d.label+" at "+v.name)}`,`LOCATION:${e(v.name+", "+v.place)}`,`DESCRIPTION:${e("Vendo booking "+d.ref)}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
-    try{const url=URL.createObjectURL(new Blob([ics],{type:"text/calendar"})),a=document.createElement("a");a.href=url;a.download=`vendo-${d.ref}.ics`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast("Calendar file downloaded. Open it to add the event.");}
-    catch(err){toast("Your browser blocked the download.");}
+    offerFile(`vendo-${d.ref}.ics`,ics,"text/calendar","Calendar file downloaded. Open it to add the event.");
   });
 }
 /* ---------- Installable app ---------- */
@@ -2483,7 +2511,7 @@ let deferredInstall=null;
 const installBtn=document.getElementById("install");
 const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
 const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
-if(isIOS&&!standalone) installBtn.hidden=false;
+if(isIOS&&!standalone&&!NATIVE) installBtn.hidden=false;
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;installBtn.hidden=false;});
 addEventListener("appinstalled",()=>{installBtn.hidden=true;toast("Vendo is on your home screen.");});
 installBtn.addEventListener("click",async()=>{

@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.12.0 · iPhone app
+
+_2026-11-15_
+
+- Vendo is now an iPhone app as well as a website, built from the same code so every update reaches both.
+- In the app: a Vendo icon and launch screen, the iPhone share sheet for venues, a light tap feel when you save a venue or book, and calendar files and statements saved through the share sheet.
+
 ## 0.11.0 · Booking page
 
 _2026-11-15_

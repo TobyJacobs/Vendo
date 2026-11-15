@@ -28,6 +28,24 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 
 All venues, hosts, bookings and figures are fictional examples.
 
+## iPhone app
+
+The iPhone app wraps this same website with [Capacitor](https://capacitorjs.com), so every website change reaches the app too. The Xcode project is in `ios/`.
+
+Needs a Mac with Xcode and Node.js. To run it:
+
+1. `npm install` (first time only).
+2. `npm run ios`. This copies the website into the app, then opens Xcode.
+3. In Xcode, pick an iPhone simulator (or your own iPhone) and press ⌘R.
+
+After changing the website, run `npm run ios:sync` to copy the changes into the app.
+
+- **App icon and launch screen:** made from `assets/icon-only.png`, `assets/splash.png` and `assets/splash-dark.png`. After changing them, run `npx @capacitor/assets generate --ios`.
+- **Native features:** the share sheet, haptics, the status bar and the launch screen. They are used from `index.html` only when it runs inside the app, so the website is unchanged.
+- **Bundle ID:** `uk.footprintgroup.vendo` (in `capacitor.config.json`). Change it before the first App Store upload if you want a different one.
+- **Shared links:** set `SITE_URL` in `index.html` to the website's address, so links shared from inside the app point to the website.
+- **App Store:** you need an Apple Developer account (£79 a year). Then, in Xcode, set your team under Signing & Capabilities, choose Product › Archive, and upload to App Store Connect.
+
 ## Versions
 
 The site uses version numbers: 0.x while Vendo is a demo, and 1.0.0 at the public launch. The current version shows in the footer, and the What's new page (`#changelog`) lists every release. [CHANGELOG.md](CHANGELOG.md) has the same list.
