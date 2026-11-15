@@ -66,10 +66,10 @@ To see the site as Netlify serves it, with real page addresses:
 
 ```bash
 npm run site
-python3 -m http.server 8000 --directory dist
+npm run preview
 ```
 
-Then open http://localhost:8000.
+Then open http://localhost:8000. The preview serves `/about` from `about.html`, like Netlify does.
 
 ## Deploy and search engines
 

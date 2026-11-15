@@ -118,7 +118,8 @@ function render(pg) {
   h = h.replace(/(href|src)="(favicon\.ico|favicon\.svg|apple-touch-icon\.png|manifest\.webmanifest)"/g, '$1="/$2"');
   h = h.replace('register("sw.js")', 'register("/sw.js")');
   if (pg.body) h = setTag(h, /<main id="app"><\/main>/, `<main id="app">${pg.body}</main>`);
-  const file = `${OUT}${pg.path === "/" ? "" : pg.path}/index.html`;
+  // Netlify serves about.html at /about with no redirect (a folder would redirect to /about/).
+  const file = pg.path === "/" ? `${OUT}/index.html` : `${OUT}${pg.path}.html`;
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, h);
 }
@@ -128,7 +129,7 @@ mkdirSync(OUT);
 pages.forEach(render);
 // Unknown addresses: Netlify serves 404.html, and the app shows "We couldn't find that page".
 render({ path: "/__404", title: "Page not found · Vendo", desc: DESC.home, body: "", index: false });
-cpSync(`${OUT}/__404/index.html`, `${OUT}/404.html`); rmSync(`${OUT}/__404`, { recursive: true });
+cpSync(`${OUT}/__404.html`, `${OUT}/404.html`); rmSync(`${OUT}/__404.html`);
 
 for (const f of ["favicon.ico", "favicon.svg", "favicon-32.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png",
   "icon-maskable-512.png", "manifest.webmanifest", "og-image.jpg", "sw.js"]) if (existsSync(f)) cpSync(f, `${OUT}/${f}`);
