@@ -600,6 +600,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .skip:focus{top:12px}
 #app:focus{outline:none}
 footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);font-size:13px}
+.rel-date{margin:-6px 0 0;color:var(--muted);font-size:13.5px}
 .install{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* trust badges */
@@ -789,7 +790,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 <div id="modal-root"></div>
 <div id="toast" class="toast" hidden></div>
 
-<footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a></nav><button type="button" class="install" id="install" hidden>Install the Vendo app</button><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
+<footer><div class="wrap foot"><nav class="foot-links" aria-label="Footer"><a href="#about">About</a><a href="#contact">Contact</a><a href="#list-your-venue">List your venue</a><a href="#terms">Terms</a><a href="#privacy">Privacy</a><a href="#cookies">Cookies</a><a href="#changelog" id="version">Version</a></nav><button type="button" class="install" id="install" hidden>Install the Vendo app</button><span>Vendo demo. All venues, hosts, bookings and figures are fictional examples.</span></div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
@@ -2185,6 +2186,27 @@ const PAGES={
   <h2>The map</h2><p>The map loads images from OpenStreetMap, which sees your IP address when it sends them.</p>
   <h2>In future</h2><p>If we add analytics that use cookies, we'll ask for your permission first and you can say no.</p>`}
 };
+/* ---------- Versions ----------
+   Version 0.x while Vendo is a demo; 1.0.0 is the public launch.
+   To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
+   Bump the last number for fixes, the middle number for new features. */
+const RELEASES=[
+ {v:"0.10.0",d:"2026-11-15",t:"Version numbers",n:["Every release now has a version number, shown in the footer.","A What's new page lists every release."]},
+ {v:"0.9.0",d:"2026-11-15",t:"Planning tools, venue tabs and trust",n:["Budget planner, nearest free dates, waiting lists, similar and recently viewed venues.","Good-to-know details on every listing and an event checklist for each booking.","Venue dashboard tabs: several rooms per venue, prices by day, listing score, insights and payouts.","Verified, fast-reply and top host badges, Booking Protection and guest photos on reviews.","Installable app, structured data for search engines and accessibility fixes."]},
+ {v:"0.8.0",d:"2026-11-12",t:"Venue calendar",n:["Venues can add phone and in-person bookings or block dates, and the dates close on their listing."]},
+ {v:"0.7.0",d:"2026-11-12",t:"Saved venues, filters and messages",n:["Save venues, filter by price and features, and message venues.","How it works, FAQs, footer pages and link previews."]},
+ {v:"0.6.0",d:"2026-11-12",t:"Search by date and full prices",n:["Search by date, prices that include all fees, venue reviews, List your venue page and shareable venue links."]},
+ {v:"0.5.1",d:"2026-11-12",t:"Icons",n:["Favicon and home-screen icon."]},
+ {v:"0.5.0",d:"2026-11-12",t:"Guest accounts",n:["Guest accounts, and venues can rate the guests they host."]},
+ {v:"0.4.0",d:"2026-11-12",t:"Map",n:["Map of nearby venues, with search by town or your location."]},
+ {v:"0.3.0",d:"2026-11-11",t:"Nightclubs and bars",n:["Nightclub, cocktail bar, rooftop bar and karaoke venues."]},
+ {v:"0.2.0",d:"2026-11-11",t:"Brighter look",n:["Brighter colours and softer fonts."]},
+ {v:"0.1.0",d:"2026-11-11",t:"First demo",n:["Clickable demo with example venues, booking quotes and a venue dashboard."]}];
+const VERSION=RELEASES[0].v;
+PAGES.changelog={title:"What's new",lead:`You're using Vendo ${VERSION}. Versions start at 0 while Vendo is a demo, and 1.0 will be the public launch.`,
+  body:RELEASES.map(r=>`<h2>${r.v} · ${r.t}</h2><p class="rel-date">${new Date(r.d+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</p><ul>${r.n.map(x=>`<li>${x}</li>`).join("")}</ul>`).join("")};
+document.getElementById("version").textContent="Version "+VERSION;
+
 const contactForm={sent:false,name:"",email:"",topic:"I'm planning an event",msg:""};
 function renderPage(key){
   const pg=PAGES[key];

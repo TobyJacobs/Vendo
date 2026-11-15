@@ -1,5 +1,6 @@
 /* Vendo service worker: makes the site installable and keeps it working with a weak signal. */
-const CACHE = "vendo-v1";
+const VERSION = "0.10.0"; // kept in step with RELEASES in index.html by release.sh
+const CACHE = "vendo-" + VERSION;
 const SHELL = ["./", "index.html", "manifest.webmanifest", "favicon.svg", "favicon.ico", "apple-touch-icon.png", "icon-192.png", "icon-512.png"];
 const CDN = ["cdnjs.cloudflare.com", "fonts.googleapis.com", "fonts.gstatic.com"];
 

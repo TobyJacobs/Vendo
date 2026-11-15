@@ -27,6 +27,18 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 
 All venues, hosts, bookings and figures are fictional examples.
 
+## Versions
+
+The site uses version numbers: 0.x while Vendo is a demo, and 1.0.0 at the public launch. The current version shows in the footer, and the What's new page (`#changelog`) lists every release. [CHANGELOG.md](CHANGELOG.md) has the same list.
+
+To release a new version:
+
+1. Add an entry at the top of `RELEASES` in `index.html`.
+2. Run `./release.sh 0.11.0` with the new number. Use the last number for fixes and the middle number for new features.
+3. Push with `git push origin main --follow-tags`.
+
+Every release has a git tag (`v0.9.0`, `v0.10.0` and so on), so any earlier version can be looked at or restored.
+
 ## Run it locally
 
 Open `index.html` in a browser.
