@@ -834,6 +834,31 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .demo-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;font-size:14px}
 .signin{max-width:560px}
 .me svg{display:block;margin:auto}
+/* public transport near a venue */
+.tsum{display:flex;flex-wrap:wrap;gap:8px}
+.tsum span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 11px;background:var(--sunk);color:var(--ink)}
+.tsum .ok{background:var(--good-soft);color:var(--good)}
+.tcols{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.tcols h4{margin:6px 0 0;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.tlist{list-style:none;margin:0;padding:0;display:grid}
+.tlist li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.tlist li:first-child{border-top:0}
+.tic{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text)}
+.tic svg{width:18px;height:18px}
+.tlist b{display:block;font-size:14.5px;overflow-wrap:anywhere}
+.tlist .s{display:block;font-size:13px;color:var(--muted)}
+.tw{font-size:13px;font-weight:700;white-space:nowrap;text-align:right}
+.tw small{display:block;font-weight:600;color:var(--muted)}
+.acc{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px;margin-top:4px}
+.acc.ok{background:var(--good-soft);color:var(--good)}
+.acc.part,.acc.no{background:var(--sunk);color:var(--warn)}
+.acc.unk{background:var(--sunk);color:var(--muted)}
+.tmap{height:220px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--map-sea)}
+.tpin{width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.tpin.v{width:18px;height:18px;background:#17324D}
+.tpin.rail{background:#2B74B3}.tpin.bus{background:#E07A5F}
+.tkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.tkey span{display:inline-flex;align-items:center;gap:6px}.tkey .tpin{display:inline-block;width:12px;height:12px;border-width:1.5px}.tkey .tpin.v{width:12px;height:12px}
 </style>
 
 </head>
@@ -1491,6 +1516,7 @@ function openVenue(id,fromRoute,pref){
         <div class="section"><h3>What's included</h3><ul class="features">${v.features.map(f=>`<li>${f}</li>`).join("")}</ul></div>
         <div class="section"><h3>House rules</h3><ul class="rules">${v.rules.map(r=>`<li>${r}</li>`).join("")}</ul></div>
         ${goodToKnow(v)}
+        <div class="section" id="transport" aria-live="polite"></div>
         ${reviewsHTML(v)}
         <div class="section"><div class="host"><div class="avatar" aria-hidden="true">${v.hostShort}</div><div><b>Hosted by ${v.host}</b><div style="color:var(--muted);font-size:13.5px">${v.reply}</div></div></div></div>
         <div class="section" id="similar"></div>
@@ -1511,6 +1537,7 @@ function openVenue(id,fromRoute,pref){
   modalRoot.querySelectorAll("[data-photo]").forEach(b=>b.addEventListener("click",()=>lightbox(partyPic(+b.dataset.photo,"lb"),b.dataset.cap)));
   document.getElementById("share").addEventListener("click",()=>shareVenue(v));
   document.getElementById("close").focus();
+  loadTransport(v);
 }
 function drawSimilar(){const el=document.getElementById("similar"); if(!el) return; const v=state.open, d=quote.want||quote.date;
   const sc=x=>(x.type===v.type?3:0)+x.suits.filter(s=>v.suits.includes(s)).length+(x.region===v.region?2:0)-Math.abs(x.standing-v.standing)/120-Math.abs(x.hour-v.hour)/80;
@@ -2270,6 +2297,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.15.0",d:"2026-11-16",t:"Getting there by public transport",n:["Each venue page shows the nearest stations, tram stops and bus stops, with walking times and step-free details.","See the bus numbers that stop nearby, a map of the stops, and a link to plan your journey."]},
  {v:"0.14.1",d:"2026-11-16",t:"Clearer sign-in limits",n:["If too many sign-in emails have been sent, the message now says whether to wait seconds or an hour."]},
  {v:"0.14.0",d:"2026-11-16",t:"Live database and sign-in",n:["Venues, rooms, extras and reviews now load from the Vendo database, with the example venues as a backup if it can't be reached.","Calendars show real booked dates from the database.","Sign in with an emailed link: no password needed. Your account shows your bookings and details.","Booking requests and saved venues are stored in your account once you're signed in."]},
  {v:"0.13.1",d:"2026-11-15",t:"Cleaner page addresses",n:["Page addresses like /about no longer redirect to /about/, so search engines see one address for each page."]},
@@ -2578,6 +2606,110 @@ function renderRealAccount(){
   app.querySelectorAll("[data-unwait]").forEach(b=>b.addEventListener("click",()=>{waitlist.splice(+b.dataset.unwait,1);saveList("vendo-waitlist",waitlist);toast("Removed from the waiting list.");renderAccount();}));
   if(bk.length){checkSel=Math.min(checkSel,bk.length-1);drawChecklist();}
   linkify(app);
+}
+/* ---------- Public transport near a venue ----------
+   Stations, tram stops and bus stops from OpenStreetMap, with step-free details where volunteers have recorded them.
+   Results are kept for a week per venue. If OpenStreetMap can't be reached, the venue's own travel notes are shown. */
+const OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+const TRANSPORT_TTL=7*864e5;
+async function overpass(q){
+  let last;
+  for(const url of OVERPASS){
+    try{const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),12000);
+      const r=await fetch(url,{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"},signal:ctl.signal});
+      clearTimeout(t); if(r.ok) return await r.json(); last=new Error("status "+r.status);}
+    catch(e){last=e;}
+  }
+  throw last||new Error("no response");
+}
+async function fetchTransport(v){
+  const key="vendo-transport-"+v.id;
+  try{const c=JSON.parse(localStorage.getItem(key));if(c&&Date.now()-c.t<TRANSPORT_TTL&&c.lat===v.lat&&c.lng===v.lng) return c.d;}catch(e){}
+  const at=`${v.lat},${v.lng}`;
+  const q=`[out:json][timeout:20];(node(around:700,${at})[highway=bus_stop];nwr(around:3000,${at})[railway~"^(station|halt)$"];node(around:1500,${at})[railway=tram_stop];nwr(around:3000,${at})[station~"^(subway|light_rail)$"];)->.s;.s out center tags;node.s[highway=bus_stop](around:400,${at})->.b;rel(bn.b)[route=bus];out tags;`;
+  const j=await overpass(q);
+  const routes=new Set();
+  const stops=[];
+  for(const e of j.elements||[]){
+    const t=e.tags||{};
+    if(e.type==="relation"){if(t.ref) routes.add(t.ref);continue;}
+    if(!t.name||t.usage==="tourism"||t["railway:preserved"]==="yes"||t.historic) continue;
+    const lat=e.lat??(e.center&&e.center.lat), lng=e.lon??(e.center&&e.center.lon); if(lat==null) continue;
+    const kind=t.highway==="bus_stop"?"bus":t.station==="subway"?"metro":(t.railway==="tram_stop"||t.station==="light_rail")?"tram":"train";
+    stops.push({kind,name:t.name,lat,lng,dist:Math.round(miles(v.lat,v.lng,lat,lng)*1609.34),wheelchair:t.wheelchair||""});
+  }
+  // Bus stops usually come in pairs (one each side of the road) and stations as several nodes: keep the nearest of each.
+  const best={};
+  for(const st of stops){const k=st.kind+"|"+st.name, b=best[k];
+    if(!b||st.dist<b.dist){if(b&&!st.wheelchair) st.wheelchair=b.wheelchair; best[k]=st;} else if(!b.wheelchair) b.wheelchair=st.wheelchair;}
+  const all=Object.values(best).sort((a,b)=>a.dist-b.dist);
+  const d={rail:all.filter(x=>x.kind!=="bus").slice(0,3),bus:all.filter(x=>x.kind==="bus").slice(0,4),
+    routes:[...routes].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))};
+  try{localStorage.setItem(key,JSON.stringify({t:Date.now(),lat:v.lat,lng:v.lng,d}));}catch(e){}
+  return d;
+}
+const walkMins=m=>Math.max(1,Math.round(m*1.25/80));
+const distText=m=>m<1000?`${Math.round(m/10)*10} m`:`${(m/1609.34).toFixed(1)} miles`;
+const STEP={yes:["ok","Step-free"],limited:["part","Partly step-free"],no:["no","Not step-free"]};
+const T_ICON={
+  train:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 10h12M9 20l-2 2M15 20l2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9.5" cy="13" r="1" fill="currentColor"/><circle cx="14.5" cy="13" r="1" fill="currentColor"/></svg>',
+  metro:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 15.5V8.5l4 4 4-4v7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  tram:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5h6M12 2.5V6M6 11.5h12M9 20l-1.5 1.5M15 20l1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  bus:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 11h14M8 17.5V20M16 17.5V20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8.5" cy="14.2" r="1" fill="currentColor"/><circle cx="15.5" cy="14.2" r="1" fill="currentColor"/></svg>'};
+const T_KIND={train:"Train station",metro:"Underground or metro",tram:"Tram stop",bus:"Bus stop"};
+function stopRow(st){
+  const acc=STEP[st.wheelchair];
+  return `<li><span class="tic">${T_ICON[st.kind]}</span><div><b>${escH(st.name)}</b><span class="s">${T_KIND[st.kind]}</span>
+    ${acc?`<span class="acc ${acc[0]}">${acc[1]}</span>`:st.kind==="bus"?"":`<span class="acc unk">Step-free access not recorded</span>`}</div>
+    <span class="tw">${walkMins(st.dist)} min walk<small>${distText(st.dist)}</small></span></li>`;
+}
+async function loadTransport(v){
+  const el=document.getElementById("transport"); if(!el) return;
+  if(v.lat==null){el.remove();return;}
+  const head=`<h3>Getting there by public transport</h3>`;
+  const plan=`<a class="linkbtn" href="https://www.google.com/maps/dir/?api=1&destination=${v.lat},${v.lng}&travelmode=transit" target="_blank" rel="noopener">Plan a journey to ${escH(v.name)} (opens Google Maps)</a>`;
+  const venueAcc=`<span class="${v.flags&&v.flags.stepfree?"ok":""}">${v.flags&&v.flags.stepfree?"✓ The venue has step-free access":"The venue isn't step-free"}</span>`;
+  el.innerHTML=`${head}<div class="tsum">${venueAcc}</div><p class="pnote" role="status">Finding stations and bus stops near ${escH(v.name)}…</p>`;
+  const req=v._tReq=(v._tReq||0)+1;
+  let d;
+  try{d=await fetchTransport(v);}
+  catch(e){
+    if(state.open!==v||req!==v._tReq) return;
+    const go=VINFO[v.id]&&VINFO[v.id].go;
+    el.innerHTML=`${head}<div class="tsum">${venueAcc}</div><p class="pnote">We couldn't load nearby stations and bus stops just now.${go?` The venue says: ${escH(go)}.`:""}</p>${plan}`;
+    return;
+  }
+  if(state.open!==v||req!==v._tReq) return;
+  const near=d.rail[0];
+  const sum=[venueAcc];
+  if(near) sum.push(`<span class="${near.wheelchair==="yes"?"ok":""}">Nearest station: ${escH(near.name)}, ${walkMins(near.dist)} min walk</span>`);
+  if(d.bus.length) sum.push(`<span>${d.bus.length===4?"4+":d.bus.length} bus ${d.bus.length===1?"stop":"stops"} within ${walkMins(d.bus[d.bus.length-1].dist)} min</span>`);
+  const routes=`<p class="pnote">${d.routes.length?`Buses from the nearest stops: ${d.routes.slice(0,12).map(escH).join(", ")}${d.routes.length>12?` and ${d.routes.length-12} more`:""}. `:""}Local buses in the UK must have a ramp or lift for wheelchair users.</p>`;
+  el.innerHTML=`${head}<div class="tsum">${sum.join("")}</div>
+    ${d.rail.length||d.bus.length?`<div class="tcols">
+      ${d.rail.length?`<div><h4>Trains, trams and metro</h4><ul class="tlist">${d.rail.map(stopRow).join("")}</ul></div>`:""}
+      ${d.bus.length?`<div><h4>Buses</h4><ul class="tlist">${d.bus.map(stopRow).join("")}</ul>${routes}</div>`:""}</div>
+      <div class="tmap" id="tmap" role="img" aria-label="Map of ${escH(v.name)} and the stops listed above"></div>
+      <div class="tkey" aria-hidden="true"><span><i class="tpin v"></i>${escH(v.name)}</span><span><i class="tpin rail"></i>Trains, trams and metro</span><span><i class="tpin bus"></i>Buses</span></div>`
+    :`<p class="pnote">No stations or bus stops are recorded within a short walk.${VINFO[v.id]&&VINFO[v.id].go?` The venue says: ${escH(VINFO[v.id].go)}.`:""}</p>`}
+    ${plan}
+    <p class="small" style="text-align:left">Map and stops © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Step-free details are added by volunteers, so check with the venue or the transport operator if it matters for your guests.</p>`;
+  if(document.getElementById("tmap")) drawTransportMap(v,d);
+}
+let tmap=null;
+function drawTransportMap(v,d){
+  loadLeaflet().then(()=>{
+    const el=document.getElementById("tmap"); if(!el||state.open!==v) return;
+    if(tmap){try{tmap.remove();}catch(e){}}
+    // A picture of the stops listed above: no controls inside it, and the credit sits in the text below.
+    tmap=L.map(el,{scrollWheelZoom:false,zoomControl:false,attributionControl:false,keyboard:false,dragging:!matchMedia("(pointer:coarse)").matches});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18}).addTo(tmap);
+    const pts=[[v.lat,v.lng]];
+    L.marker([v.lat,v.lng],{keyboard:false,title:v.name,icon:L.divIcon({className:"",html:'<span class="tpin v" style="display:block"></span>',iconSize:[18,18],iconAnchor:[9,9]})}).addTo(tmap);
+    [...d.rail,...d.bus].forEach(st=>{pts.push([st.lat,st.lng]);
+      L.marker([st.lat,st.lng],{keyboard:false,title:st.name,icon:L.divIcon({className:"",html:`<span class="tpin ${st.kind==="bus"?"bus":"rail"}" style="display:block"></span>`,iconSize:[14,14],iconAnchor:[7,7]})}).addTo(tmap);});
+    tmap.fitBounds(L.latLngBounds(pts),{padding:[24,24],maxZoom:16});
+  }).catch(()=>{const el=document.getElementById("tmap"); if(el) el.remove();});
 }
 /* ---------- Booking page (checkout) ---------- */
 const POLICIES={flexible:["Flexible","Full refund up to 14 days before your event, then 50% up to 48 hours before."],
