@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.22.1 · Filters under events
+
+_2026-11-17_
+
+- On the home page, Filters now sits underneath Event, and each opens on its own row.
+
 ## 0.22.0 · Great venues in your area
 
 _2026-11-17_
