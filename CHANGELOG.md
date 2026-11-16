@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.19.0 · A cleaner look
+
+_2026-11-16_
+
+- A new typeface, Inter Tight, across the whole site.
+- Crisper colours, smaller corners, quieter shadows and plain-English labels instead of small capitals.
+- Proper icons in place of text symbols.
+
 ## 0.18.1 · Sign in on iPhone
 
 _2026-11-16_
