@@ -96,7 +96,7 @@ Netlify runs `node scripts/build-site.mjs` (set in `netlify.toml`) and publishes
 
 - gives every page its own address and HTML file, such as `/about`, `/list-your-venue` and `/venues/the-plough-and-harrow`, each with its own title, description, canonical link, share card and readable content
 - writes `sitemap.xml` and `robots.txt`, and a `404.html` for unknown addresses
-- reads the site address from `SITE_URL` in `index.html` (currently https://vendohire.netlify.app)
+- reads the site address from `SITE_URL` in `index.html` (currently https://vendohire.com; the old https://vendohire.netlify.app address still works)
 
 Venue pages are kept out of search results while the listings are fictional. When real venues go live, set `INDEX_VENUES` to `true` in `index.html` (and `PUBLISH_VENUE_SCHEMA` for rich results), then add the site to Google Search Console and submit the sitemap.
 

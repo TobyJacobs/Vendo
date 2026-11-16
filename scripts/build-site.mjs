@@ -142,6 +142,9 @@ if (SITE) {
 }
 writeFileSync(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /book/\nDisallow: /account\nDisallow: /for-venues/dashboard\n${SITE ? `\nSitemap: ${SITE}/sitemap.xml\n` : ""}`);
 writeFileSync(`${OUT}/_headers`, `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n/sw.js\n  Cache-Control: no-cache\n/*.png\n  Cache-Control: public, max-age=604800\n/*.jpg\n  Cache-Control: public, max-age=604800\n`);
-writeFileSync(`${OUT}/_redirects`, `/index.html  /  301\n`);
+// Send visitors on the old Netlify address to the real domain, keeping the page they asked for.
+const NETLIFY_HOST = "https://vendohire.netlify.app";
+const hostMove = SITE && SITE !== NETLIFY_HOST ? `${NETLIFY_HOST}/*  ${SITE}/:splat  301!\n` : "";
+writeFileSync(`${OUT}/_redirects`, `${hostMove}/index.html  /  301\n`);
 
 console.log(`Built ${pages.length + 1} pages into ${OUT}/ (${listed.length} in the sitemap${SITE ? `, site ${SITE}` : ", no site address set"}; venue pages ${INDEX_VENUES ? "indexed" : "kept out of search results"}).`);

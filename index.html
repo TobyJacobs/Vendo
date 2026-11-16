@@ -16,9 +16,9 @@
 <meta property="og:site_name" content="Vendo">
 <meta property="og:title" content="Vendo: book pubs, bars, halls and clubs for your event">
 <meta property="og:description" content="Function rooms, village halls, private bars and nightclubs for weddings, parties and wakes. Book by date. Every price includes all fees.">
-<meta property="og:image" content="https://vendohire.netlify.app/og-image.jpg">
-<meta property="og:url" content="https://vendohire.netlify.app/">
-<link rel="canonical" href="https://vendohire.netlify.app/">
+<meta property="og:image" content="https://vendohire.com/og-image.jpg">
+<meta property="og:url" content="https://vendohire.com/">
+<link rel="canonical" href="https://vendohire.com/">
 <meta name="robots" content="index,follow">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -32,8 +32,8 @@
    "@type": "Organization",
    "@id": "#organization",
    "name": "Vendo",
-   "url": "https://vendohire.netlify.app/",
-   "logo": "https://vendohire.netlify.app/icon-512.png",
+   "url": "https://vendohire.com/",
+   "logo": "https://vendohire.com/icon-512.png",
    "description": "Vendo helps pubs, bars, village halls, clubs and leisure centres rent out their rooms for weddings, parties, wakes and christenings.",
    "areaServed": "GB"
   },
@@ -2362,7 +2362,7 @@ let tt; function toast(msg,ms){const t=document.getElementById("toast");t.textCo
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
 const Plug=NATIVE?window.Capacitor.Plugins:{};
 // The public website address, used for links shared from inside the app. Set it once the site has its domain.
-const SITE_URL="https://vendohire.netlify.app";
+const SITE_URL="https://vendohire.com";
 function haptic(kind){if(!NATIVE||!Plug.Haptics) return;
   try{kind==="success"?Plug.Haptics.notification({type:"SUCCESS"}):Plug.Haptics.impact({style:kind==="medium"?"MEDIUM":"LIGHT"});}catch(e){}}
 function venueLink(id){return NATIVE||PATH_MODE?SITE_URL+pathFor("venue-"+id):location.href.split("#")[0]+"#venue-"+id;}
