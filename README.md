@@ -47,6 +47,10 @@ Not connected yet:
 - Sign-in in the iPhone app waits for that code. The app already shows live venues and dates.
 - The venue dashboard, messages, payments and payouts still use example data.
 
+## Admin dashboard
+
+Vendo's team sees an **Admin** tab (at `/admin`) once signed in with an email on the database's admin list. It shows Vendo's takings, profit after card fees and running costs, bookings, customers and venues, with monthly charts, venues waiting for approval (with an Approve button), top venues, event types, recent bookings and sign-ups, and an editable list of running costs. Until real bookings arrive it can show example figures, clearly labelled. Everyone else, including signed-in guests and venues, can't load the figures: the database refuses them.
+
 ## iPhone app
 
 The iPhone app wraps this same website with [Capacitor](https://capacitorjs.com), so every website change reaches the app too. The Xcode project is in `ios/`.

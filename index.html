@@ -886,6 +886,21 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .need-auth{display:grid;gap:10px;background:var(--sunk);border-radius:12px;padding:14px}
 .need-auth .row{display:flex;gap:8px;flex-wrap:wrap}
 .need-auth .btn{text-decoration:none}
+/* admin dashboard */
+.stats.six{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:980px){.cols.even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.stats.six{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat .d.down{color:var(--warn)}
+.achart svg{width:100%;height:auto;display:block}
+.admin-head-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cost-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding-block:9px;border-top:1px solid var(--line);font-size:14.5px}
+.cost-row:first-child{border-top:0}
+.cost-form{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:10px;align-items:end;margin-top:6px}
+@media (max-width:560px){.cost-form{grid-template-columns:1fr}}
+.cost-form input{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;background:var(--surface);color:var(--ink);width:100%}
+.cost-form label{font-size:13px;font-weight:700;display:grid;gap:4px}
+@media (max-width:420px){.switch button{padding-inline:10px}}
 </style>
 
 </head>
@@ -902,6 +917,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
     <div class="switch" role="group" aria-label="Choose view">
       <button id="tab-find" aria-pressed="true">Book a venue</button>
       <button id="tab-host" aria-pressed="false">For venues</button>
+      <button id="tab-admin" aria-pressed="false" hidden>Admin</button>
     </div>
     <button class="me" id="tab-me" aria-pressed="false" aria-label="My account" title="My account">SR</button>
   </div>
@@ -2326,6 +2342,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.17.0",d:"2026-11-16",t:"Admin dashboard",n:["A private Admin tab for the Vendo team: takings, profit, bookings, customers and venues, with monthly charts.","Approve new venues before they go live, and keep a list of running costs so profit is worked out for you.","Only people on the admin list can see it. The figures come from the database, which refuses everyone else."]},
  {v:"0.16.0",d:"2026-11-16",t:"Create an account",n:["A proper sign-up page: your name and email, whether you're planning events or run a venue, and your venue's details if you do.","A separate sign-in page that tells you if there's no account for your email.","After signing in, venue owners go to their dashboard, guests to their account, and anyone mid-booking straight back to it."]},
  {v:"0.15.1",d:"2026-11-16",t:"Our own address",n:["Vendo now lives at vendohire.com, with a secure connection. The old vendohire.netlify.app address takes you there automatically."]},
  {v:"0.15.0",d:"2026-11-16",t:"Getting there by public transport",n:["Each venue page shows the nearest stations, tram stops and bus stops, with walking times and step-free details.","See the bus numbers that stop nearby, a map of the stops, and a link to plan your journey."]},
@@ -2441,6 +2458,7 @@ async function dbInit(){
     await dbLoadVenues();
     await onAuth(session);
   }catch(e){DB.live=false;console.info("Vendo is using its built-in example data:",e&&e.message);}
+  DB.done=true; if(state.view==="admin") renderAdmin();
 }
 // Sign-in needs the emailed link to come back to the same place, so it's website-only until emails carry a code.
 const authLive=()=>DB.live&&!NATIVE;
@@ -2477,6 +2495,7 @@ async function dbLoadVenues(){
   DB.live=true; updateAvatar();
   if(state.view==="find"&&document.getElementById("grid")&&!state.open) drawGrid();
   if(state.view==="account") renderAccount();
+  if(state.view==="admin") renderAdmin();
   if(state.open) dbLoadBusy(state.open);   // a venue opened before the database finished loading
   if(state.view==="book"&&checkout&&!checkout.done) renderCheckout();
 }
@@ -2500,7 +2519,7 @@ async function onAuth(session){
   if((u&&u.id)===(DB.user&&DB.user.id)&&DB.profile!==undefined&&(u?DB.profile:true)) return;
   DB.user=u; DB.profile=null; DB.bookings=null;
   if(u){
-    const {data}=await DB.client.from("profiles").select("full_name,phone,town,account_type,business_name,business_type").eq("id",u.id).maybeSingle();
+    const {data}=await DB.client.from("profiles").select("full_name,phone,town,account_type,business_name,business_type,is_admin").eq("id",u.id).maybeSingle();
     DB.profile=data||{full_name:"",phone:"",town:"",account_type:"guest"};
     await syncSaved(); await dbLoadBookings();
   }
@@ -2508,7 +2527,9 @@ async function onAuth(session){
   if(u&&(state.view==="signin"||state.view==="signup")) return afterSignIn();
   if(u&&getReturn()===currentKey()) setReturn("");   // arrived where the sign-in link was taking you
   if(u&&getReturn()&&state.view!=="book") return afterSignIn();
+  adminUI.data=null;
   if(state.view==="account") renderAccount();
+  if(state.view==="admin") renderAdmin();
   if(state.view==="host"&&u) renderHost();
   if(state.view==="book"&&checkout&&!checkout.done){
     if(u){if(!checkout.name||checkout.name===ME.name) checkout.name=DB.profile.full_name||"";
@@ -2519,6 +2540,7 @@ async function onAuth(session){
   }
 }
 function updateAvatar(){
+  const at=document.getElementById("tab-admin"); if(at) at.hidden=!isAdmin();
   const b=document.getElementById("tab-me"); if(!b) return;
   if(!authLive()){b.textContent=ME.initials;b.setAttribute("aria-label","My account");b.title="My account";return;}
   if(DB.user){const n=(DB.profile&&DB.profile.full_name)||DB.user.email;
@@ -2815,6 +2837,135 @@ function drawTransportMap(v,d){
     tmap.fitBounds(L.latLngBounds(pts),{padding:[24,24],maxZoom:16});
   }).catch(()=>{const el=document.getElementById("tmap"); if(el) el.remove();});
 }
+/* ---------- Admin dashboard ----------
+   Only for accounts on the database's admin list. The figures come from the admin_stats() function,
+   which refuses anyone who isn't an admin, so this page shows nothing useful to anyone else. */
+const adminUI={data:null,costs:null,example:false,loading:false,err:""};
+function isAdmin(){return !!(authLive()&&DB.user&&DB.profile&&DB.profile.is_admin);}
+const pnd=n=>"£"+Math.round((n||0)/100).toLocaleString("en-GB");
+const MONTH_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function exampleStats(){
+  const now=new Date(), months=[];
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1), k=12-i, gmv=Math.round(6000+k*k*560)*100;
+    const vendo=Math.round(gmv*0.115), bk=Math.max(1,Math.round(gmv/118000));
+    months.push({m:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`,bookings:bk,gmv,vendo,card:Math.round(gmv*0.015)+bk*20,signups:Math.round(6+k*k*0.9)});}
+  const sum=f=>months.reduce((a,m)=>a+m[f],0);
+  const names=VENUES.slice(0,8);
+  return {venues:{live:38,pending_review:3,draft:6},venues_demo:0,customers:612,hosts:44,signups_30d:months[11].signups,
+    bookings:{requested:9,confirmed:61,completed:214,cancelled:7,declined:4},gmv_pence:sum("gmv"),pipeline_pence:1062000,vendo_pence:sum("vendo"),card_pence:sum("card"),costs_monthly_pence:23500,
+    months,top_venues:names.map((v,i)=>({name:v.name,slug:slugOf(v),status:"live",bookings:41-i*4,gmv:(41-i*4)*118000})),
+    event_types:[["Birthdays",118],["Weddings",52],["Corporate",44],["Wakes",31],["Christenings",26],["Clubs & classes",14]].map(([event_type,n])=>({event_type,n})),
+    recent_bookings:[["VND-8F2A1C0D","confirmed","40th birthday","The Lantern Rooftop",60,184200,"Priya Shah"],["VND-77B0E91A","requested","Wedding reception","The Old Granary at The Wheatsheaf",120,742800,"Hannah Cole"],["VND-1C93D4E2","completed","Wake","Hartwell Cricket Club Pavilion",45,61400,"Claire Walsh"],["VND-5D20AA7F","confirmed","Christmas party","Velvet Rooms",180,402600,"Marcus Webb"]]
+      .map(([ref,status,event_label,venue,guests,total_pence,contact_name],i)=>({ref,status,event_label,venue,guests,total_pence,contact_name,created_at:new Date(Date.now()-i*36e5*7).toISOString(),event_date:isoDay(new Date(Date.now()+(i+2)*864e5*9))})),
+    recent_signups:[["Sam Okoro","guest",null],["The Red Lion","host","The Red Lion, Bourton"],["Ellie Ward","guest",null],["St Mary's Hall Committee","host","St Mary's Hall"]].map(([full_name,account_type,business_name],i)=>({full_name,email:"",account_type,business_name,created_at:new Date(Date.now()-i*36e5*11).toISOString()})),
+    pending_venues:[{id:"",name:"The Red Lion",place:"Bourton-on-the-Water, Gloucestershire",kind:"Pub function room",owner:"Dan Hughes",business_name:"The Red Lion",created_at:new Date(Date.now()-864e5).toISOString()}],
+    costs:[{name:"Supabase Pro",monthly_pence:2000},{name:"Microsoft 365 email",monthly_pence:400},{name:"Resend",monthly_pence:1600},{name:"vendohire.com domain",monthly_pence:120}]};
+}
+async function loadAdmin(){
+  adminUI.loading=true; adminUI.err="";
+  const [st,co]=await Promise.all([DB.client.rpc("admin_stats"),DB.client.from("admin_costs").select("id,name,monthly_pence").order("created_at")]);
+  adminUI.loading=false;
+  if(st.error){adminUI.err=st.error.message;return;}
+  adminUI.data=st.data; adminUI.costs=co.data||[];
+}
+function adminShell(inner){
+  app.innerHTML=`<section class="wrap dash"><div class="dash-head"><div><div class="eyebrow">Vendo team</div><h1>Admin</h1></div></div>${inner}</section>`;
+  linkify(app);
+}
+async function renderAdmin(){
+  if(!DB.done&&!DB.live){adminShell(`<p class="pnote" role="status">Connecting to the database…</p>`);return;}
+  if(!authLive()){adminShell(`<p class="pnote">The admin dashboard needs the Vendo database, which isn't available here.</p>`);return;}
+  if(!DB.user){adminShell(`<div class="panel signin"><p style="margin:0">Sign in with your admin account to see the dashboard.</p><a class="btn primary" href="#signin" style="justify-self:start;text-decoration:none">Sign in</a></div>`);return;}
+  if(!DB.profile){adminShell(`<p class="pnote" role="status">Loading your account…</p>`);return;}
+  if(!DB.profile.is_admin){adminShell(`<p class="pnote">This page is for the Vendo team.</p>`);return;}
+  if(!adminUI.data&&!adminUI.loading){adminShell(`<p class="pnote" role="status">Adding up the figures…</p>`);await loadAdmin();}
+  if(state.view!=="admin") return;
+  drawAdmin();
+}
+function barChart(vals,labels,fmt,label){
+  const W=600,H=200,L=52,R=8,T=18,B=26,n=vals.length,raw=Math.max(1,...vals);
+  const mag=Math.pow(10,Math.floor(Math.log10(raw))), max=Math.ceil(raw/mag)*mag, bw=(W-L-R)/n, y=v=>T+(H-T-B)*(1-v/max);
+  let g="";
+  for(let i=0;i<=4;i++){const t=max*i/4;g+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmt(t,true)}</text>`;}
+  const bars=vals.map((v,i)=>{const x=L+i*bw+bw*.2,w=bw*.6;return `<rect x="${x.toFixed(1)}" y="${y(v).toFixed(1)}" width="${w.toFixed(1)}" height="${(y(0)-y(v)).toFixed(1)}" rx="3" fill="${i===n-1?"var(--accent)":"var(--accent)"}" opacity="${i===n-1?1:.6}"><title>${labels[i]}: ${fmt(v)}</title></rect><text x="${(x+w/2).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${labels[i]}</text>`;}).join("");
+  const last=vals[n-1], lx=L+(n-1)*bw+bw/2;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escH(label)}">${g}${bars}<text x="${lx}" y="${Math.max(12,y(last)-6)}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-text)">${fmt(last)}</text></svg>`;
+}
+const STATUS_PILL={requested:["new","Request"],confirmed:["ok","Confirmed"],completed:["ok","Completed"],cancelled:["no","Cancelled"],declined:["no","Declined"],live:["ok","Live"],pending_review:["new","Pending"],draft:["no","Draft"],hidden:["no","Hidden"]};
+const pill=s=>{const x=STATUS_PILL[s]||["no",s];return `<span class="pill ${x[0]}">${x[1]}</span>`;};
+const shortDate=iso=>{const d=new Date(iso);return isNaN(d)?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"short"});};
+function drawAdmin(){
+  if(adminUI.err&&!adminUI.example){adminShell(`<div class="panel"><p style="margin:0">We couldn't load the figures: ${escH(adminUI.err)}</p><button type="button" class="btn" id="ad-retry" style="justify-self:start">Try again</button></div>`);
+    document.getElementById("ad-retry").addEventListener("click",()=>{adminUI.data=null;renderAdmin();});return;}
+  const real=adminUI.data, ex=adminUI.example||!real, d=ex?exampleStats():real;
+  const b=d.bookings||{}, nB=Object.values(b).reduce((a,x)=>a+x,0), venues=d.venues||{};
+  const months=d.months||[], cur=months[months.length-1]||{gmv:0,vendo:0,card:0,bookings:0,signups:0}, prev=months[months.length-2]||{gmv:0};
+  const costList=ex?d.costs:(adminUI.costs||[]), costs=costList.reduce((a,c)=>a+c.monthly_pence,0);
+  const profit=cur.vendo-cur.card-costs, delta=prev.gmv?Math.round((cur.gmv-prev.gmv)/prev.gmv*100):null;
+  const labels=months.map(m=>MONTH_SHORT[+m.m.slice(5)-1]);
+  const evMax=Math.max(1,...d.event_types.map(e=>e.n));
+  const banner=ex?`<div class="demo-banner"><span><b>Example figures</b>, so you can see how the dashboard will look as Vendo grows.</span>${real?`<button type="button" class="btn" id="ad-mode">Show real figures</button>`:""}</div>`
+    :nB===0?`<div class="demo-banner"><span>No bookings yet, so revenue shows £0. Real figures fill in as bookings come through.</span><button type="button" class="btn" id="ad-mode">Show example figures</button></div>`:"";
+  adminShell(`${banner}
+    <div class="admin-head-acts"><span class="pnote">${ex?"Example data":`Updated ${new Date(d.generated_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}`}</span>${ex?"":`<button type="button" class="btn" id="ad-refresh">Refresh</button>`}${!ex&&nB>0?`<button type="button" class="btn" id="ad-mode">Show example figures</button>`:""}</div>
+    <div class="stats six">
+      <div class="stat"><span class="eyebrow">Vendo takings, all time</span><span class="v">${pnd(d.vendo_pence)}</span><span class="d" style="color:var(--muted)">from ${pnd(d.gmv_pence)} of bookings</span></div>
+      <div class="stat"><span class="eyebrow">Profit this month</span><span class="v">${pnd(profit)}</span><span class="d ${profit>=0?"up":"down"}">after card fees and ${pnd(costs)} costs</span></div>
+      <div class="stat"><span class="eyebrow">Bookings this month</span><span class="v">${pnd(cur.gmv)}</span><span class="d ${delta==null||delta>=0?"up":"down"}">${delta==null?`${cur.bookings} bookings`:`${delta>=0?"+":""}${delta}% on last month`}</span></div>
+      <div class="stat"><span class="eyebrow">All bookings</span><span class="v">${nB.toLocaleString("en-GB")}</span><span class="d ${b.requested?"down":"up"}">${b.requested||0} waiting for a reply · ${pnd(d.pipeline_pence)}</span></div>
+      <div class="stat"><span class="eyebrow">Customers</span><span class="v">${(d.customers||0).toLocaleString("en-GB")}</span><span class="d up">+${d.signups_30d||0} in the last 30 days</span></div>
+      <div class="stat"><span class="eyebrow">Venues live</span><span class="v">${venues.live||0}</span><span class="d ${venues.pending_review?"down":"up"}">${venues.pending_review||0} waiting for approval · ${d.hosts||0} venue accounts</span></div>
+    </div>
+    <div class="cols even">
+      <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">Booking fee + commission</span></div>
+        <div class="achart">${barChart(months.map(m=>m.vendo),labels,(v,ax)=>ax&&v>=100000?"£"+Math.round(v/100000)+"k":pnd(v),"Vendo takings by month for the last 12 months")}</div></div>
+      <div class="panel"><div class="panel-head"><h2>New accounts by month</h2><span class="eyebrow">Guests and venues</span></div>
+        <div class="achart">${barChart(months.map(m=>m.signups),labels,v=>Math.round(v).toLocaleString("en-GB"),"New accounts by month for the last 12 months")}</div></div>
+    </div>
+    <div class="cols">
+      <div class="panel"><div class="panel-head"><h2>Waiting for approval</h2><span class="eyebrow">${d.pending_venues.length} ${d.pending_venues.length===1?"venue":"venues"}</span></div>
+        ${d.pending_venues.length?`<div>${d.pending_venues.map(v=>`<div class="brow"><b>${escH(v.name)}</b>${ex?`<span class="pill new">Example</span>`:`<button type="button" class="btn primary" data-approve="${escH(v.id)}">Approve</button>`}
+          <span>${escH(v.kind||"")} · ${escH(v.place||"")} · added ${shortDate(v.created_at)}${v.owner?` by ${escH(v.owner)}`:""}</span></div>`).join("")}</div>`
+          :`<p class="pnote">No venues are waiting. New listings from venue accounts appear here for you to check before they go live.</p>`}</div>
+      <div class="panel"><div class="panel-head"><h2>Event types</h2><span class="eyebrow">All bookings</span></div>
+        ${d.event_types.length?`<ul class="searches">${d.event_types.map(e=>`<li><span>${escH(e.event_type)}</span><span class="n">${e.n}</span><i aria-hidden="true"><b style="width:${e.n/evMax*100}%"></b></i></li>`).join("")}</ul>`:`<p class="pnote">No bookings yet.</p>`}</div>
+    </div>
+    <div class="panel"><div class="panel-head"><h2>Top venues</h2><span class="eyebrow">By bookings</span></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Top venues"><table class="ptable"><thead><tr><th scope="col">Venue</th><th scope="col">Status</th><th scope="col" class="r">Bookings</th><th scope="col" class="r">Booking value</th></tr></thead>
+        <tbody>${d.top_venues.map(v=>`<tr><td>${escH(v.name)}</td><td>${pill(v.status)}</td><td class="r">${v.bookings}</td><td class="r">${pnd(v.gmv)}</td></tr>`).join("")}</tbody></table></div></div>
+    <div class="panel"><div class="panel-head"><h2>Recent bookings</h2><span class="eyebrow">Latest 10</span></div>
+      ${d.recent_bookings.length?`<div class="tablewrap" tabindex="0" role="region" aria-label="Recent bookings"><table class="ptable"><thead><tr><th scope="col">Booked</th><th scope="col">Guest</th><th scope="col">Event</th><th scope="col">Status</th><th scope="col" class="r">Total</th></tr></thead>
+        <tbody>${d.recent_bookings.map(k=>`<tr><td>${shortDate(k.created_at)}<small>${escH(k.ref)}</small></td><td>${escH(k.contact_name)}</td><td>${escH(k.event_label)}<small>${escH(k.venue)} · ${shortDate(k.event_date)} · ${k.guests} guests</small></td><td>${pill(k.status)}</td><td class="r">${pnd(k.total_pence)}</td></tr>`).join("")}</tbody></table></div>`
+        :`<p class="pnote">No bookings yet.</p>`}</div>
+    <div class="cols">
+      <div class="panel"><div class="panel-head"><h2>Recent sign-ups</h2><span class="eyebrow">Latest 10</span></div>
+        ${d.recent_signups.length?`<div>${d.recent_signups.map(u=>`<div class="brow"><b>${escH(u.full_name||u.email||"New account")}</b><span class="pill ${u.account_type==="host"?"new":"ok"}">${u.account_type==="host"?"Venue":"Guest"}</span>
+          <span>${u.business_name?escH(u.business_name)+" · ":""}${u.email?escH(u.email)+" · ":""}joined ${shortDate(u.created_at)}</span></div>`).join("")}</div>`:`<p class="pnote">No accounts yet.</p>`}</div>
+      <div class="panel"><div class="panel-head"><h2>Running costs</h2><span class="eyebrow">${pnd(costs)} a month</span></div>
+        <p class="pnote">Monthly costs used to work out profit. Add hosting, email and anything else Vendo pays for.</p>
+        <div>${costList.map(c=>`<div class="cost-row"><span>${escH(c.name)}</span><b class="num">${pnd(c.monthly_pence)}</b>${ex?"<span></span>":`<button type="button" class="linkbtn" data-cost-del="${escH(c.id)}" aria-label="Remove ${escH(c.name)}">Remove</button>`}</div>`).join("")||`<p class="pnote">No costs added.</p>`}</div>
+        ${ex?"":`<form class="cost-form" id="cost-form" novalidate><label>What<input id="cost-name" maxlength="80" placeholder="Supabase Pro"></label><label>£ a month<input id="cost-amt" type="number" min="0" step="0.01" inputmode="decimal" placeholder="25"></label><button class="btn" type="submit">Add</button></form><span class="err" id="cost-err" aria-live="polite"></span>`}</div>
+    </div>`);
+  const mode=document.getElementById("ad-mode"); if(mode) mode.addEventListener("click",()=>{adminUI.example=!adminUI.example;drawAdmin();});
+  const rf=document.getElementById("ad-refresh"); if(rf) rf.addEventListener("click",async()=>{rf.disabled=true;rf.textContent="Refreshing…";await loadAdmin();drawAdmin();toast("Figures updated.");});
+  app.querySelectorAll("[data-approve]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;
+    const {error}=await DB.client.from("venues").update({status:"live"}).eq("id",btn.dataset.approve);
+    if(error){btn.disabled=false;toast("Couldn't approve it: "+error.message);return;}
+    toast("Venue approved. It's now live on Vendo."); await loadAdmin(); drawAdmin();}));
+  app.querySelectorAll("[data-cost-del]").forEach(btn=>btn.addEventListener("click",async()=>{
+    const {error}=await DB.client.from("admin_costs").delete().eq("id",btn.dataset.costDel);
+    if(error){toast("Couldn't remove it: "+error.message);return;}
+    await loadAdmin(); drawAdmin(); toast("Cost removed.");}));
+  const cf=document.getElementById("cost-form");
+  if(cf) cf.addEventListener("submit",async e=>{e.preventDefault();
+    const name=document.getElementById("cost-name").value.trim(), amt=parseFloat(document.getElementById("cost-amt").value), er=document.getElementById("cost-err");
+    if(!name){er.textContent="Say what the cost is for.";document.getElementById("cost-name").focus();return;}
+    if(!(amt>=0)){er.textContent="Enter the monthly amount in pounds, like 25.";document.getElementById("cost-amt").focus();return;}
+    er.textContent="";
+    const {error}=await DB.client.from("admin_costs").insert({name:name.slice(0,80),monthly_pence:Math.round(amt*100)});
+    if(error){er.textContent="Couldn't add it: "+error.message;return;}
+    await loadAdmin(); drawAdmin(); toast("Cost added.");});
+}
 /* ---------- Booking page (checkout) ---------- */
 const POLICIES={flexible:["Flexible","Full refund up to 14 days before your event, then 50% up to 48 hours before."],
   moderate:["Moderate","Full refund up to 30 days before your event, then 50% up to 14 days before."],
@@ -3048,7 +3199,7 @@ const PATH_MODE=/^https?:$/.test(location.protocol)&&(location.hostname===new UR
 // Venue pages stay out of search results while the listings are fictional. Set to true when real venues go live.
 const INDEX_VENUES=false;
 const slugOf=v=>v.name.toLowerCase().replace(/&/g,"and").replace(/['’]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",account:"/account",signin:"/sign-in",signup:"/create-account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
+const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",admin:"/admin",account:"/account",signin:"/sign-in",signup:"/create-account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
 const isRouteKey=k=>k in PAGE_PATHS||/^(venue|book)-./.test(k);
 function pathFor(key){
   const m=key.match(/^(venue|book)-(.+)$/);
@@ -3095,6 +3246,7 @@ function metaFor(key){
   if(v&&m[1]==="venue") return {title:`${v.name}, ${v.place.split(",")[0]}: ${v.kind.toLowerCase()} to hire · Vendo`,
     desc:`${v.space} for up to ${Math.max(v.seated,v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, including all fees. Ideal for ${v.suits.slice(0,3).join(", ").toLowerCase()}.`,index:INDEX_VENUES};
   if(v) return {title:`${checkout&&checkout.done?"Booked":"Book"}: ${v.name} · Vendo`,desc:META_DESC.find,index:false};
+  if(key==="admin") return {title:"Admin · Vendo",desc:META_DESC.find,index:false};
   if(key==="host") return {title:"Host dashboard · Vendo",desc:META_DESC["list-your-venue"],index:false};
   if(key==="account") return {title:"My account · Vendo",desc:META_DESC.find,index:false};
   if(key==="signin") return {title:"Sign in · Vendo",desc:"Sign in to Vendo with a link we email you. No password needed.",index:false};
@@ -3148,18 +3300,20 @@ function route(){
     setUrl("venue-"+id,false); route(); return;
   }
   if(key==="notfound"){state.view="notfound";if(state.open) closeVenue(true);["tab-find","tab-host","tab-me"].forEach(t=>document.getElementById(t).setAttribute("aria-pressed","false"));renderNotFound();setTitle();return;}
-  const pk=key; const v=pk==="host"?"host":pk==="account"?"account":pk==="signin"||pk==="signup"?pk:pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
+  const pk=key; const v=pk==="host"?"host":pk==="admin"?"admin":pk==="account"?"account":pk==="signin"||pk==="signup"?pk:pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
   document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
+  document.getElementById("tab-admin").setAttribute("aria-pressed",v==="admin");
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account"||v==="signin"||v==="signup");
   if(state.open) closeVenue(true);
   if((v==="signin"||v==="signup")&&NATIVE){state.view="account";setUrl("account",false);renderAccount();linkify(app);setTitle();return;}
   if((v==="signin"||v==="signup")&&DB.user){afterSignIn();return;}
-  v==="host"?renderHost():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
+  v==="host"?renderHost():v==="admin"?renderAdmin():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
   linkify(app); setTitle();
 }
 document.getElementById("tab-find").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);focusMain();});
 document.getElementById("tab-host").addEventListener("click",()=>{nav("host");window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-admin").addEventListener("click",()=>{nav("admin");window.scrollTo(0,0);focusMain();});
 document.getElementById("tab-me").addEventListener("click",()=>{nav(authLive()&&!DB.user?"signin":"account");window.scrollTo(0,0);focusMain();});
 if(PATH_MODE) window.addEventListener("popstate",()=>{if(location.hash&&!isRouteKey(location.hash.slice(1))) return; route();});
 else window.addEventListener("hashchange",route);
