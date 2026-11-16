@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.19.1 · Tidier header on phones
+
+_2026-11-16_
+
+- On phones, the Book a venue, For venues and Admin tabs no longer squash onto two lines. When they can't fit beside the logo they get their own row.
+
 ## 0.19.0 · A cleaner look
 
 _2026-11-16_

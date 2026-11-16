@@ -931,7 +931,20 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 @media (max-width:560px){.cost-form{grid-template-columns:1fr}}
 .cost-form input{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;background:var(--surface);color:var(--ink);width:100%}
 .cost-form label{font-size:13px;font-weight:600;display:grid;gap:4px}
-@media (max-width:420px){.switch button{padding-inline:10px}}
+.switch button{white-space:nowrap}
+/* Phones: when the view tabs can't fit beside the logo (admin tab showing, or a narrow phone), give them their own full-width row */
+@media (max-width:640px){
+  .top .wrap:has(#tab-admin:not([hidden])){flex-wrap:wrap;row-gap:8px;padding-block:8px 10px}
+  .top .wrap:has(#tab-admin:not([hidden])) .switch{order:3;flex:1 0 100%;margin-left:0}
+  .top .wrap:has(#tab-admin:not([hidden])) .switch button{flex:1}
+  .top .wrap:has(#tab-admin:not([hidden])) .me{margin-left:auto}
+}
+@media (max-width:379px){
+  .top .wrap{flex-wrap:wrap;row-gap:8px;padding-block:8px 10px}
+  .switch{order:3;flex:1 0 100%;margin-left:0}
+  .switch button{flex:1}
+  .top .me{margin-left:auto}
+}
 </style>
 
 </head>
@@ -2776,6 +2789,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.19.1",d:"2026-11-16",t:"Tidier header on phones",n:["On phones, the Book a venue, For venues and Admin tabs no longer squash onto two lines. When they can't fit beside the logo they get their own row."]},
  {v:"0.19.0",d:"2026-11-16",t:"A cleaner look",n:["A new typeface, Inter Tight, across the whole site.","Crisper colours, smaller corners, quieter shadows and plain-English labels instead of small capitals.","Proper icons in place of text symbols."]},
  {v:"0.18.1",d:"2026-11-16",t:"Sign in on iPhone",n:["Create an account and sign in inside the iPhone app, with the 6-digit code from the email.","Sign-in emails now say \"code\" everywhere, since every email includes one."]},
  {v:"0.18.0",d:"2026-11-16",t:"Add and verify venues",n:["Venue owners can add their own venue: rooms and prices, extras, photos, house rules and cancellation policy. Save a draft and submit it when ready.","To get verified, owners upload photo ID, their premises licence and insurance certificate. Only the Vendo team can open these documents.","In the Admin tab, review each venue, tick off the three checks, then approve it or send it back with a note.","The Verified venue badge now shows only on venues Vendo has checked. New venues show their own photos, and \"New\" until they have reviews."]},
