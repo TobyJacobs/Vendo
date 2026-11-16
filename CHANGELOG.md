@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.14.1 · Clearer sign-in limits
+
+_2026-11-16_
+
+- If too many sign-in emails have been sent, the message now says whether to wait seconds or an hour.
+
 ## 0.14.0 · Live database and sign-in
 
 _2026-11-16_
