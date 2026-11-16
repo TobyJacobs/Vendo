@@ -28,6 +28,24 @@ This repository holds the clickable demo. It is a single static page (`index.htm
 
 All venues, hosts, bookings and figures are fictional examples.
 
+## Database and sign-in
+
+The website reads from the Vendo database on Supabase (see [supabase/README.md](supabase/README.md)):
+
+- **Venues** (details, rooms, extras, reviews) load from the database. If it can't be reached, the built-in example venues are shown instead.
+- **Calendars** show real booked dates from the database, alongside the example ones. Guests only ever see dates, never who booked.
+- **Sign-in** on the website is by an emailed link: no passwords. Signing in for the first time creates the account.
+- **Bookings** are saved to the database as requests once you're signed in. Card payments aren't connected yet, so nothing is charged.
+- **Saved venues** (hearts) follow you to any device once you're signed in.
+
+The connection uses the project's publishable key, which is made to be public. The security rules decide what it can do.
+
+Not connected yet:
+
+- Supabase's built-in email only sends to the Vendo team's own addresses, and its email wording can't be changed. Connect an email service (SMTP, for example Resend or Postmark) to email everyone and add a 6-digit code to the email.
+- Sign-in in the iPhone app waits for that code. The app already shows live venues and dates.
+- The venue dashboard, messages, payments and payouts still use example data.
+
 ## iPhone app
 
 The iPhone app wraps this same website with [Capacitor](https://capacitorjs.com), so every website change reaches the app too. The Xcode project is in `ios/`.

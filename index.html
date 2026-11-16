@@ -828,6 +828,12 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .done-hero p{margin:0;color:var(--muted);font-size:16px}
 .ck-acts{display:flex;gap:8px;flex-wrap:wrap}
 .ck-acts .btn{text-decoration:none}
+/* sign-in and live account */
+.authbox{display:grid;gap:12px;max-width:440px}
+.authbox .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.demo-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;font-size:14px}
+.signin{max-width:560px}
+.me svg{display:block;margin:auto}
 </style>
 
 </head>
@@ -1078,10 +1084,10 @@ const hostSetup=(()=>{const d={listed:[true,true,false],pricing:{wk:0,fri:0,sat:
   try{const x=JSON.parse(localStorage.getItem(SETUP_KEY));if(x&&x.pricing&&Array.isArray(x.listed))return {listed:x.listed,pricing:{...d.pricing,...x.pricing}};}catch(e){}return d;})();
 function saveSetup(){try{localStorage.setItem(SETUP_KEY,JSON.stringify(hostSetup));}catch(e){}}
 function hostRooms(){const r=ROOMS.plough.filter((x,i)=>hostSetup.listed[i]);return r.length?r:[ROOMS.plough[0]];}
-function roomsOf(v){return v.id==="plough"?hostRooms():[{name:v.space,seated:v.seated,standing:v.standing,hour:v.hour,day:v.day,minH:v.minH}];}
+function roomsOf(v){return v.id==="plough"?hostRooms():v.dbRooms&&v.dbRooms.length>1?v.dbRooms:[{name:v.space,seated:v.seated,standing:v.standing,hour:v.hour,day:v.day,minH:v.minH}];}
 const BANDS={wk:"Monday to Thursday",fri:"Friday",sat:"Saturday",sun:"Sunday",dec:"December"};
 function bandOf(d){const w=d.getDay();return w===5?"fri":w===6?"sat":w===0?"sun":"wk";}
-function priceMult(v,d){if(v.id!=="plough"||!d) return 1;const p=hostSetup.pricing;let m=1+(p[bandOf(d)]||0)/100;if(d.getMonth()===11) m*=1+(p.dec||0)/100;return m;}
+function priceMult(v,d){if(!d||(v.id!=="plough"&&!v.pct)) return 1;const p=v.id==="plough"?hostSetup.pricing:v.pct;let m=1+(p[bandOf(d)]||0)/100;if(d.getMonth()===11) m*=1+(p.dec||0)/100;return m;}
 function costFor(r,h,m){return (h>=8?r.day:Math.max(h,r.minH)*r.hour)*(m||1);}
 function pricingNote(v){if(v.id!=="plough") return "";const p=hostSetup.pricing;
   const parts=Object.keys(BANDS).filter(k=>p[k]).map(k=>`${k==="wk"?"Mon–Thu":k==="dec"?"December":BANDS[k]+"s"} ${p[k]>0?"+":""}${p[k]}%`);
@@ -1132,7 +1138,7 @@ const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar"
 const state = {view:"find", event:"All events", guests:"", region:"Anywhere", q:"", date:"", sort:"recommended", open:null, mode:"list", near:null, radius:50, f:{instant:false,stepfree:false,bar:false,outdoor:false,max:0}};
 state.plan={budget:1500,guests:60,hours:5,food:true,drinks:true};
 const saved=new Set((()=>{try{return JSON.parse(localStorage.getItem("vendo-saved")||"[]");}catch(e){return [];}})());
-function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);haptic("light");try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
+function toggleSaved(id){saved.has(id)?saved.delete(id):saved.add(id);haptic("light");dbSaveHeart(id);try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
   const v=VENUES.find(x=>x.id===id);toast(saved.has(id)?`Saved ${v.name}. Find it in My account.`:`Removed ${v.name} from saved venues.`);
   document.querySelectorAll(`[data-heart="${id}"]`).forEach(b=>{b.setAttribute("aria-pressed",saved.has(id));b.setAttribute("aria-label",(saved.has(id)?"Remove ":"Save ")+v.name);});}
 function heartBtn(v,cls){return `<button type="button" class="heart ${cls||""}" data-heart="${v.id}" aria-pressed="${saved.has(v.id)}" aria-label="${saved.has(v.id)?"Remove":"Save"} ${v.name}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.4 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.5 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg></button>`;}
@@ -1459,14 +1465,14 @@ function reviewsHTML(v){
 }
 
 /* ---------- Venue detail ---------- */
-function bookedDay(v,d,ri){if(v.id===HOST_ID){const rs=hostRooms(),r=rs[ri||0]||rs[0];return hostDayBusy(d,r.name)||(r.name==="Long Room"?baseBooked(v,d):altBooked(d,r.name));}return baseBooked(v,d);}
+function bookedDay(v,d,ri){if(dbBusy(v,d,ri)) return true;if(v.id===HOST_ID){const rs=hostRooms(),r=rs[ri||0]||rs[0];return hostDayBusy(d,r.name)||(r.name==="Long Room"?baseBooked(v,d):altBooked(d,r.name));}return baseBooked(v,d);}
 function altBooked(d,name){const k=name.length*11+d.getDate()*7+d.getMonth()*3+d.getDay()*5;return k%9===0;}
 function anyFree(v,d){return roomsOf(v).some((r,i)=>!bookedDay(v,d,i));}
 function baseBooked(v,d){const k=v.id.length*7+d.getDate()*13+d.getMonth()*5+d.getDay()*3;return k%6===0 || (d.getDay()===6 && k%3===0);}
 function openVenue(id,fromRoute,pref){
   const v=VENUES.find(x=>x.id===id); if(!v) return;
   const ae=document.activeElement; if(ae&&ae!==document.body&&!modalRoot.contains(ae)) state.opener=ae;
-  state.open=v; addRecent(id); setMeta("venue-"+v.id);
+  state.open=v; addRecent(id); setMeta("venue-"+v.id); dbLoadBusy(v);
   if(!fromRoute) setUrl("venue-"+v.id,false);
   const sd=pref||searchDay(), rs=roomsOf(v);
   let ri=0; if(sd){const i=rs.findIndex((r,k)=>!bookedDay(v,sd,k)); if(i>=0) ri=i;}
@@ -2017,10 +2023,10 @@ function checkType(e){e=e.toLowerCase();return /wedding/.test(e)?"wedding":/wake
 let checks=(()=>{try{const x=JSON.parse(localStorage.getItem("vendo-checklist"));return x&&typeof x==="object"?x:{};}catch(e){return {};}})();
 let checkSel=0;
 function drawChecklist(){const el=document.getElementById("checklist"); if(!el) return;
-  const b=ME.bookings[checkSel], key=b.id+"|"+b.event, items=CHECKS[checkType(b.event)];
+  const list=acctBookings(), b=list[checkSel]; if(!b) return; const key=(b.ref||b.id)+"|"+b.event, items=CHECKS[checkType(b.event)];
   const done=checks[key]||(checks[key]=items.map((x,i)=>x[2]?i:null).filter(x=>x!=null));
   let last="";
-  el.innerHTML=`<div class="seg wrapseg" role="group" aria-label="Choose an event">${ME.bookings.map((x,i)=>`<button type="button" data-ck="${i}" aria-pressed="${i===checkSel}">${x.event}</button>`).join("")}</div>
+  el.innerHTML=`<div class="seg wrapseg" role="group" aria-label="Choose an event">${list.map((x,i)=>`<button type="button" data-ck="${i}" aria-pressed="${i===checkSel}">${x.event}</button>`).join("")}</div>
     <div class="ck-prog"><span><b>${done.length} of ${items.length}</b> done · ${b.venue}, ${b.date}</span><i aria-hidden="true"><b style="width:${done.length/items.length*100}%"></b></i></div>
     <ul class="ck">${items.map(([w,t],i)=>{const h=w!==last?`<li class="ck-when" aria-hidden="true">${w}</li>`:"";last=w;return h+`<li><label><input type="checkbox" data-i="${i}" ${done.includes(i)?"checked":""}><span>${t}<span class="sr-only">, ${w}</span></span></label></li>`;}).join("")}</ul>`;
   el.querySelectorAll("[data-ck]").forEach(x=>x.addEventListener("click",()=>{checkSel=+x.dataset.ck;drawChecklist();el.querySelector(`[data-ck="${checkSel}"]`).focus();}));
@@ -2035,8 +2041,11 @@ function waitHTML(){if(!waitlist.length) return "";
     <div>${waitlist.map((w,i)=>{const v=VENUES.find(x=>x.id===w.id);return `<div class="brow"><b>${v.name}</b><span class="pill new">Waiting</span>
       <span>${niceDay(dayFromIso(w.date))}${w.room?" · "+w.room:""}</span><span class="brow-acts"><button class="linkbtn" data-open="${v.id}">View venue</button><button class="linkbtn" data-unwait="${i}">Leave list</button></span></div>`;}).join("")}</div></div>`;}
 function renderAccount(){
+  if(authLive()&&DB.user) return renderRealAccount();
+  if(authLive()&&!state.demoAccount) return renderSignIn();
   const sc=guestScore(), n=ME.reviews.length;
   app.innerHTML=`<section class="wrap dash">
+    ${authLive()?`<div class="demo-banner"><span>This is an example account, so you can see how it works.</span><button type="button" class="btn primary" id="real-signin">Sign in to your own</button></div>`:""}
     <div class="dash-head"><div><div class="eyebrow">My account</div><h1>Hello, ${ME.first}.</h1><p>Member since ${ME.since} · ${ME.town}</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="edit-profile">Edit profile</button><button class="btn" id="sign-out">Sign out</button></div></div>
     <div class="verified">${ME.verified.map(v=>`<span>${v}</span>`).join("")}</div>
@@ -2064,6 +2073,7 @@ function renderAccount(){
         <span class="s">${r.event} · ${r.date}</span><p>${r.text}</p>${tagHTML(r.tags)}<span class="by">${r.host}</span>
         <button class="linkbtn" data-reply="${i}">Reply publicly</button></div>`).join("")}</div></div>
   </section>`;
+  const rs=document.getElementById("real-signin"); if(rs) rs.addEventListener("click",()=>{state.demoAccount=false;renderAccount();});
   document.getElementById("edit-profile").addEventListener("click",()=>toast("Demo: this would open your profile settings"));
   document.getElementById("sign-out").addEventListener("click",()=>toast("Demo: you'd be signed out here"));
   app.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
@@ -2260,6 +2270,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.14.0",d:"2026-11-16",t:"Live database and sign-in",n:["Venues, rooms, extras and reviews now load from the Vendo database, with the example venues as a backup if it can't be reached.","Calendars show real booked dates from the database.","Sign in with an emailed link: no password needed. Your account shows your bookings and details.","Booking requests and saved venues are stored in your account once you're signed in."]},
  {v:"0.13.1",d:"2026-11-15",t:"Cleaner page addresses",n:["Page addresses like /about no longer redirect to /about/, so search engines see one address for each page."]},
  {v:"0.13.0",d:"2026-11-15",t:"Search engines",n:["Every page now has its own web address, like /about and /venues/the-plough-and-harrow, with its own title and description for Google and for link previews.","A sitemap and robots file help search engines find the right pages. Venue pages stay out of search results until the venues are real.","Pages load faster: the map only loads when you open it.","Old links with a # still work and move to the new address."]},
  {v:"0.12.0",d:"2026-11-15",t:"iPhone app",n:["Vendo is now an iPhone app as well as a website, built from the same code so every update reaches both.","In the app: a Vendo icon and launch screen, the iPhone share sheet for venues, a light tap feel when you save a venue or book, and calendar files and statements saved through the share sheet."]},
@@ -2347,14 +2358,231 @@ if(NATIVE){
   try{Plug.StatusBar&&Plug.StatusBar.setStyle({style:"LIGHT"});}catch(e){}
   addEventListener("load",()=>{setTimeout(()=>{try{Plug.SplashScreen&&Plug.SplashScreen.hide({fadeOutDuration:250});}catch(e){}},150);});
 }
+/* ---------- Database (Supabase) ----------
+   Venues, real booked dates, sign-in, bookings and saved venues come from the Vendo database.
+   If it can't be reached (offline, or inside the demo artifact), the built-in example data is used instead. */
+const SUPABASE_URL="https://naslarphujlgcaaxbufg.supabase.co";
+// Publishable key: made for browsers and safe to publish. The database's security rules decide what it can do.
+const SUPABASE_KEY="sb_publishable_7qxK8SP0wI7vOjVTxAAVpw_UByqtYby";
+const DB={client:null,live:false,user:null,profile:null,ids:{},busy:{},bookings:null};
+function sbLoad(){
+  if(window.supabase&&window.supabase.createClient) return Promise.resolve();
+  return new Promise((res,rej)=>{const sc=document.createElement("script");
+    sc.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+    sc.onload=res;sc.onerror=()=>{sc.remove();rej(new Error("couldn't load the database library"));};document.head.appendChild(sc);});
+}
+async function dbInit(){
+  try{
+    await sbLoad();
+    DB.client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{flowType:"pkce",persistSession:true,detectSessionInUrl:true,autoRefreshToken:true}});
+    DB.client.auth.onAuthStateChange((ev,session)=>{setTimeout(()=>onAuth(session),0);});
+    const {data:{session}}=await DB.client.auth.getSession();
+    if(/[?&]code=/.test(location.search)){try{history.replaceState(null,"",location.pathname+location.hash);}catch(e){}}
+    await dbLoadVenues();
+    await onAuth(session);
+  }catch(e){DB.live=false;console.info("Vendo is using its built-in example data:",e&&e.message);}
+}
+// Sign-in needs the emailed link to come back to the same place, so it's website-only until emails carry a code.
+const authLive=()=>DB.live&&!NATIVE;
+const pounds=p=>Math.round(p)/100;
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+async function dbLoadVenues(){
+  const {data,error}=await DB.client.from("venues").select("id,slug,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(id,name,note,seated,standing,hour_price_pence,day_price_pence,min_hours,is_listed,sort_order),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
+  if(error) throw new Error(error.message);
+  if(!data||!data.length) throw new Error("no live venues");
+  const keep=[];
+  for(const row of data){
+    let v=VENUES.find(x=>slugOf(x)===row.slug);
+    if(!v){v={id:row.slug,host:"The venue team",hostShort:row.name.split(/\s+/).filter(w=>/^[A-Z]/.test(w)).slice(0,2).map(w=>w[0]).join("")||"V",rating:0,reviews:0,sky:null};VENUES.push(v);}
+    const rooms=(row.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order), main=rooms[0];
+    Object.assign(v,{name:row.name,kind:row.kind,type:row.venue_type,place:row.place,region:row.region,space:row.space_title||v.space,blurb:row.blurb,
+      suits:row.suits,features:row.features,rules:row.house_rules,instant:row.instant_book,reply:row.reply_note||v.reply||"Usually replies within a day"});
+    if(main) Object.assign(v,{seated:Math.max(...rooms.map(r=>r.seated)),standing:Math.max(...rooms.map(r=>r.standing)),hour:pounds(main.hour_price_pence),day:pounds(main.day_price_pence),minH:main.min_hours});
+    if(row.lat!=null){v.lat=row.lat;v.lng=row.lng;LOC[v.id]=[row.lat,row.lng];}
+    v.flags={stepfree:+row.step_free,bar:+row.licensed_bar,outdoor:+row.outdoor_space};FLAGS[v.id]=v.flags;
+    VINFO[v.id]={finish:row.finish_time,music:row.music_note,park:row.parking,go:row.getting_there,own:row.own_cake_decor,rain:row.if_it_rains};
+    POLICY_OF[v.id]=row.cancellation_policy;
+    const ads=(row.addons||[]).sort((a,b)=>a.sort_order-b.sort_order);
+    v.addons=ads.map(a=>({l:a.label,p:pounds(a.price_pence),head:a.per_head}));
+    v.pct={wk:row.pct_mon_thu,fri:row.pct_fri,sat:row.pct_sat,sun:row.pct_sun,dec:row.pct_december};
+    v.dbRooms=rooms.map(r=>({name:r.name,note:r.note,seated:r.seated,standing:r.standing,hour:pounds(r.hour_price_pence),day:pounds(r.day_price_pence),minH:r.min_hours}));
+    const revs=(row.venue_reviews||[]).sort((a,b)=>b.created_at.localeCompare(a.created_at));
+    if(revs.length){REVIEWS[v.id]=revs.map(r=>{const d=new Date(r.created_at);return [r.author_name,r.event_label||"",`${MON[d.getMonth()]} ${d.getFullYear()}`,r.stars,r.body,r.host_reply||undefined];});
+      if(!v.reviews){v.reviews=revs.length;v.rating=Math.round(revs.reduce((a,r)=>a+r.stars,0)/revs.length*10)/10;}}
+    DB.ids[v.id]={uuid:row.id,rooms:(row.rooms||[]).map(r=>({name:r.name,id:r.id})),addons:ads.map(a=>a.id)};
+    keep.push(v);
+  }
+  // Only venues that are live in the database are shown.
+  for(let i=VENUES.length-1;i>=0;i--) if(!keep.includes(VENUES[i])) VENUES.splice(i,1);
+  DB.live=true; updateAvatar();
+  if(state.view==="find"&&document.getElementById("grid")&&!state.open) drawGrid();
+  if(state.view==="account") renderAccount();
+  if(state.open) dbLoadBusy(state.open);   // a venue opened before the database finished loading
+  if(state.view==="book"&&checkout&&!checkout.done) renderCheckout();
+}
+async function dbLoadBusy(v){
+  const x=DB.ids[v.id]; if(!DB.live||!x||DB.busy[v.id]) return;
+  DB.busy[v.id]=new Set();
+  const to=new Date(TODAY);to.setFullYear(to.getFullYear()+2);
+  const {data,error}=await DB.client.rpc("venue_busy_days",{p_venue:x.uuid,p_from:isoDay(TODAY),p_to:isoDay(to)});
+  if(error){delete DB.busy[v.id];return;}
+  DB.busy[v.id]=new Set((data||[]).map(r=>r.day+"|"+(r.room_id||"")));
+  if(state.open&&state.open.id===v.id&&!quote.sent) drawBook();
+}
+function dbBusy(v,d,ri){
+  const b=DB.busy[v.id]; if(!b||!b.size) return false;
+  const k=isoDay(d); if(b.has(k+"|")) return true;
+  const x=DB.ids[v.id], r=roomsOf(v)[ri||0], room=x&&r&&x.rooms.find(q=>q.name===r.name);
+  return !!room&&b.has(k+"|"+room.id);
+}
+async function onAuth(session){
+  const u=(session&&session.user)||null;
+  if((u&&u.id)===(DB.user&&DB.user.id)&&DB.profile!==undefined&&(u?DB.profile:true)) return;
+  DB.user=u; DB.profile=null; DB.bookings=null;
+  if(u){
+    const {data}=await DB.client.from("profiles").select("full_name,phone,town").eq("id",u.id).maybeSingle();
+    DB.profile=data||{full_name:"",phone:"",town:""};
+    await syncSaved(); await dbLoadBookings();
+  }
+  updateAvatar();
+  if(state.view==="account") renderAccount();
+  if(state.view==="book"&&checkout&&!checkout.done){
+    if(u){if(!checkout.name||checkout.name===ME.name) checkout.name=DB.profile.full_name||"";
+      if(!checkout.email||checkout.email===ME.email) checkout.email=u.email;
+      if(!checkout.phone||checkout.phone===ME.phone) checkout.phone=DB.profile.phone||"";
+      saveCheckout();}
+    renderCheckout();
+  }
+}
+function updateAvatar(){
+  const b=document.getElementById("tab-me"); if(!b) return;
+  if(!authLive()){b.textContent=ME.initials;b.setAttribute("aria-label","My account");b.title="My account";return;}
+  if(DB.user){const n=(DB.profile&&DB.profile.full_name)||DB.user.email;
+    b.textContent=n.split(/[\s@.]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("");
+    b.setAttribute("aria-label","My account");b.title="My account ("+n+")";}
+  else{b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 19.5c1.2-3.2 3.9-5 7-5s5.8 1.8 7 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    b.setAttribute("aria-label","Sign in");b.title="Sign in";}
+}
+async function syncSaved(){
+  if(!DB.user) return;
+  const {data,error}=await DB.client.from("saved_venues").select("venue_id"); if(error) return;
+  const byUuid={}; Object.entries(DB.ids).forEach(([id,x])=>byUuid[x.uuid]=id);
+  (data||[]).forEach(r=>{const id=byUuid[r.venue_id]; if(id) saved.add(id);});
+  const have=new Set((data||[]).map(r=>r.venue_id));
+  const add=[...saved].map(id=>DB.ids[id]&&DB.ids[id].uuid).filter(u=>u&&!have.has(u));
+  if(add.length) await DB.client.from("saved_venues").insert(add.map(u=>({user_id:DB.user.id,venue_id:u})));
+  try{localStorage.setItem("vendo-saved",JSON.stringify([...saved]));}catch(e){}
+}
+function dbSaveHeart(id){
+  const x=DB.ids[id]; if(!DB.user||!x) return;
+  const q=saved.has(id)?DB.client.from("saved_venues").insert({user_id:DB.user.id,venue_id:x.uuid})
+    :DB.client.from("saved_venues").delete().eq("user_id",DB.user.id).eq("venue_id",x.uuid);
+  q.then(({error})=>{if(error&&!/duplicate/i.test(error.message)) toast("Couldn't save that to your account. Try again.");});
+}
+const STATUS_LABEL={requested:"Request sent",confirmed:"Confirmed",declined:"Declined",cancelled:"Cancelled",completed:"Completed"};
+async function dbLoadBookings(){
+  if(!DB.user) return;
+  const {data,error}=await DB.client.from("bookings").select("id,ref,status,event_date,start_time,hours,guests,event_label,total_pence,venues(slug,name)").eq("guest_id",DB.user.id).order("event_date");
+  if(error) return;
+  DB.bookings=(data||[]).map(b=>{const v=VENUES.find(x=>slugOf(x)===(b.venues&&b.venues.slug));
+    return {id:v?v.id:"",venue:b.venues?b.venues.name:"Venue",event:b.event_label,ref:b.ref,status:STATUS_LABEL[b.status]||b.status,
+      date:dayFromIso(b.event_date).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:b.guests};});
+}
+function acctBookings(){return authLive()&&DB.user?(DB.bookings||[]):ME.bookings;}
+
+// Sign-in box: an emailed sign-in link (or a 6-digit code once emails carry one). No passwords.
+// Built from sections and buttons, not forms, so it can sit inside the booking form.
+function authHTML(px){
+  return `<div class="authbox" id="${px}-step1" role="group" aria-label="Sign in">
+      <div class="lf"><label for="${px}-email">Email</label><input id="${px}-email" type="email" autocomplete="email" inputmode="email"><span class="err" id="${px}-err"></span></div>
+      <div class="row"><button class="btn primary" type="button" id="${px}-send">Email me a sign-in link</button><span class="hint">No password needed. New here? This creates your account.</span></div></div>
+    <div class="authbox" id="${px}-step2" role="group" aria-label="Enter your sign-in code" hidden>
+      <p class="pnote" id="${px}-sent" role="status"></p>
+      <div class="lf"><label for="${px}-code">6-digit code (if your email has one)</label><input id="${px}-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><span class="err" id="${px}-cerr"></span></div>
+      <div class="row"><button class="btn primary" type="button" id="${px}-verify">Sign in</button><button type="button" class="linkbtn" id="${px}-again">Use a different email</button></div></div>`;
+}
+function bindAuth(px){
+  const s1=document.getElementById(px+"-step1"), s2=document.getElementById(px+"-step2"); if(!s1) return;
+  const em=document.getElementById(px+"-email"), er=document.getElementById(px+"-err"), code=document.getElementById(px+"-code");
+  const send=async()=>{const email=em.value.trim(); er.textContent="";
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){er.textContent="Enter an email address like name@example.com.";em.focus();return;}
+    const btn=document.getElementById(px+"-send"); btn.disabled=true; btn.textContent="Sending…";
+    const redirect=PATH_MODE?location.origin+location.pathname:SITE_URL+"/account";
+    const {error}=await DB.client.auth.signInWithOtp({email,options:{emailRedirectTo:redirect,shouldCreateUser:true}});
+    btn.disabled=false; btn.textContent="Email me a sign-in link";
+    if(error){er.textContent=/rate|too many|seconds/i.test(error.message)?"Too many sign-in emails just now. Wait a minute and try again."
+      :/not authorized|not allowed/i.test(error.message)?"Sign-in emails can only go to the Vendo team's addresses until email sending is set up."
+      :/invalid/i.test(error.message)?"That email address doesn't look right. Check it and try again."
+      :"We couldn't send the email: "+error.message;em.focus();return;}
+    s1.hidden=true; s2.hidden=false; document.getElementById(px+"-sent").innerHTML=`We've emailed <b>${escH(email)}</b>. Open it on this device and tap the sign-in link. If the email shows a 6-digit code, you can type it here instead.`;
+    code.focus();};
+  const verify=async()=>{const t=code.value.replace(/\D/g,""), ce=document.getElementById(px+"-cerr"); ce.textContent="";
+    if(t.length!==6){ce.textContent="Enter the 6 numbers from the email.";code.focus();return;}
+    const btn=document.getElementById(px+"-verify"); btn.disabled=true; btn.textContent="Checking…";
+    const {error}=await DB.client.auth.verifyOtp({email:em.value.trim(),token:t,type:"email"});
+    btn.disabled=false; btn.textContent="Sign in";
+    if(error){ce.textContent=/expired|invalid/i.test(error.message)?"That code didn't work or has expired. Check it, or send a new one.":error.message;code.focus();return;}
+    toast("You're signed in.");};
+  document.getElementById(px+"-send").addEventListener("click",send);
+  document.getElementById(px+"-verify").addEventListener("click",verify);
+  em.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();send();}});
+  code.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();verify();}});
+  document.getElementById(px+"-again").addEventListener("click",()=>{s2.hidden=true;s1.hidden=false;em.focus();});
+}
+function savedPanelHTML(){
+  return `<div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
+      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
+      :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>`;
+}
+function renderSignIn(){
+  app.innerHTML=`<section class="wrap dash"><div class="dash-head"><div><div class="eyebrow">My account</div><h1>Sign in to Vendo</h1>
+      <p>See your bookings, keep your saved venues on every device, and book in a couple of taps.</p></div></div>
+    <div class="panel signin">${authHTML("acct")}</div>
+    <p class="pnote">Just looking? <button type="button" class="linkbtn" id="demo-acct" style="display:inline">See an example account</button></p></section>`;
+  bindAuth("acct");
+  document.getElementById("demo-acct").addEventListener("click",()=>{state.demoAccount=true;renderAccount();});
+}
+function renderRealAccount(){
+  const p=DB.profile||{}, name=p.full_name||"", first=(name||DB.user.email).split(/[\s@]/)[0], bk=DB.bookings||[];
+  app.innerHTML=`<section class="wrap dash">
+    <div class="dash-head"><div><div class="eyebrow">My account</div><h1>Hello, ${escH(first)}.</h1><p>Signed in as ${escH(DB.user.email)}</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sign-out">Sign out</button></div></div>
+    <div class="cols">
+      <div class="panel"><div class="panel-head"><h2>Your bookings</h2><span class="eyebrow">${bk.length} ${bk.length===1?"booking":"bookings"}</span></div>
+        ${bk.length?`<div>${bk.map(b=>`<div class="brow"><b>${escH(b.event)}</b><span class="pill ${b.status==="Confirmed"?"ok":b.status==="Request sent"?"new":"no"}">${b.status}</span>
+          <span>${escH(b.venue)} · ${b.date} · ${b.guests} guests · ${escH(b.ref)}</span><span class="brow-acts">${b.id?`<button class="linkbtn" data-open="${b.id}">View venue</button>`:""}</span></div>`).join("")}</div>`
+          :`<p class="pnote">No bookings yet. <a href="${PATH_MODE?"/":"#find"}">Find a venue</a> to plan your first event.</p>`}</div>
+      <div class="panel"><div class="panel-head"><h2>Your details</h2></div>
+        <form class="lform" id="prof-form" novalidate>
+          <div class="lf full"><label for="pf-name">Full name</label><input id="pf-name" autocomplete="name" value="${escH(name)}"></div>
+          <div class="lf"><label for="pf-phone">Mobile number</label><input id="pf-phone" type="tel" autocomplete="tel" value="${escH(p.phone||"")}"></div>
+          <div class="lf"><label for="pf-town">Town</label><input id="pf-town" autocomplete="address-level2" value="${escH(p.town||"")}"></div>
+          <div class="lf full"><button class="btn primary" type="submit">Save details</button></div></form>
+        <p class="pnote">Venues only see your phone number once a booking is confirmed.</p></div>
+    </div>
+    ${bk.length?`<div class="panel"><div class="panel-head"><h2>Event checklist</h2><span class="eyebrow">Your to-do list</span></div><div id="checklist" style="display:grid;gap:12px"></div></div>`:""}
+    ${waitHTML()}
+    ${savedPanelHTML()}
+  </section>`;
+  document.getElementById("sign-out").addEventListener("click",async()=>{await DB.client.auth.signOut();toast("You're signed out.");});
+  document.getElementById("prof-form").addEventListener("submit",async e=>{e.preventDefault();
+    const row={full_name:document.getElementById("pf-name").value.trim().slice(0,80),phone:document.getElementById("pf-phone").value.trim().slice(0,30)||null,town:document.getElementById("pf-town").value.trim().slice(0,60)||null};
+    const {error}=await DB.client.from("profiles").update(row).eq("id",DB.user.id);
+    if(error){toast("Couldn't save your details: "+error.message);return;}
+    Object.assign(DB.profile,row); updateAvatar(); toast("Details saved."); renderRealAccount();});
+  app.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
+  app.querySelectorAll("[data-unwait]").forEach(b=>b.addEventListener("click",()=>{waitlist.splice(+b.dataset.unwait,1);saveList("vendo-waitlist",waitlist);toast("Removed from the waiting list.");renderAccount();}));
+  if(bk.length){checkSel=Math.min(checkSel,bk.length-1);drawChecklist();}
+  linkify(app);
+}
 /* ---------- Booking page (checkout) ---------- */
 const POLICIES={flexible:["Flexible","Full refund up to 14 days before your event, then 50% up to 48 hours before."],
   moderate:["Moderate","Full refund up to 30 days before your event, then 50% up to 14 days before."],
   strict:["Strict","Full refund up to 60 days before your event, then 50% up to 30 days before."]};
 const POLICY_OF={granary:"strict",riverside:"strict",velvet:"strict",copper:"moderate",lantern:"moderate",plough:"moderate",neon:"flexible",wenham:"flexible",saltmarsh:"flexible",hartwell:"flexible",stmarys:"flexible"};
 const EVENT_TYPES={"Weddings":"Wedding","Birthdays":"Birthday party","Wakes":"Wake","Christenings":"Christening","Corporate":"Work event","Clubs & classes":"Club or class"};
-let checkout=(()=>{try{const x=JSON.parse(sessionStorage.getItem("vendo-checkout"));return x&&x.id?x:null;}catch(e){return null;}})();
-function saveCheckout(){try{sessionStorage.setItem("vendo-checkout",JSON.stringify(checkout));}catch(e){}}
+let checkout=(()=>{try{const x=JSON.parse(localStorage.getItem("vendo-checkout"));return x&&x.id?x:null;}catch(e){return null;}})();
+function saveCheckout(){try{localStorage.setItem("vendo-checkout",JSON.stringify(checkout));}catch(e){}}
 const pad2=n=>String(n).padStart(2,"0");
 const toMin=t=>{const[h,m]=t.split(":").map(Number);return h*60+m;};
 const fromMin=m=>`${pad2(Math.floor(m/60)%24)}:${pad2(m%60)}`;
@@ -2364,7 +2592,7 @@ function goCheckout(){
   const ev=prev?prev.event:(v.suits.includes(state.event)?state.event:"");
   checkout={id:v.id,date:isoDay(quote.date),room:quote.room,hours:quote.hours,guests:quote.guests,addons:{...quote.addons},
     start:prev?prev.start:(quote.hours>=8?"12:00":fromMin(Math.max(9*60,Math.min(19*60,24*60-quote.hours*60)))),
-    event:ev,other:prev?prev.other:"",notes:prev?prev.notes:"",name:prev?prev.name:ME.name,email:prev?prev.email:ME.email,phone:prev?prev.phone:ME.phone,
+    event:ev,other:prev?prev.other:"",notes:prev?prev.notes:"",name:prev?prev.name:DB.user?((DB.profile&&DB.profile.full_name)||""):ME.name,email:prev?prev.email:DB.user?DB.user.email:ME.email,phone:prev?prev.phone:DB.user?((DB.profile&&DB.profile.phone)||""):ME.phone,
     pay:"deposit",method:"card",agree:false,done:null};
   saveCheckout(); closeVenue(true); nav("book-"+v.id);
 }
@@ -2383,11 +2611,11 @@ function ckPrice(){
 function eventLabel(c){return c.event==="other"?(c.other.trim()||"Event"):EVENT_TYPES[c.event]||c.event||"Event";}
 function renderCheckout(){
   const c=checkout; if(c.done){renderBooked();return;}
-  const p=ckPrice(), v=p.v, info=VINFO[v.id]||{}, pol=POLICIES[POLICY_OF[v.id]||"moderate"], maxG=Math.max(p.r.seated,p.r.standing);
+  const p=ckPrice(), v=p.v, info=VINFO[v.id]||{}, pol=POLICIES[POLICY_OF[v.id]||"moderate"], maxG=Math.max(p.r.seated,p.r.standing), needAuth=authLive()&&!DB.user;
   const times=[];for(let m=9*60;m<=22*60;m+=30)times.push(fromMin(m));
   app.innerHTML=`<section class="wrap ck-page">
     <button type="button" class="linkbtn ck-back" id="ck-back">← Back to ${v.name}</button>
-    <h1>${v.instant?"Confirm and pay":"Request to book"}</h1>
+    <h1>${v.instant&&!authLive()?"Confirm and pay":"Request to book"}</h1>
     <div class="ckgrid">
       <form class="ckform" id="ckform" novalidate>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">1</span>Your event</legend>
@@ -2403,12 +2631,13 @@ function renderCheckout(){
           <div class="lf"><label for="ck-notes">Anything ${v.host.split(",")[0]} should know? (optional)</label><textarea id="ck-notes" maxlength="500" placeholder="Dietary needs, set-up time, a surprise to keep quiet">${escH(c.notes)}</textarea></div>
         </fieldset>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">2</span>Your details</legend>
+          ${needAuth?`<p class="pnote">Sign in to book, so your booking is saved to your account. We'll email you a sign-in link: no password needed. Your booking details here are kept while you sign in.</p>${authHTML("ckauth")}<span class="err" id="ce-auth"></span>`:`
           <div class="lf"><label for="ck-name">Full name</label><input id="ck-name" autocomplete="name" value="${escH(c.name)}"><span class="err" id="ce-name"></span></div>
           <div class="ckrow">
             <div class="lf"><label for="ck-email">Email</label><input id="ck-email" type="email" autocomplete="email" value="${escH(c.email)}"><span class="err" id="ce-email"></span></div>
             <div class="lf"><label for="ck-phone">Mobile number</label><input id="ck-phone" type="tel" autocomplete="tel" value="${escH(c.phone)}"><span class="err" id="ce-phone"></span></div>
           </div>
-          <span class="hint">The venue sees your number once the booking is confirmed, so they can reach you on the day.</span>
+          <span class="hint">The venue sees your number once the booking is confirmed, so they can reach you on the day.</span>`}
         </fieldset>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">3</span>Payment</legend>
           <div class="paychoice" role="radiogroup" aria-label="How much to pay now">
@@ -2432,7 +2661,8 @@ function renderCheckout(){
     </div></section>`;
   const f=c, set=(k,val)=>{f[k]=val;saveCheckout();};
   const bindIn=(id,k,fn)=>{const el=document.getElementById(id);el.addEventListener("input",()=>{set(k,el.value);const e=document.getElementById("ce-"+k);if(e)e.textContent="";if(fn)fn();});};
-  bindIn("ck-other","other"); bindIn("ck-notes","notes"); bindIn("ck-name","name"); bindIn("ck-email","email"); bindIn("ck-phone","phone");
+  bindIn("ck-other","other"); bindIn("ck-notes","notes");
+  if(needAuth) bindAuth("ckauth"); else {bindIn("ck-name","name"); bindIn("ck-email","email"); bindIn("ck-phone","phone");}
   document.getElementById("ck-event").addEventListener("change",e=>{set("event",e.target.value);document.getElementById("ce-event").textContent="";document.getElementById("ck-other-wrap").hidden=e.target.value!=="other";});
   document.getElementById("ck-start").addEventListener("change",e=>{set("start",e.target.value);drawCkSum();});
   const g=document.getElementById("ck-guests");
@@ -2466,11 +2696,12 @@ function drawCkSum(){
       <div class="hint"><span>Damage deposit, held then released</span><span>${gbp(p.damage)}</span></div></div>
     <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>`;
-  document.getElementById("ck-go").textContent=v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
-  document.getElementById("ck-go-note").textContent=v.instant?"Your booking is confirmed straight away.":`${v.reply}. You'll only pay if ${v.host.split(",")[0]} accepts.`;
+  document.getElementById("ck-go").textContent=authLive()?(DB.user?"Send booking request":"Sign in above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
+  document.getElementById("ck-go-note").textContent=authLive()?"Card payments are coming soon. For now your request is saved to your account and nothing is charged.":v.instant?"Your booking is confirmed straight away.":`${v.reply}. You'll only pay if ${v.host.split(",")[0]} accepts.`;
 }
-function submitCheckout(maxG){
+async function submitCheckout(maxG){
   const c=checkout, er={}, n=parseInt(document.getElementById("ck-guests").value,10);
+  if(authLive()&&!DB.user){const e=document.getElementById("ce-auth");if(e)e.textContent="Sign in first, so we can save your booking.";const i=document.getElementById("ckauth-email");if(i)i.focus();return;}
   if(!c.event) er.event="Choose the occasion.";
   if(c.event==="other"&&!c.other.trim()) er.other="Tell us the occasion.";
   if(!(n>=1&&n<=maxG)) er.guests=`Enter a number from 1 to ${maxG}.`;
@@ -2482,17 +2713,36 @@ function submitCheckout(maxG){
   const first=Object.keys(er)[0];
   if(first){const id={event:"ck-event",other:"ck-other",guests:"ck-guests",name:"ck-name",email:"ck-email",phone:"ck-phone",agree:"ck-agree"}[first];document.getElementById(id).focus();return;}
   const p=ckPrice(), v=p.v, label=eventLabel(c);
-  c.done={ref:"VND-"+(48213+p.d.getDate()*17+v.id.length+c.guests),label,instant:v.instant,dueNow:p.dueNow,total:p.total,balance:p.payDeposit?p.balance:0};
-  ME.bookings.unshift({venue:v.name,id:v.id,event:label,date:p.d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:c.guests,status:v.instant?"Confirmed":"Awaiting reply"});
+  let ref="VND-"+(48213+p.d.getDate()*17+v.id.length+c.guests), savedToDb=false;
+  if(authLive()&&DB.user&&DB.ids[v.id]){
+    const go=document.getElementById("ck-go"); go.disabled=true; go.textContent="Saving…";
+    const x=DB.ids[v.id], room=x.rooms.find(r=>r.name===p.r.name);
+    const row={venue_id:x.uuid,room_id:room?room.id:null,guest_id:DB.user.id,event_date:c.date,start_time:c.start,hours:c.hours,guests:c.guests,
+      event_type:c.event==="other"?"Other":c.event,event_label:label,notes:c.notes.trim()||null,contact_name:c.name.trim(),contact_email:c.email.trim(),contact_phone:c.phone.trim(),
+      payment_plan:p.payDeposit?"deposit":"full",hire_pence:Math.round(p.hire*100),extras_pence:Math.round(p.add*100),fee_pence:Math.round(p.fee*100),total_pence:Math.round(p.total*100),
+      deposit_pence:p.payDeposit?p.deposit*100:0,balance_due_on:p.payDeposit?isoDay(p.balDate):null,damage_hold_pence:p.damage*100};
+    const {data,error}=await DB.client.from("bookings").insert(row).select("id,ref").single();
+    if(error){go.disabled=false;drawCkSum();const e=document.getElementById("ce-agree");e.textContent="We couldn't save your booking: "+error.message;return;}
+    ref=data.ref; savedToDb=true;
+    const extras=v.addons.map((a,i)=>c.addons[i]?{booking_id:data.id,addon_id:x.addons[i]||null,label:a.l,price_pence:Math.round(a.p*100),quantity:a.head?c.guests:1}:null).filter(Boolean);
+    if(extras.length) await DB.client.from("booking_addons").insert(extras);
+    if(DB.profile&&(!DB.profile.full_name||!DB.profile.phone)){
+      const up={full_name:DB.profile.full_name||c.name.trim(),phone:DB.profile.phone||c.phone.trim()};
+      const r=await DB.client.from("profiles").update(up).eq("id",DB.user.id); if(!r.error) Object.assign(DB.profile,up);}
+    delete DB.busy[v.id]; await dbLoadBookings(); updateAvatar();
+  }
+  c.done={ref,label,instant:v.instant&&!savedToDb,saved:savedToDb,dueNow:p.dueNow,total:p.total,balance:p.payDeposit?p.balance:0};
+  if(!savedToDb) ME.bookings.unshift({venue:v.name,id:v.id,event:label,date:p.d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:c.guests,status:v.instant?"Confirmed":"Awaiting reply"});
   const tk="b-"+v.id; if(!THREADS[tk]) THREADS[tk]={title:v.host,sub:`${v.name} · ${label} · ${niceDay(p.d)}`,side:"guest",msgs:[]};
   THREADS[tk].msgs.push(["them",v.instant?`Hi ${c.name.split(" ")[0]}, thanks for booking! We're looking forward to your ${label.toLowerCase()}. Message us any time with questions.`:`Hi ${c.name.split(" ")[0]}, thanks for your request. We'll check the date and reply soon.`,"Just now"]);
-  if(v.id===HOST_ID&&v.instant){host.upcoming.push({d:p.d,t:`${c.name.trim()} · ${label}`,x:`${p.r.name} · ${c.guests} guests · ${fmtT(c.start)}–${fmtT(p.end)}`,v:Math.round(p.hire+p.add)});host.upcoming.sort((a,b)=>a.d-b.d);}
+  if(v.id===HOST_ID&&v.instant&&!savedToDb){host.upcoming.push({d:p.d,t:`${c.name.trim()} · ${label}`,x:`${p.r.name} · ${c.guests} guests · ${fmtT(c.start)}–${fmtT(p.end)}`,v:Math.round(p.hire+p.add)});host.upcoming.sort((a,b)=>a.d-b.d);}
   quote.date=null; saveCheckout(); haptic("success"); renderBooked(); window.scrollTo(0,0); focusMain();
 }
 function renderBooked(){
   const c=checkout, d=c.done, p=ckPrice(), v=p.v, host1=v.host.split(",")[0];
   const steps=[];
-  steps.push([ "Today", d.instant?`Paid ${gbp(d.dueNow)}`:"Request sent", d.instant?`Your ${c.date&&p.payDeposit?"deposit":"payment"} is held safely by Vendo until after your event.`:`${v.reply}. Your card is only charged if ${host1} accepts.`]);
+  if(d.saved) steps.push(["Today","Saved to your account",`Your request is in your account. Card payments are coming soon, so nothing has been charged.`]);
+  else steps.push([ "Today", d.instant?`Paid ${gbp(d.dueNow)}`:"Request sent", d.instant?`Your ${c.date&&p.payDeposit?"deposit":"payment"} is held safely by Vendo until after your event.`:`${v.reply}. Your card is only charged if ${host1} accepts.`]);
   if(d.balance) steps.push([niceDay(p.balDate),`Balance of ${gbp(d.balance)} taken`,"Automatically, from the card you used today."]);
   steps.push([niceDay(p.holdDate),`${gbp(p.damage)} damage deposit held`,"Released within 7 days of your event if all is well."]);
   steps.push([niceDay(p.d),`Your ${d.label.toLowerCase()}`,`${fmtT(c.start)} to ${fmtT(p.end)} at ${v.name}${p.rs.length>1?", "+p.r.name:""}. ${VINFO[v.id]&&VINFO[v.id].park?VINFO[v.id].park+".":""}`]);
@@ -2512,7 +2762,7 @@ function renderBooked(){
         <div class="ck-acts"><button type="button" class="btn primary" id="bk-msg">Message ${host1}</button><button type="button" class="btn" id="bk-ics">Add to calendar</button><a class="btn" href="${PATH_MODE?"/account":"#account"}">Your event checklist</a></div>
         <button type="button" class="linkbtn" id="bk-more">Find another venue</button></div>
     </div>
-    <p class="small" style="text-align:left">Demo only. Nothing was booked or charged.</p></section>`;
+    <p class="small" style="text-align:left">${d.saved?"Saved to the Vendo database. No payment was taken.":"Demo only. Nothing was booked or charged."}</p></section>`;
   document.getElementById("bk-msg").addEventListener("click",()=>openChat("b-"+v.id));
   document.getElementById("bk-more").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);});
   document.getElementById("bk-ics").addEventListener("click",()=>{
@@ -2668,6 +2918,7 @@ document.getElementById("tab-me").addEventListener("click",()=>{nav("account");w
 if(PATH_MODE) window.addEventListener("popstate",()=>{if(location.hash&&!isRouteKey(location.hash.slice(1))) return; route();});
 else window.addEventListener("hashchange",route);
 linkify(document.querySelector("header"));linkify(document.querySelector("footer"));
+dbInit();
 route();
 </script>
 </body>
