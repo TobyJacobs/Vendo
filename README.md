@@ -49,7 +49,13 @@ Not connected yet:
 
 ## Admin dashboard
 
-Vendo's team sees an **Admin** tab (at `/admin`) once signed in with an email on the database's admin list. It shows Vendo's takings, profit after card fees and running costs, bookings, customers and venues, with monthly charts, venues waiting for approval (with an Approve button), top venues, event types, recent bookings and sign-ups, and an editable list of running costs. Until real bookings arrive it can show example figures, clearly labelled. Everyone else, including signed-in guests and venues, can't load the figures: the database refuses them.
+Vendo's team sees an **Admin** tab (at `/admin`) once signed in with an email on the database's admin list. It shows Vendo's takings, profit after card fees and running costs, bookings, customers and venues, with monthly charts, venues waiting for approval, top venues, event types, recent bookings and sign-ups, and an editable list of running costs. Until real bookings arrive it can show example figures, clearly labelled. Everyone else, including signed-in guests and venues, can't load the figures: the database refuses them.
+
+## Adding and verifying venues
+
+Venue owners add their own venue at `/for-venues/add`: details, rooms and prices, extras, up to six photos, good-to-know details and their cancellation policy. To get verified they upload photo ID, their premises licence (if they sell alcohol or put on music) and their public liability insurance certificate. They can save a draft and come back, then submit it for review. Their dashboard shows each venue's status, and any changes Vendo has asked for.
+
+In the Admin tab, each venue waiting for approval has a **Review** button. It shows the listing, opens the private documents, and has three checks: ID, licence and insurance. **Approve and put live** only works once all three are ticked, and gives the venue the **Verified venue** badge. **Send back to the owner** returns it to draft with a note. Bank details are checked by Stripe when payouts are set up (not built yet).
 
 ## iPhone app
 

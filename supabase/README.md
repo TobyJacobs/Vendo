@@ -40,3 +40,13 @@ Row level security is on for every table:
 - `migrations/20261116150000_admin.sql`: the admin email list (`admin_emails`), automatic admin access for listed emails when they sign up, running costs (`admin_costs`) and `admin_stats()`, which returns every dashboard figure and refuses anyone who isn't an admin.
 - `tests/admin_check.sql`: proves a listed email becomes admin, a normal user can't read the stats or costs or make themselves admin, and an admin can. 10 checks, all passing.
 - To add an admin, run in the SQL editor: `insert into public.admin_emails (email) values ('name@example.com');` If they already have an account, also run: `update public.profiles set is_admin = true where id = (select id from auth.users where email = 'name@example.com');`
+
+## Venue verification
+
+- `migrations/20261116170000_venue_verification.sql`: venue owners add a venue (draft, then "pending review"), with photos in the public `venue-photos` bucket and their ID, premises licence and insurance certificate in the private `venue-docs` bucket. Files sit in a folder named after the venue, and only that venue's owner and admins can open the documents.
+  - `venue_docs`: what the owner tells us (legal name, licence number and council, insurer, cover, expiry) and where their files are. Owner and admins only.
+  - `venue_checks`: the admin's three checks (ID, licence, insurance) and notes. Admins only.
+  - `venues.verified`: the "Verified venue" badge. Only `approve_venue()` sets it, and only once all three checks are ticked. Unticking a check removes it straight away.
+  - `send_back_venue()` returns a venue to draft with a note the owner sees.
+  - Owners can't verify their own venue, put it live, mark it as a demo or edit the admin's note.
+- `tests/venue_check.sql`: 28 checks covering owners, another owner, signed-out visitors and an admin, including file access. All passing.

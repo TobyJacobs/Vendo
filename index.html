@@ -543,6 +543,35 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .err{font-size:12.5px;color:var(--warn);font-weight:700}
 .err:empty{display:none}
 @media (max-width:520px){.lform{grid-template-columns:1fr}}
+.vph{display:block;width:100%;height:100%;object-fit:cover}
+.vgal{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px}.vgal button{flex:0 0 auto;width:84px;height:60px;border-radius:8px;overflow:hidden;border:2px solid transparent;padding:0;background:none;cursor:pointer}.vgal button[aria-current="true"]{border-color:var(--accent)}.vgal img{width:100%;height:100%;object-fit:cover;display:block}
+.av .panel{margin-bottom:16px}.av .lform{margin-top:6px;align-items:start}
+.opt{font-weight:500;color:var(--muted)}
+.av-set{border:0;padding:0;margin:0}.av-set legend{font-size:13px;font-weight:700;margin-bottom:6px;padding:0}
+.av-chips{display:flex;flex-wrap:wrap;gap:8px 14px}
+.av-chk{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer}.av-chk input{width:18px;height:18px;accent-color:var(--accent)}
+.av-room{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;display:grid;gap:8px}.av-room .linkbtn{justify-self:start}
+.av-h3{font-size:16px;margin:18px 0 6px}
+.av-addon{display:grid;grid-template-columns:minmax(0,1fr) 110px auto auto;gap:8px;align-items:center;margin:8px 0}
+.av-addon input:not([type=checkbox]){border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink);width:100%}
+@media (max-width:520px){.av-addon{grid-template-columns:minmax(0,1fr) 90px}}
+.av-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.av-ph{position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--sunk)}.av-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.av-ph-x{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:18px;line-height:1;cursor:pointer}
+.av-cover{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px}
+.av-ph-add{display:grid;place-content:center;justify-items:center;gap:2px;border:2px dashed var(--line);background:var(--surface);cursor:pointer;color:var(--muted)}.av-ph-add span{font-size:28px;line-height:1}.av-ph-add:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.av-file{font-size:12.5px;color:var(--muted)}.av-file.ok{color:var(--good)}
+.lf input[type=file]{padding:8px}
+.av-acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 24px}
+.av-errs{border:2px solid #b42318;border-radius:12px;padding:14px 16px;margin-bottom:16px;background:var(--surface)}.av-errs ul{margin:6px 0 0;padding-left:20px}.av-errs a{color:#b42318;font-weight:600}
+.myv{margin-bottom:16px}.myv-row{display:grid;gap:4px;padding-block:12px;border-top:1px solid var(--line)}.myv-row:first-of-type{border-top:0}
+.myv-t{display:flex;justify-content:space-between;gap:10px;align-items:center}.myv-t b{font-size:15.5px}.myv-sub{font-size:13px;color:var(--muted)}
+.myv-note{margin:4px 0;padding:10px 12px;border-radius:10px;background:var(--accent-soft);font-size:14px}
+.myv-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.rv-photos{display:flex;gap:8px;overflow-x:auto;margin:6px 0 10px}.rv-photos img{height:110px;border-radius:8px;display:block}
+.rv-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}.rv-row span{color:var(--muted)}.rv-row b{text-align:right}
+.rv-doc{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.rv-form{display:grid;gap:10px;margin-bottom:14px}.muted{color:var(--muted);font-weight:500}
 .faq{display:grid;gap:8px}
 .faq details{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .faq summary{font-weight:700;cursor:pointer}
@@ -1085,6 +1114,7 @@ function festoon(pts,id){
 const WALL={pub:"#7B5E4B",hall:"#8D7A68",hall2:"#7E8796",leisure:"#5E88B0",bar:"#8B5A4C",barn:"#9C6C48",pavilion:"#5F8466",boathouse:"#4F6F90",club:"#5A5072",rooftop:"#6D7F96",karaoke:"#7A4E63"};
 const SKIES=[["#7DBAE8","#BFDDF4","#F3EBDA"],["#86C1EC","#C8E3F6","#F5EEDD"],["#76B3E3","#B6D8F2","#F1E8D4"]];
 function scene(v,uid){
+  if(v.photos&&v.photos.length) return `<img class="vph" src="${escH(v.photos[0])}" alt="" loading="lazy" decoding="async">`;
   const b=BUILD[v.type], id=v.id+uid, sil=WALL[v.type]||"#5E7187";
   let seed=[...v.id].reduce((a,c)=>a+c.charCodeAt(0),0);
   const [s0,s1,s2]=SKIES[seed%3];
@@ -1133,7 +1163,8 @@ const VINFO={
  riverside:{finish:"Finish by 11:30pm",music:"Quiet on the balcony after 11pm",park:"20 spaces, with overflow at Mill Meadows",go:"Henley station is 6 minutes' walk",own:"Your own cake is fine. No confetti on the balcony",rain:"The clubroom has full-height windows over the river"},
  stmarys:{finish:"Finish by 10:30pm",music:"Background music only after 9pm",park:"On-street pay and display",go:"The 8 bus from Temple Meads stops at the corner",own:"Bring your own food, cake and decorations",rain:"Garden parties move into the hall"}
 };
-function vBadges(v){const b=[["verified","Verified venue","Owner ID, premises licence and insurance checked by Vendo"]];
+const rtg=v=>v.reviews?`★ ${v.rating.toFixed(1)}`:"New";
+function vBadges(v){const b=v.verified===false?[]:[["verified","Verified venue","Owner ID, premises licence and insurance checked by Vendo"]];
   if(/within 1 hour/.test(v.reply)) b.push(["fast","Replies within an hour","Answers most messages within an hour"]);
   if(v.rating>=4.8&&v.reviews>=50) b.push(["top","Top host","Rated 4.8 or more across 50+ bookings"]);
   return b;}
@@ -1199,7 +1230,7 @@ function lightbox(inner,cap){
   d.addEventListener("click",e=>{if(e.target===d||e.target.closest(".close"))close();});
   d.querySelector(".close").focus();
 }
-function miniCard(v,extra){return `<button type="button" class="mrow mini" data-open="${v.id}"><span class="mthumb">${scene(v,"m"+v.id)}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span>${extra||""}</span></button>`;}
+function miniCard(v,extra){return `<button type="button" class="mrow mini" data-open="${v.id}"><span class="mthumb">${scene(v,"m"+v.id)}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span>${extra||""}</span></button>`;}
 const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar","Licensed bar"],["outdoor","Outdoor space"]];
 
 /* ---------- State ---------- */
@@ -1426,7 +1457,7 @@ function drawGrid(){
   grid.innerHTML = list.length? list.map(v=>`<div class="cw">${heartBtn(v)}
     <button class="card" data-id="${v.id}" aria-label="View ${v.name}">
       <div class="pic">${scene(v,"c")}${v.instant?'<span class="badge instant">Instant book</span>':'<span class="badge">Request to book</span>'}<span class="kind">${v.kind}</span></div>
-      <div class="row1"><h3>${v.name}</h3><span class="rating num">${v.rating.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${v.reviews})</span></span></div>
+      <div class="row1"><h3>${v.name}</h3><span class="rating num">${v.reviews?`${v.rating.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${v.reviews})</span>`:"New"}</span></div>
       <div class="where">${v.place}</div>
       ${badgesHTML(v,true)}
       ${v.dist!=null?`<div class="dist">${milesText(v.dist)} away</div>`:""}
@@ -1468,7 +1499,7 @@ function ensureMap(){
   return lmap;
 }
 function popHTML(v){
-  return `<div class="pop"><b>${v.name}</b><span>${v.kind} · ${v.place}</span><span class="pp"><strong>${gbp(full(v.hour))}</strong>/hour incl. fees · ★ ${v.rating.toFixed(1)}${v.dist!=null?` · ${milesText(v.dist)}`:""}</span><button type="button" class="pop-view" data-id="${v.id}">View venue</button></div>`;
+  return `<div class="pop"><b>${v.name}</b><span>${v.kind} · ${v.place}</span><span class="pp"><strong>${gbp(full(v.hour))}</strong>/hour incl. fees · ${rtg(v)}${v.dist!=null?` · ${milesText(v.dist)}`:""}</span><button type="button" class="pop-view" data-id="${v.id}">View venue</button></div>`;
 }
 function lightPin(id,on){
   document.querySelectorAll(".vpin").forEach(p=>p.classList.toggle("on",on&&p.dataset.id===id));
@@ -1478,7 +1509,7 @@ function drawMap(list,empty){
   const side=document.getElementById("maplist");
   side.innerHTML=list.length?list.map(v=>`<button type="button" class="mrow" data-id="${v.id}" aria-label="View ${v.name}">
       <div class="mthumb">${scene(v,"m")}</div>
-      <div class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></div>
+      <div class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span></div>
       ${v.dist!=null?`<span class="mdist">${milesText(v.dist)}</span>`:""}</button>`).join(""):empty;
   side.querySelectorAll(".mrow").forEach(r=>{
     r.addEventListener("click",()=>openVenue(r.dataset.id));
@@ -1523,6 +1554,7 @@ const REVIEWS={
  stmarys:[["Daniel M.","Christening lunch","Oct 2026",5,"Affordable, clean and a lovely garden for the children."],["Joan H.","Wake","Sep 2026",5,"Margaret was gentle and helpful. The hall felt warm and peaceful."],["Kofi A.","Kids' birthday party","Jul 2026",4,"Great space for the price. Bring your own tablecloths to dress it up."]]
 };
 function reviewsHTML(v){
+  if(!v.reviews&&!(REVIEWS[v.id]||[]).length) return `<div class="section"><div class="rv-head"><h3>Reviews</h3><span>No reviews yet</span></div><p style="margin:0;color:var(--muted)">${escH(v.name)} is new on Vendo. Reviews appear here after guests have held their events.</p></div>`;
   const list=REVIEWS[v.id]||[], seed=i=>v.id.length+i*3;
   return `<div class="section"><div class="rv-head"><h3>Reviews</h3><span>${starsHTML(v.rating)} <b>${v.rating.toFixed(1)}</b> from ${v.reviews} guests</span></div>
     <div class="gphotos"><div class="gp-h"><b>Photos from guests</b><span>${list.length*7+5} photos</span></div>
@@ -1549,11 +1581,11 @@ function openVenue(id,fromRoute,pref){
   quote.month=sd?new Date(sd.getFullYear(),sd.getMonth(),1):new Date(2026,11,1);
   quote.hours=Math.max(5,rs[ri].minH); quote.guests=Math.min(60,rs[ri].seated); quote.addons={}; quote.sent=null;
   modalRoot.innerHTML = `<div class="overlay" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-    <div class="hero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close ${v.name}">×</button></div>
+    <div class="hero" id="vhero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close ${v.name}">×</button></div>${v.photos&&v.photos.length>1?`<div class="vgal" role="group" aria-label="Photos of ${escH(v.name)}">${v.photos.map((u,i)=>`<button type="button" data-vph="${i}" aria-label="Photo ${i+1} of ${v.photos.length}" aria-current="${i===0}"><img src="${escH(u)}" alt="" loading="lazy"></button>`).join("")}</div>`:""}
     <div class="sheet-body">
       <div>
         <div class="vhead"><div class="eyebrow">${v.kind} · ${v.region}</div><h2 id="sheet-title">${v.name}</h2>
-          <div class="sub">${v.place} · <span class="rating num">${v.rating.toFixed(1)}</span> from ${v.reviews} reviews</div>${badgesHTML(v)}</div>
+          <div class="sub">${v.place} · ${v.reviews?`<span class="rating num">${v.rating.toFixed(1)}</span> from ${v.reviews} reviews`:"New on Vendo"}</div>${badgesHTML(v)}</div>
         <div class="facts"><div><b>${v.seated}</b><span>seated</span></div><div><b>${v.standing}</b><span>standing</span></div><div><b>${gbp(full(v.hour))}</b><span>per hour, incl. fees</span></div><div><b>${v.minH} hrs</b><span>minimum hire</span></div></div>
         <div class="section"><h3>${v.space}</h3><p class="blurb">${v.blurb}</p><div class="suits">${v.suits.map(s=>`<span>${s}</span>`).join("")}</div></div>
         <div class="section"><h3>What's included</h3><ul class="features">${v.features.map(f=>`<li>${f}</li>`).join("")}</ul></div>
@@ -1575,10 +1607,12 @@ function openVenue(id,fromRoute,pref){
     if(!f.length) return; const a=f[0], z=f[f.length-1];
     if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();} else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}});
   document.getElementById("close").addEventListener("click",()=>closeVenue());
-  document.getElementById("all-reviews").addEventListener("click",()=>toast(`Demo: this would show all ${v.reviews} reviews`));
-  document.getElementById("add-photo").addEventListener("click",()=>toast("After your event, you can add photos to your review."));
+  document.getElementById("all-reviews")?.addEventListener("click",()=>toast(`Demo: this would show all ${v.reviews} reviews`));
+  document.getElementById("add-photo")?.addEventListener("click",()=>toast("After your event, you can add photos to your review."));
   modalRoot.querySelectorAll("[data-photo]").forEach(b=>b.addEventListener("click",()=>lightbox(partyPic(+b.dataset.photo,"lb"),b.dataset.cap)));
   document.getElementById("share").addEventListener("click",()=>shareVenue(v));
+  modalRoot.querySelectorAll("[data-vph]").forEach(b=>b.addEventListener("click",()=>{const img=document.querySelector("#vhero .vph");if(img) img.src=v.photos[+b.dataset.vph];
+    modalRoot.querySelectorAll("[data-vph]").forEach(x=>x.setAttribute("aria-current",x===b));}));
   document.getElementById("close").focus();
   loadTransport(v);
 }
@@ -1865,8 +1899,11 @@ host.tab="overview"; host.qdone={desc:1,gtk:1,cancel:1,reply:1,verify:1};
 function renderHost(){
   const v=VENUES[0];
   const me=authLive()&&DB.user&&DB.profile&&DB.profile.account_type==="host"?DB.profile:null;
+  if(authLive()&&DB.user&&!myv.list&&!myv.loading) loadMyVenues().then(()=>{if(state.view==="host") renderHost();});
+  const mine=!!(me||(myv.list&&myv.list.length)||(authLive()&&DB.user&&!myv.list));
   app.innerHTML=`<section class="wrap dash">
-    ${me?`<div class="demo-banner"><span>Welcome, ${escH((me.full_name||"").split(" ")[0]||"there")}. These figures are examples until ${escH(me.business_name||"your venue")} is set up on Vendo.</span><a class="btn primary" href="#list-your-venue" style="text-decoration:none">Set up ${escH(me.business_name||"your venue")}</a></div>`:""}
+    ${mine?myVenuesPanel():""}
+    ${mine?`<div class="demo-banner"><span>${me?`Welcome, ${escH((me.full_name||"").split(" ")[0]||"there")}. `:""}The dashboard below shows example figures until your venue is live and taking bookings.</span></div>`:""}
     <div class="dash-head"><div><div class="eyebrow">Host dashboard · November 2026</div><h1>Good afternoon, Jo.</h1><p>${v.name} · ${hostRooms().length} ${hostRooms().length===1?"room":"rooms"} on Vendo</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="preview">View your listing</button><button class="btn primary" id="addspace">Add another venue</button></div></div>
     <div class="htabs" role="tablist" aria-label="Dashboard sections">${HTABS.map(([k,l])=>`<button type="button" role="tab" id="ht-${k}" data-ht="${k}" aria-controls="hbody" aria-selected="${host.tab===k}" tabindex="${host.tab===k?0:-1}">${l}</button>`).join("")}</div>
@@ -1878,7 +1915,8 @@ function renderHost(){
       if(k) n=tabs[(i+k+tabs.length)%tabs.length]; else if(e.key==="Home") n=tabs[0]; else if(e.key==="End") n=tabs[tabs.length-1];
       if(n){e.preventDefault();goTab(n.dataset.ht);n.focus();}});});
   document.getElementById("preview").addEventListener("click",()=>openVenue("plough"));
-  document.getElementById("addspace").addEventListener("click",()=>{nav("list-your-venue");window.scrollTo(0,0);});
+  document.getElementById("addspace").addEventListener("click",()=>{if(authLive()&&DB.user){setEditId(null);myv.form=null;nav("add-venue");}else nav("list-your-venue");window.scrollTo(0,0);});
+  bindMyVenues(app);
   drawHostTab();
 }
 function goTab(k){host.tab=k;drawHostTab();}
@@ -2138,7 +2176,7 @@ function renderAccount(){
     <div class="panel"><div class="panel-head"><h2>Event checklist</h2><span class="eyebrow">Your to-do list</span></div><div id="checklist" style="display:grid;gap:12px"></div></div>
     ${waitHTML()}
     <div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
-      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
+      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
       :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>
     <div class="panel"><div class="panel-head"><h2>What venue owners say about you</h2><span class="eyebrow">${n} reviews</span></div>
       <div class="revs">${ME.reviews.map((r,i)=>`<div class="rev"><div class="t"><b>${r.venue}</b>${starsHTML(r.stars)}</div>
@@ -2191,7 +2229,7 @@ function renderList(){
       <div class="eyebrow">For pubs, bars, nightclubs, halls and clubs</div>
       <h1>Turn your empty room into <em>steady income.</em></h1>
       <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 8% only when a booking is paid.</p>
-      <div class="lyv-cta"><a class="btn primary" href="#lyv-form">List your venue free</a><a class="btn" href="#lyv-earn">See what you could earn</a></div>
+      <div class="lyv-cta">${authLive()?`<a class="btn primary" href="#add-venue" id="lyv-self">Add your venue yourself</a><a class="btn" href="#lyv-form">Or ask us to set it up</a>`:`<a class="btn primary" href="#lyv-form">List your venue free</a>`}<a class="btn" href="#lyv-earn">See what you could earn</a></div>
     </div>
     <h2 class="sr-only">How it works</h2>
     <div class="steps">
@@ -2233,6 +2271,7 @@ function renderList(){
   ["et","ep","er","eg"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{
     if(id==="et"){host.est.type=e.target.value;const t=EST_TYPES[host.est.type];host.est.rate=t[1];document.getElementById("er").value=t[1];}
     host.est.per=+document.getElementById("ep").value;host.est.rate=+document.getElementById("er").value;host.est.guests=+document.getElementById("eg").value;drawEst();}));
+  const self=document.getElementById("lyv-self"); if(self) self.addEventListener("click",()=>{setEditId(null);myv.form=null;if(!DB.user) setReturn("add-venue");},true);
   app.querySelectorAll('a[href^="#lyv-"]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault();document.getElementById(a.getAttribute("href").slice(1)).scrollIntoView({behavior:"smooth",block:"start"});}));
   drawLyvForm();
 }
@@ -2275,6 +2314,399 @@ function drawLyvForm(){
     lyv.sent=true; drawLyvForm(); document.getElementById("lyv-form").scrollIntoView({block:"start",behavior:"smooth"});
   });
 }
+/* ---------- Your venues: add, edit and submit for review (real venue accounts) ---------- */
+const VTYPES=[["pub","Pub","Pub function room"],["bar","Bar","Bar"],["club","Nightclub","Nightclub"],["karaoke","Karaoke or party bar","Karaoke and party bar"],["rooftop","Rooftop bar","Rooftop bar"],["hall","Village hall","Village hall"],["hall2","Church or community hall","Community hall"],["pavilion","Sports club","Sports club"],["boathouse","Rowing, sailing or social club","Club house"],["leisure","Leisure centre","Leisure centre"],["barn","Barn or outdoor space","Barn"]];
+const VSUITS=["Weddings","Birthdays","Wakes","Christenings","Corporate","Clubs & classes"];
+const MAX_PHOTOS=6, EDIT_KEY="vendo-edit-venue";
+const myv={list:null,loading:false,edit:null,form:null,busy:false,newPhotos:[],docFiles:{},removedRooms:[],removedAddons:[],removedPhotos:[],errs:[]};
+try{myv.edit=sessionStorage.getItem(EDIT_KEY)||null;}catch(e){}
+function setEditId(id){myv.edit=id;try{id?sessionStorage.setItem(EDIT_KEY,id):sessionStorage.removeItem(EDIT_KEY);}catch(e){}}
+async function loadMyVenues(){
+  if(!DB.user||myv.loading) return; myv.loading=true;
+  const {data,error}=await DB.client.from("venues").select("id,slug,name,place,kind,status,verified,review_note,updated_at").eq("owner_id",DB.user.id).order("created_at");
+  myv.loading=false; myv.list=error?[]:data||[];
+}
+function myvStatus(v){
+  if(v.status==="live") return v.verified?["ok","Live · Verified"]:["ok","Live"];
+  if(v.status==="pending_review") return ["new","Waiting for review"];
+  if(v.status==="hidden") return ["no","Hidden"];
+  return v.review_note?["new","Changes needed"]:["no","Draft"];
+}
+function myVenuesPanel(){
+  if(!myv.list) return `<div class="panel"><p class="pnote" role="status">Loading your venues…</p></div>`;
+  return `<div class="panel myv"><div class="panel-head"><h2>Your venues</h2><button type="button" class="btn primary" data-myv-new>Add a venue</button></div>
+    ${myv.list.length?myv.list.map(v=>{const [c,l]=myvStatus(v);return `<div class="myv-row"><div class="myv-t"><b>${escH(v.name)}</b><span class="pill ${c}">${l}</span></div>
+      <span class="myv-sub">${escH(v.kind)} · ${escH(v.place)} · updated ${shortDate(v.updated_at)}</span>
+      ${v.status==="pending_review"?`<span class="myv-sub">We're checking your documents. This usually takes up to two working days.</span>`:""}
+      ${v.status==="draft"&&v.review_note?`<p class="myv-note"><b>Vendo asked you to change:</b> ${escH(v.review_note)}</p>`:""}
+      <div class="myv-acts"><button type="button" class="btn" data-myv-edit="${escH(v.id)}">${v.status==="draft"?"Continue":"Edit"}</button>${v.status==="live"?`<button type="button" class="btn" data-myv-view="${escH(v.slug)}">View listing</button>`:""}</div></div>`;}).join("")
+    :`<p class="pnote">Add your venue with photos, rooms and prices. We check your ID, premises licence and insurance, then put it live with a Verified badge, usually within two working days.</p>`}
+  </div>`;
+}
+function bindMyVenues(root){
+  root.querySelectorAll("[data-myv-new]").forEach(b=>b.addEventListener("click",()=>{setEditId(null);myv.form=null;nav("add-venue");window.scrollTo(0,0);}));
+  root.querySelectorAll("[data-myv-edit]").forEach(b=>b.addEventListener("click",()=>{setEditId(b.dataset.myvEdit);myv.form=null;nav("add-venue");window.scrollTo(0,0);}));
+  root.querySelectorAll("[data-myv-view]").forEach(b=>b.addEventListener("click",()=>{const v=VENUES.find(x=>slugOf(x)===b.dataset.myvView||x.id===b.dataset.myvView);
+    if(v) openVenue(v.id); else toast("Your listing is live. It will show here after a refresh.");}));
+}
+const nz=s=>{s=String(s??"").trim();return s?s:null;};
+const lines=s=>String(s||"").split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,20);
+const rid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+const vslug=s=>(s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"").replace(/&/g,"and").replace(/['’]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60).replace(/-+$/,""))||"venue";
+function blankVenue(){
+  const me=DB.profile||{};
+  return {status:"draft",name:me.business_name||"",type:"pub",kind:"",town:me.town||"",postcode:"",space:"",blurb:"",suits:[],features:"",rules:"",
+    finish:"",music:"",park:"",go:"",cancel:"moderate",step_free:false,licensed_bar:false,outdoor:false,instant:false,photos:[],review_note:null,
+    rooms:[{id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3"}],addons:[],
+    docs:{legal_name:me.full_name||"",sells_alcohol:true,licence_number:"",licence_council:"",insurance_provider:"",insurance_cover:"",insurance_expiry:"",id_path:null,licence_path:null,insurance_path:null}};
+}
+async function loadVenueForm(id){
+  const [{data:v,error},{data:d}]=await Promise.all([
+    DB.client.from("venues").select("*,rooms(*),addons(*)").eq("id",id).maybeSingle(),
+    DB.client.from("venue_docs").select("*").eq("venue_id",id).maybeSingle()]);
+  if(error||!v) return null;
+  const p=x=>x==null?"":String(x/100);
+  return {status:v.status,name:v.name,type:v.venue_type,kind:v.kind,town:(v.place||"").split(",")[0],postcode:v.postcode||"",space:v.space_title||"",blurb:v.blurb||"",
+    suits:v.suits||[],features:(v.features||[]).join("\n"),rules:(v.house_rules||[]).join("\n"),finish:v.finish_time||"",music:v.music_note||"",park:v.parking||"",go:v.getting_there||"",
+    cancel:v.cancellation_policy,step_free:v.step_free,licensed_bar:v.licensed_bar,outdoor:v.outdoor_space,instant:v.instant_book,photos:v.photos||[],review_note:v.review_note,
+    rooms:(v.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order).map(r=>({id:r.id,name:r.name,note:r.note||"",seated:String(r.seated),standing:String(r.standing),hour:p(r.hour_price_pence),day:p(r.day_price_pence),minH:String(r.min_hours)})),
+    addons:(v.addons||[]).sort((a,b)=>a.sort_order-b.sort_order).map(a=>({id:a.id,label:a.label,price:p(a.price_pence),head:a.per_head})),
+    docs:d?{legal_name:d.legal_name||"",sells_alcohol:d.sells_alcohol,licence_number:d.licence_number||"",licence_council:d.licence_council||"",insurance_provider:d.insurance_provider||"",
+      insurance_cover:d.insurance_cover||"",insurance_expiry:d.insurance_expiry||"",id_path:d.id_path,licence_path:d.licence_path,insurance_path:d.insurance_path}:blankVenue().docs};
+}
+function avShell(inner){
+  const f=myv.form, live=f&&f.status==="live";
+  app.innerHTML=`<section class="wrap dash av"><div class="dash-head"><div><div class="eyebrow">For venues</div><h1>${myv.edit?"Edit your venue":"Add your venue"}</h1>
+    <p>${live?"Changes show on your live listing as soon as you save.":"Fill this in at your own pace and save a draft. When you submit it, we check your documents and put your venue live with a Verified badge."}</p></div>
+    <div><button type="button" class="btn" id="av-back">Back to dashboard</button></div></div>${inner}</section>`;
+  document.getElementById("av-back").addEventListener("click",()=>{nav("host");window.scrollTo(0,0);});
+  linkify(app);
+}
+async function renderAddVenue(){
+  if(!DB.done&&!DB.live){avShell(`<p class="pnote" role="status">Connecting to Vendo…</p>`);return;}
+  if(!authLive()){avShell(`<div class="panel"><p style="margin:0">Adding a venue needs the Vendo database, which isn't available in this preview. <a href="#list-your-venue">Send us your details</a> and we'll set it up for you.</p></div>`);return;}
+  if(!DB.user){avShell(`<div class="panel signin"><p style="margin:0">Create a free venue account, or sign in, to add your venue. You can save it and come back any time.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn primary" href="#signup" data-ret style="text-decoration:none">Create a venue account</a><a class="btn" href="#signin" data-ret style="text-decoration:none">Sign in</a></div></div>`);
+    app.querySelectorAll("[data-ret]").forEach(a=>a.addEventListener("click",()=>setReturn("add-venue"),true));return;}
+  if(!DB.profile){avShell(`<p class="pnote" role="status">Loading your account…</p>`);return;}
+  if(!myv.form){
+    if(myv.edit){avShell(`<p class="pnote" role="status">Loading your venue…</p>`);
+      const f=await loadVenueForm(myv.edit); if(state.view!=="addvenue") return;
+      if(!f){setEditId(null);myv.form=blankVenue();toast("We couldn't open that venue, so here's a new one.");} else myv.form=f;}
+    else myv.form=blankVenue();
+    myv.newPhotos=[];myv.docFiles={};myv.removedRooms=[];myv.removedAddons=[];myv.removedPhotos=[];myv.errs=[];
+  }
+  drawVenueForm();
+}
+function fileNote(path,file){return file?`<span class="av-file ok">Ready to upload: ${escH(file.name)}</span>`:path?`<span class="av-file ok">Uploaded. Choose a new file to replace it.</span>`:`<span class="av-file">PDF, JPG or PNG, up to 10 MB</span>`;}
+function drawVenueForm(){
+  const f=myv.form, d=f.docs, live=f.status==="live", pending=f.status==="pending_review";
+  const inp=(k,label,o={})=>`<div class="lf${o.full?" full":""}"><label for="av-${k}">${label}${o.opt?` <span class="opt">(optional)</span>`:""}</label>${o.area?`<textarea id="av-${k}" data-f="${k}" maxlength="${o.max||2000}" placeholder="${escH(o.ph||"")}">${escH(f[k])}</textarea>`
+    :`<input id="av-${k}" data-f="${k}" value="${escH(f[k])}" maxlength="${o.max||120}" placeholder="${escH(o.ph||"")}"${o.ac?` autocomplete="${o.ac}"`:""}>`}${o.hint?`<span class="hint">${o.hint}</span>`:""}</div>`;
+  const dinp=(k,label,o={})=>`<div class="lf${o.full?" full":""}"><label for="av-d-${k}">${label}</label><input id="av-d-${k}" data-d="${k}" type="${o.type||"text"}" value="${escH(d[k])}" maxlength="${o.max||120}" placeholder="${escH(o.ph||"")}"></div>`;
+  const chk=(k,label)=>`<label class="av-chk"><input type="checkbox" data-f="${k}" ${f[k]?"checked":""}> ${label}</label>`;
+  const photos=[...f.photos.map((u,i)=>({src:u,kind:"old",i})),...myv.newPhotos.map((p,i)=>({src:p.url,kind:"new",i}))];
+  const file=(k,label,path)=>`<div class="lf full"><label for="av-file-${k}">${label}</label><input id="av-file-${k}" type="file" data-doc="${k}" accept="application/pdf,image/jpeg,image/png,image/heic,image/webp">${fileNote(path,myv.docFiles[k])}</div>`;
+  avShell(`${f.status==="draft"&&f.review_note?`<div class="demo-banner"><span><b>Vendo asked you to change:</b> ${escH(f.review_note)}</span></div>`:""}
+    ${pending?`<div class="demo-banner"><span>This venue is waiting for review. You can still make changes.</span></div>`:""}
+    <div class="av-errs" id="av-errs" tabindex="-1" role="alert"${myv.errs.length?"":" hidden"}>${myv.errs.length?`<b>Please fix ${myv.errs.length===1?"this":"these"} first:</b><ul>${myv.errs.map(([id,m])=>`<li><a href="#${id}" data-jump="${id}">${escH(m)}</a></li>`).join("")}</ul>`:""}</div>
+    <form id="av-form" novalidate>
+    <div class="panel"><div class="panel-head"><h2>About your venue</h2><span class="eyebrow">Step 1 of 5</span></div><div class="lform">
+      ${inp("name","Venue name",{full:true,ph:"The Red Lion",ac:"organization"})}
+      <div class="lf"><label for="av-type">Type of venue</label><select id="av-type" data-f="type">${VTYPES.map(([k,l])=>`<option value="${k}" ${k===f.type?"selected":""}>${l}</option>`).join("")}</select></div>
+      ${inp("kind","How you'd describe the space",{opt:true,ph:(VTYPES.find(t=>t[0]===f.type)||VTYPES[0])[2],max:60})}
+      ${inp("town","Town or village",{ph:"Stow-on-the-Wold",max:60})}
+      ${inp("postcode","Postcode",{ph:"GL54 1AA",max:10,ac:"postal-code",hint:"Used to place you on the map. We show the town, not your address."})}
+      ${inp("space","Headline for your space",{full:true,opt:true,ph:"The Long Room and walled beer garden",max:90})}
+      ${inp("blurb","Describe your venue",{full:true,area:true,max:1200,ph:"What the room is like, what's included, catering, bar, music and anything guests love about it.",hint:"At least 40 characters. Guests read this first."})}
+      <fieldset class="lf full av-set"><legend>Good for</legend><div class="av-chips">${VSUITS.map(s=>`<label class="av-chk"><input type="checkbox" data-suit="${escH(s)}" ${f.suits.includes(s)?"checked":""}> ${s}</label>`).join("")}</div></fieldset>
+      <fieldset class="lf full av-set"><legend>Facilities</legend><div class="av-chips">${chk("step_free","Step-free access")}${chk("licensed_bar","Licensed bar")}${chk("outdoor","Outdoor space")}${chk("instant","Instant book (guests can book without waiting for you)")}</div></fieldset>
+      ${inp("features","What's included",{full:true,area:true,opt:true,max:1500,ph:"One per line, for example:\nFully licensed bar\nPA, mic and dance floor\nParking for 30 cars"})}
+    </div></div>
+
+    <div class="panel"><div class="panel-head"><h2>Rooms and prices</h2><span class="eyebrow">Step 2 of 5</span></div>
+      <p class="pnote">Prices are what you receive before Vendo's 8% fee. Guests see a price that includes all fees.</p>
+      ${f.rooms.map((r,i)=>`<div class="av-room" data-room="${i}"><div class="lform">
+        <div class="lf full"><label for="av-r${i}-name">Room name</label><input id="av-r${i}-name" data-rk="name" value="${escH(r.name)}" maxlength="60" placeholder="Function room"></div>
+        <div class="lf"><label for="av-r${i}-seated">Seated guests</label><input id="av-r${i}-seated" data-rk="seated" type="number" min="0" inputmode="numeric" value="${escH(r.seated)}"></div>
+        <div class="lf"><label for="av-r${i}-standing">Standing guests</label><input id="av-r${i}-standing" data-rk="standing" type="number" min="0" inputmode="numeric" value="${escH(r.standing)}"></div>
+        <div class="lf"><label for="av-r${i}-hour">£ per hour</label><input id="av-r${i}-hour" data-rk="hour" type="number" min="0" step="1" inputmode="decimal" value="${escH(r.hour)}"></div>
+        <div class="lf"><label for="av-r${i}-day">£ for the whole day</label><input id="av-r${i}-day" data-rk="day" type="number" min="0" step="1" inputmode="decimal" value="${escH(r.day)}"></div>
+        <div class="lf"><label for="av-r${i}-minH">Minimum hours</label><input id="av-r${i}-minH" data-rk="minH" type="number" min="1" max="24" inputmode="numeric" value="${escH(r.minH)}"></div>
+        <div class="lf"><label for="av-r${i}-note">Note <span class="opt">(optional)</span></label><input id="av-r${i}-note" data-rk="note" value="${escH(r.note)}" maxlength="120" placeholder="Upstairs, with its own bar"></div>
+      </div>${f.rooms.length>1?`<button type="button" class="linkbtn" data-room-del="${i}">Remove this room</button>`:""}</div>`).join("")}
+      ${f.rooms.length<6?`<button type="button" class="btn" id="av-room-add">Add another room</button>`:""}
+      <h3 class="av-h3">Extras guests can add <span class="opt">(optional)</span></h3>
+      ${f.addons.map((a,i)=>`<div class="av-addon" data-addon="${i}">
+        <label class="sr" for="av-a${i}-label">Extra</label><input id="av-a${i}-label" data-ak="label" value="${escH(a.label)}" maxlength="60" placeholder="Hot buffet">
+        <label class="sr" for="av-a${i}-price">Price in pounds</label><input id="av-a${i}-price" data-ak="price" type="number" min="0" inputmode="decimal" value="${escH(a.price)}" placeholder="£">
+        <label class="av-chk"><input type="checkbox" data-ak="head" ${a.head?"checked":""}> per guest</label>
+        <button type="button" class="linkbtn" data-addon-del="${i}" aria-label="Remove ${escH(a.label||"this extra")}">Remove</button></div>`).join("")}
+      ${f.addons.length<10?`<button type="button" class="btn" id="av-addon-add">Add an extra</button>`:""}
+    </div>
+
+    <div class="panel"><div class="panel-head"><h2>Photos</h2><span class="eyebrow">Step 3 of 5</span></div>
+      <p class="pnote">Add up to ${MAX_PHOTOS} photos. The first one is your cover photo. Bright, wide photos of the room set up for an event work best.</p>
+      <div class="av-photos">${photos.map((p,n)=>`<div class="av-ph"><img src="${escH(p.src)}" alt="Photo ${n+1}${n===0?", cover photo":""}">${n===0?`<span class="av-cover">Cover</span>`:""}<button type="button" class="av-ph-x" data-ph="${p.kind}:${p.i}" aria-label="Remove photo ${n+1}">×</button></div>`).join("")}
+        ${photos.length<MAX_PHOTOS?`<label class="av-ph av-ph-add"><input type="file" id="av-photo-in" accept="image/jpeg,image/png,image/webp,image/heic" multiple class="sr"><span aria-hidden="true">+</span><b>Add photos</b></label>`:""}</div>
+    </div>
+
+    <div class="panel"><div class="panel-head"><h2>Good to know</h2><span class="eyebrow">Step 4 of 5</span></div><div class="lform">
+      ${inp("finish","Finish time",{opt:true,ph:"Finish by midnight",max:80})}
+      ${inp("music","Music",{opt:true,ph:"Music down by 11:30pm",max:120})}
+      ${inp("park","Parking",{opt:true,ph:"Free car park for 30 cars",max:120})}
+      ${inp("go","Getting there",{opt:true,ph:"10 minutes' walk from the station",max:120})}
+      ${inp("rules","House rules",{full:true,area:true,opt:true,max:800,ph:"One per line, for example:\nNo confetti indoors\nOutside caterers by arrangement"})}
+      <div class="lf full"><label for="av-cancel">Cancellation policy</label><select id="av-cancel" data-f="cancel">
+        ${Object.entries(POLICIES).map(([k,[l,t]])=>`<option value="${k}" ${f.cancel===k?"selected":""}>${l}: ${t.replace(/^F/,"f").replace(/ your event/g,"")}</option>`).join("")}</select></div>
+    </div></div>
+
+    <div class="panel"><div class="panel-head"><h2>Get verified</h2><span class="eyebrow">Step 5 of 5</span></div>
+      <p class="pnote">Only the Vendo team can see these documents. We check them before your venue goes live, so guests know you're a real, licensed and insured venue. You'll set up bank details for payouts with Stripe once you're approved.</p>
+      <div class="lform">
+        ${dinp("legal_name","Your full legal name",{full:true,ph:"As it appears on your ID"})}
+        ${file("id","Photo ID (passport or driving licence)",d.id_path)}
+        <fieldset class="lf full av-set"><legend>Do you sell alcohol or put on regulated entertainment (live or recorded music, dancing)?</legend><div class="av-chips">
+          <label class="av-chk"><input type="radio" name="av-alc" value="1" ${d.sells_alcohol?"checked":""}> Yes, we have a premises licence</label>
+          <label class="av-chk"><input type="radio" name="av-alc" value="0" ${d.sells_alcohol?"":"checked"}> No, we don't need one</label></div></fieldset>
+        ${d.sells_alcohol?`${dinp("licence_number","Premises licence number",{ph:"PL/0123"})}${dinp("licence_council","Council that issued it",{ph:"Cotswold District Council"})}${file("licence","Premises licence (summary page is fine)",d.licence_path)}`:""}
+        ${dinp("insurance_provider","Public liability insurer",{ph:"Hiscox"})}
+        ${dinp("insurance_cover","Amount of cover",{ph:"£5 million",max:40})}
+        ${dinp("insurance_expiry","Insurance expiry date",{type:"date"})}
+        ${file("insurance","Insurance certificate",d.insurance_path)}
+      </div></div>
+
+    <div class="av-acts">${live||pending?`<button type="submit" class="btn primary" data-submit="0">Save changes</button>`
+      :`<button type="button" class="btn" data-submit="0">Save draft</button><button type="submit" class="btn primary" data-submit="1">Submit for review</button>`}
+      <span class="pnote" id="av-status" role="status" aria-live="polite"></span></div>
+    </form>`);
+  bindVenueForm();
+}
+function bindVenueForm(){
+  const f=myv.form, form=document.getElementById("av-form");
+  form.querySelectorAll("[data-f]").forEach(el=>el.addEventListener(el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",()=>{
+    f[el.dataset.f]=el.type==="checkbox"?el.checked:el.value;
+    if(el.dataset.f==="type"){const k=document.getElementById("av-kind");if(k) k.placeholder=(VTYPES.find(t=>t[0]===el.value)||VTYPES[0])[2];}}));
+  form.querySelectorAll("[data-suit]").forEach(el=>el.addEventListener("change",()=>{const s=el.dataset.suit;f.suits=el.checked?[...new Set([...f.suits,s])]:f.suits.filter(x=>x!==s);}));
+  form.querySelectorAll("[data-d]").forEach(el=>el.addEventListener("input",()=>{f.docs[el.dataset.d]=el.value;}));
+  form.querySelectorAll('input[name="av-alc"]').forEach(el=>el.addEventListener("change",()=>{f.docs.sells_alcohol=el.value==="1";drawVenueForm();document.querySelector('input[name="av-alc"]:checked').focus();}));
+  form.querySelectorAll("[data-room]").forEach(row=>{const r=f.rooms[+row.dataset.room];row.querySelectorAll("[data-rk]").forEach(el=>el.addEventListener("input",()=>{r[el.dataset.rk]=el.value;}));});
+  form.querySelectorAll("[data-addon]").forEach(row=>{const a=f.addons[+row.dataset.addon];row.querySelectorAll("[data-ak]").forEach(el=>el.addEventListener(el.type==="checkbox"?"change":"input",()=>{a[el.dataset.ak]=el.type==="checkbox"?el.checked:el.value;}));});
+  form.querySelectorAll("[data-room-del]").forEach(b=>b.addEventListener("click",()=>{const [r]=f.rooms.splice(+b.dataset.roomDel,1);if(r&&r.id) myv.removedRooms.push(r.id);drawVenueForm();}));
+  form.querySelectorAll("[data-addon-del]").forEach(b=>b.addEventListener("click",()=>{const [a]=f.addons.splice(+b.dataset.addonDel,1);if(a&&a.id) myv.removedAddons.push(a.id);drawVenueForm();}));
+  const ra=document.getElementById("av-room-add"); if(ra) ra.addEventListener("click",()=>{f.rooms.push({id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3"});drawVenueForm();document.getElementById(`av-r${f.rooms.length-1}-name`).focus();});
+  const aa=document.getElementById("av-addon-add"); if(aa) aa.addEventListener("click",()=>{f.addons.push({id:null,label:"",price:"",head:false});drawVenueForm();document.getElementById(`av-a${f.addons.length-1}-label`).focus();});
+  form.querySelectorAll("[data-ph]").forEach(b=>b.addEventListener("click",()=>{const [k,i]=b.dataset.ph.split(":");
+    if(k==="old") myv.removedPhotos.push(...f.photos.splice(+i,1)); else {const [p]=myv.newPhotos.splice(+i,1);if(p) URL.revokeObjectURL(p.url);}
+    drawVenueForm();}));
+  const pin=document.getElementById("av-photo-in");
+  if(pin) pin.addEventListener("change",async()=>{const room=MAX_PHOTOS-f.photos.length-myv.newPhotos.length; const files=[...pin.files].slice(0,room);
+    const st=document.getElementById("av-status"); st.textContent="Preparing photos…"; let bad=0;
+    for(const file of files){try{const blob=await shrinkPhoto(file);myv.newPhotos.push({blob,url:URL.createObjectURL(blob)});}catch(e){bad++;}}
+    drawVenueForm(); if(bad) toast(bad===1?"One photo couldn't be read. Try a JPG or PNG.":`${bad} photos couldn't be read. Try JPG or PNG.`);
+    if(pin.files.length>room) toast(`You can add up to ${MAX_PHOTOS} photos.`);});
+  form.querySelectorAll("[data-doc]").forEach(el=>el.addEventListener("change",()=>{const file=el.files[0]; if(!file) return;
+    if(file.size>10*1024*1024){toast("That file is over 10 MB. Try a smaller scan or photo.");el.value="";return;}
+    myv.docFiles[el.dataset.doc]=file; el.nextElementSibling.outerHTML=fileNote(null,file);}));
+  app.querySelectorAll("[data-jump]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const t=document.getElementById(a.dataset.jump);if(t){t.scrollIntoView({block:"center"});t.focus();}}));
+  form.querySelectorAll('[data-submit="0"]').forEach(b=>b.type==="button"&&b.addEventListener("click",()=>saveMyVenue(false)));
+  form.addEventListener("submit",e=>{e.preventDefault();const s=e.submitter||form.querySelector('button[type="submit"]');saveMyVenue(s&&s.dataset.submit==="1");});
+}
+// Phone photos are large: resize to at most 1600px wide and save as JPEG before uploading.
+async function shrinkPhoto(file){
+  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file);});
+  const s=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight)), c=document.createElement("canvas");
+  c.width=Math.round(img.naturalWidth*s); c.height=Math.round(img.naturalHeight*s);
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(img.src);
+  const blob=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.85)); if(!blob) throw new Error("unreadable"); return blob;
+}
+const PC_REGION={"Yorkshire and The Humber":"Yorkshire","East Midlands":"Midlands","West Midlands":"Midlands"};
+async function lookupPostcode(pc){
+  const q=String(pc||"").replace(/\s+/g,"").toUpperCase(); if(!/^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(q)) return null;
+  try{const r=await fetch("https://api.postcodes.io/postcodes/"+encodeURIComponent(q)); if(!r.ok) return null; const j=(await r.json()).result; if(!j) return null;
+    const region=j.region||j.country||"UK";
+    return {postcode:j.postcode,lat:j.latitude,lng:j.longitude,county:j.admin_county||j.admin_district||region,region:PC_REGION[region]||region};}
+  catch(e){return null;}
+}
+function venueErrors(f,submit){
+  const e=[], d=f.docs, money=x=>x!==""&&!isNaN(+x)&&+x>=0;
+  if(!f.name.trim()) e.push(["av-name","Enter your venue's name"]);
+  if(!f.town.trim()) e.push(["av-town","Enter the town or village"]);
+  if(!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(f.postcode.trim())) e.push(["av-postcode","Enter a UK postcode, like GL54 1AA"]);
+  const named=f.rooms.filter(r=>r.name.trim()), names=named.map(r=>r.name.trim().toLowerCase());
+  if(new Set(names).size<names.length) e.push(["av-r0-name","Give each room a different name"]);
+  f.rooms.forEach((r,i)=>{if(!r.name.trim()&&(r.seated||r.standing||r.hour||r.day)) e.push([`av-r${i}-name`,`Name room ${i+1}, or remove it`]);});
+  if(!submit) return e;
+  if(f.blurb.trim().length<40) e.push(["av-blurb","Describe your venue in at least 40 characters"]);
+  if(!named.length) e.push(["av-r0-name","Add at least one room"]);
+  f.rooms.forEach((r,i)=>{if(!r.name.trim()) return;
+    if(!(+r.seated>0||+r.standing>0)) e.push([`av-r${i}-seated`,`Say how many guests ${r.name.trim()} holds`]);
+    if(!((money(r.hour)&&+r.hour>0)||(money(r.day)&&+r.day>0))) e.push([`av-r${i}-hour`,`Add an hourly or day price for ${r.name.trim()}`]);});
+  f.addons.forEach((a,i)=>{if(a.label.trim()&&!money(a.price)) e.push([`av-a${i}-price`,`Add a price for ${a.label.trim()}`]);});
+  if(!f.photos.length&&!myv.newPhotos.length) e.push(["av-photo-in","Add at least one photo"]);
+  if(!d.legal_name.trim()) e.push(["av-d-legal_name","Enter your full legal name"]);
+  if(!d.id_path&&!myv.docFiles.id) e.push(["av-file-id","Upload your photo ID"]);
+  if(d.sells_alcohol){
+    if(!d.licence_number.trim()) e.push(["av-d-licence_number","Enter your premises licence number"]);
+    if(!d.licence_council.trim()) e.push(["av-d-licence_council","Enter the council that issued your licence"]);
+    if(!d.licence_path&&!myv.docFiles.licence) e.push(["av-file-licence","Upload your premises licence"]);}
+  if(!d.insurance_provider.trim()) e.push(["av-d-insurance_provider","Enter your public liability insurer"]);
+  if(!d.insurance_expiry) e.push(["av-d-insurance_expiry","Enter when your insurance expires"]);
+  else if(d.insurance_expiry<isoDay(TODAY)) e.push(["av-d-insurance_expiry","Your insurance has expired. Upload your current certificate"]);
+  if(!d.insurance_path&&!myv.docFiles.insurance) e.push(["av-file-insurance","Upload your insurance certificate"]);
+  return e;
+}
+function showVenueErrors(){
+  const box=document.getElementById("av-errs"), e=myv.errs;
+  box.hidden=!e.length;
+  box.innerHTML=e.length?`<b>Please fix ${e.length===1?"this":"these"} first:</b><ul>${e.map(([id,m])=>`<li><a href="#${id}" data-jump="${id}">${escH(m)}</a></li>`).join("")}</ul>`:"";
+  box.querySelectorAll("[data-jump]").forEach(a=>a.addEventListener("click",ev=>{ev.preventDefault();const t=document.getElementById(a.dataset.jump);if(t){t.scrollIntoView({block:"center"});t.focus();}}));
+  if(e.length){box.scrollIntoView({block:"start"});box.focus();}
+}
+const fileExt=f=>({"application/pdf":"pdf","image/jpeg":"jpg","image/png":"png","image/heic":"heic","image/webp":"webp"}[f.type])||(f.name.split(".").pop()||"bin").toLowerCase().slice(0,5);
+async function saveMyVenue(submit){
+  if(myv.busy) return;
+  const f=myv.form, d=f.docs, st=document.getElementById("av-status");
+  myv.errs=venueErrors(f,submit); showVenueErrors(); if(myv.errs.length) return;
+  myv.busy=true; app.querySelectorAll("[data-submit]").forEach(b=>b.disabled=true);
+  const say=t=>{st.textContent=t;};
+  try{
+    say("Finding your postcode…");
+    const pc=await lookupPostcode(f.postcode);
+    if(!pc){myv.errs=[["av-postcode","We couldn't find that postcode. Check it and try again"]];showVenueErrors();return;}
+    const t=VTYPES.find(x=>x[0]===f.type)||VTYPES[0];
+    const row={name:f.name.trim(),kind:f.kind.trim()||t[2],venue_type:t[0],postcode:pc.postcode,place:`${f.town.trim()}, ${pc.county}`,region:pc.region,lat:pc.lat,lng:pc.lng,
+      space_title:f.space.trim(),blurb:f.blurb.trim(),suits:f.suits,features:lines(f.features),house_rules:lines(f.rules),instant_book:!!f.instant,step_free:!!f.step_free,
+      licensed_bar:!!f.licensed_bar,outdoor_space:!!f.outdoor,cancellation_policy:f.cancel,finish_time:nz(f.finish),music_note:nz(f.music),parking:nz(f.park),getting_there:nz(f.go)};
+    say("Saving your venue…");
+    let id=myv.edit;
+    if(!id){
+      const base=vslug(`${f.name} ${f.town}`);
+      for(let i=0;i<5&&!id;i++){
+        const {data,error}=await DB.client.from("venues").insert({...row,slug:i?`${base}-${Math.random().toString(36).slice(2,6)}`:base,owner_id:DB.user.id,status:"draft"}).select("id").single();
+        if(error){if(error.code==="23505") continue; throw error;} id=data.id;}
+      if(!id) throw new Error("We couldn't create a web address for your venue.");
+      setEditId(id); f.status="draft";
+    } else {const {error}=await DB.client.from("venues").update(row).eq("id",id); if(error) throw error;}
+    say("Saving rooms and prices…");
+    for(const [i,r] of f.rooms.filter(r=>r.name.trim()).entries()){
+      const rr={venue_id:id,name:r.name.trim(),note:nz(r.note),seated:Math.max(0,Math.round(+r.seated||0)),standing:Math.max(0,Math.round(+r.standing||0)),
+        hour_price_pence:Math.max(0,Math.round((+r.hour||0)*100)),day_price_pence:Math.max(0,Math.round((+r.day||0)*100)),min_hours:Math.min(24,Math.max(1,Math.round(+r.minH||2))),sort_order:i,is_listed:true};
+      if(r.id){const {error}=await DB.client.from("rooms").update(rr).eq("id",r.id); if(error) throw error;}
+      else{const {data,error}=await DB.client.from("rooms").insert(rr).select("id").single(); if(error) throw error; r.id=data.id;}}
+    for(const x of myv.removedRooms.splice(0)){const {error}=await DB.client.from("rooms").delete().eq("id",x); if(error) await DB.client.from("rooms").update({is_listed:false}).eq("id",x);}
+    for(const [i,a] of f.addons.filter(a=>a.label.trim()).entries()){
+      const ar={venue_id:id,label:a.label.trim(),price_pence:Math.max(0,Math.round((+a.price||0)*100)),per_head:!!a.head,sort_order:i};
+      if(a.id){const {error}=await DB.client.from("addons").update(ar).eq("id",a.id); if(error) throw error;}
+      else{const {data,error}=await DB.client.from("addons").insert(ar).select("id").single(); if(error) throw error; a.id=data.id;}}
+    for(const x of myv.removedAddons.splice(0)) await DB.client.from("addons").delete().eq("id",x);
+    if(myv.newPhotos.length||myv.removedPhotos.length){
+      say("Uploading photos…");
+      const bucket=DB.client.storage.from("venue-photos");
+      for(const p of myv.newPhotos.slice()){
+        const path=`${id}/${rid()}.jpg`;
+        const {error}=await bucket.upload(path,p.blob,{contentType:"image/jpeg",cacheControl:"31536000"}); if(error) throw error;
+        f.photos.push(bucket.getPublicUrl(path).data.publicUrl); myv.newPhotos.splice(myv.newPhotos.indexOf(p),1); URL.revokeObjectURL(p.url);}
+      const gone=myv.removedPhotos.splice(0).map(u=>u.split("/venue-photos/")[1]).filter(Boolean);
+      const {error}=await DB.client.from("venues").update({photos:f.photos}).eq("id",id); if(error) throw error;
+      if(gone.length) bucket.remove(gone);
+    }
+    say("Saving your documents…");
+    const docs=DB.client.storage.from("venue-docs");
+    for(const k of ["id","licence","insurance"]){const file=myv.docFiles[k]; if(!file) continue;
+      const path=`${id}/${k}-${rid()}.${fileExt(file)}`;
+      const {error}=await docs.upload(path,file,{contentType:file.type||"application/octet-stream"}); if(error) throw error;
+      const old=d[k+"_path"]; d[k+"_path"]=path; delete myv.docFiles[k]; if(old) docs.remove([old]);}
+    const docRow={venue_id:id,legal_name:nz(d.legal_name),sells_alcohol:!!d.sells_alcohol,licence_number:d.sells_alcohol?nz(d.licence_number):null,licence_council:d.sells_alcohol?nz(d.licence_council):null,
+      insurance_provider:nz(d.insurance_provider),insurance_cover:nz(d.insurance_cover),insurance_expiry:d.insurance_expiry||null,id_path:d.id_path,licence_path:d.licence_path,insurance_path:d.insurance_path};
+    if(submit) docRow.submitted_at=new Date().toISOString();
+    {const {error}=await DB.client.from("venue_docs").upsert(docRow); if(error) throw error;}
+    if(submit&&f.status==="draft"){const {error}=await DB.client.from("venues").update({status:"pending_review"}).eq("id",id); if(error) throw error; f.status="pending_review";}
+    myv.list=null;
+    if(submit){setEditId(null);myv.form=null;toast("Submitted. We'll check your documents and email you, usually within two working days.",5000);nav("host");window.scrollTo(0,0);}
+    else{say(`Saved at ${new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}.`);toast(f.status==="live"?"Changes saved. They're live now.":"Saved.");drawVenueForm();document.getElementById("av-status").textContent=`Saved at ${new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}.`;}
+  }catch(err){
+    say(""); toast("We couldn't save that: "+(err&&err.message||err),6000);
+  }finally{
+    myv.busy=false; app.querySelectorAll("[data-submit]").forEach(b=>b.disabled=false);
+  }
+}
+
+/* ---------- Admin: review a submitted venue ---------- */
+async function drawReview(){
+  const id=adminUI.review;
+  adminShell(`<p class="pnote" role="status">Loading the venue…</p>`);
+  const [{data:v,error},{data:d},{data:c}]=await Promise.all([
+    DB.client.from("venues").select("*,rooms(*),addons(*)").eq("id",id).maybeSingle(),
+    DB.client.from("venue_docs").select("*").eq("venue_id",id).maybeSingle(),
+    DB.client.from("venue_checks").select("*").eq("venue_id",id).maybeSingle()]);
+  if(state.view!=="admin"||adminUI.review!==id) return;
+  if(error||!v){adminUI.review=null;toast("We couldn't open that venue.");drawAdmin();return;}
+  const p=((adminUI.data&&adminUI.data.pending_venues)||[]).find(x=>x.id===id)||{};
+  const ck=c||{id_ok:false,licence_ok:false,insurance_ok:false,notes:""};
+  const exp=d&&d.insurance_expiry, days=exp?Math.round((new Date(exp)-TODAY)/864e5):null;
+  const rooms=(v.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order);
+  const docBtn=(path,label)=>path?`<button type="button" class="btn" data-open-doc="${escH(path)}">Open ${label}</button>`:`<span class="pill no">Not uploaded</span>`;
+  const row=(k,val)=>`<div class="rv-row"><span>${k}</span><b>${val||`<span class="muted">Not given</span>`}</b></div>`;
+  adminShell(`<div class="admin-head-acts"><button type="button" class="btn" id="rv-back">Back to dashboard</button></div>
+    <div class="panel"><div class="panel-head"><h2>${escH(v.name)}</h2>${pill(v.status)}</div>
+      <p class="pnote">${escH(v.kind)} · ${escH(v.place)}${v.postcode?` · ${escH(v.postcode)}`:""} · ${escH(v.region)}<br>Owner: ${escH(p.owner||"")}${p.business_name?`, ${escH(p.business_name)}`:""}${p.owner_email?` · <a href="mailto:${escH(p.owner_email)}">${escH(p.owner_email)}</a>`:""}${d&&d.submitted_at?` · submitted ${shortDate(d.submitted_at)}`:""}</p>
+      ${(v.photos||[]).length?`<div class="rv-photos">${v.photos.map((u,i)=>`<a href="${escH(u)}" target="_blank" rel="noopener"><img src="${escH(u)}" alt="Photo ${i+1} of ${escH(v.name)}"></a>`).join("")}</div>`:`<p class="pnote">No photos.</p>`}
+      ${v.space_title?`<h3 class="av-h3">${escH(v.space_title)}</h3>`:""}<p>${escH(v.blurb)}</p>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Rooms"><table class="ptable"><thead><tr><th scope="col">Room</th><th scope="col" class="r">Seated</th><th scope="col" class="r">Standing</th><th scope="col" class="r">Per hour</th><th scope="col" class="r">Day</th><th scope="col" class="r">Min hours</th></tr></thead>
+        <tbody>${rooms.map(r=>`<tr><td>${escH(r.name)}${r.note?`<small>${escH(r.note)}</small>`:""}</td><td class="r">${r.seated}</td><td class="r">${r.standing}</td><td class="r">${pnd(r.hour_price_pence)}</td><td class="r">${pnd(r.day_price_pence)}</td><td class="r">${r.min_hours}</td></tr>`).join("")||`<tr><td colspan="6">No rooms added.</td></tr>`}</tbody></table></div>
+      <p class="pnote">${[v.step_free&&"Step-free",v.licensed_bar&&"Licensed bar",v.outdoor_space&&"Outdoor space",v.instant_book&&"Instant book"].filter(Boolean).join(" · ")||"No facilities ticked"} · ${escH((POLICIES[v.cancellation_policy]||[v.cancellation_policy])[0])} cancellation policy${(v.suits||[]).length?` · Good for ${escH(v.suits.join(", "))}`:""}</p>
+      ${(v.addons||[]).length?`<p class="pnote">Extras: ${v.addons.map(a=>`${escH(a.label)} ${pnd(a.price_pence)}${a.per_head?" per guest":""}`).join(" · ")}</p>`:""}
+    </div>
+    <div class="cols even">
+      <div class="panel"><div class="panel-head"><h2>Documents</h2><span class="eyebrow">Private</span></div>
+        ${d?`${row("Legal name",escH(d.legal_name))}
+          <div class="rv-doc"><b>Photo ID</b>${docBtn(d.id_path,"ID")}</div>
+          ${d.sells_alcohol?`${row("Premises licence",escH(d.licence_number))}${row("Council",escH(d.licence_council))}<div class="rv-doc"><b>Premises licence</b>${docBtn(d.licence_path,"licence")}</div>
+            <p class="pnote">Check the licence number on ${d.licence_council?escH(d.licence_council)+"'s":"the council's"} public licensing register.</p>`:`<p class="pnote">The owner says they don't sell alcohol or put on regulated entertainment, so no premises licence.</p>`}
+          ${row("Insurer",escH(d.insurance_provider))}${row("Cover",escH(d.insurance_cover))}
+          ${row("Expires",exp?`${new Date(exp).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}${days<0?` <span class="pill no">Expired</span>`:days<45?` <span class="pill new">${days} days left</span>`:""}`:"")}
+          <div class="rv-doc"><b>Insurance certificate</b>${docBtn(d.insurance_path,"certificate")}</div>`
+          :`<p class="pnote">No documents yet.</p>`}
+        <p class="pnote">Bank details are checked by Stripe when the venue sets up payouts.</p></div>
+      <div class="panel"><div class="panel-head"><h2>Checks</h2><span class="eyebrow">${c&&c.checked_at?`Last saved ${shortDate(c.checked_at)}`:"Not started"}</span></div>
+        <form id="rv-form" class="rv-form">
+          <label class="av-chk"><input type="checkbox" id="rv-id" ${ck.id_ok?"checked":""}> Photo ID matches the legal name</label>
+          <label class="av-chk"><input type="checkbox" id="rv-lic" ${ck.licence_ok?"checked":""}> ${d&&!d.sells_alcohol?"No premises licence needed":"Premises licence is valid for this address"}</label>
+          <label class="av-chk"><input type="checkbox" id="rv-ins" ${ck.insurance_ok?"checked":""}> Public liability insurance is in date</label>
+          <div class="lf"><label for="rv-notes">Notes for the Vendo team <span class="opt">(optional)</span></label><textarea id="rv-notes" maxlength="2000">${escH(ck.notes||"")}</textarea></div>
+          <div class="av-acts"><button type="button" class="btn" id="rv-save">Save checks</button><button type="submit" class="btn primary" id="rv-approve">Approve and put live</button></div>
+          <p class="pnote" id="rv-hint">Approving gives the venue the Verified badge. Tick all three checks first.</p>
+        </form>
+        <form id="rv-back-form" class="rv-form"><div class="lf"><label for="rv-note">Ask the owner to change something</label><textarea id="rv-note" maxlength="1000" placeholder="Your insurance certificate has expired. Please upload the current one."></textarea></div>
+          <div class="av-acts"><button type="submit" class="btn">Send back to the owner</button></div>
+          <p class="pnote">The venue goes back to draft and the owner sees your note on their dashboard.</p></form>
+      </div>
+    </div>`);
+  document.getElementById("rv-back").addEventListener("click",()=>{adminUI.review=null;drawAdmin();window.scrollTo(0,0);});
+  app.querySelectorAll("[data-open-doc]").forEach(b=>b.addEventListener("click",async()=>{
+    const w=window.open("","_blank");
+    const {data,error}=await DB.client.storage.from("venue-docs").createSignedUrl(b.dataset.openDoc,300);
+    if(error||!data){if(w) w.close();toast("Couldn't open it: "+(error?error.message:"no link"));return;}
+    if(w) w.location.href=data.signedUrl; else location.href=data.signedUrl;}));
+  const vals=()=>({venue_id:id,id_ok:document.getElementById("rv-id").checked,licence_ok:document.getElementById("rv-lic").checked,insurance_ok:document.getElementById("rv-ins").checked,
+    notes:nz(document.getElementById("rv-notes").value),checked_by:DB.user.id,checked_at:new Date().toISOString()});
+  const saveChecks=async()=>{const {error}=await DB.client.from("venue_checks").upsert(vals()); if(error){toast("Couldn't save the checks: "+error.message);return false;} return true;};
+  document.getElementById("rv-save").addEventListener("click",async e=>{e.target.disabled=true;if(await saveChecks()) toast("Checks saved.");e.target.disabled=false;});
+  document.getElementById("rv-form").addEventListener("submit",async e=>{e.preventDefault();
+    const x=vals(); if(!(x.id_ok&&x.licence_ok&&x.insurance_ok)){const h=document.getElementById("rv-hint");h.textContent="Tick all three checks before approving.";h.style.color="var(--bad, #b42318)";return;}
+    const b=document.getElementById("rv-approve"); b.disabled=true; b.textContent="Approving…";
+    if(!await saveChecks()){b.disabled=false;b.textContent="Approve and put live";return;}
+    const {error}=await DB.client.rpc("approve_venue",{p_venue:id});
+    if(error){toast("Couldn't approve it: "+error.message);b.disabled=false;b.textContent="Approve and put live";return;}
+    toast(`${v.name} is live with the Verified badge.`,4000); adminUI.review=null; await loadAdmin(); drawAdmin(); window.scrollTo(0,0); dbLoadVenues().catch(()=>{});});
+  document.getElementById("rv-back-form").addEventListener("submit",async e=>{e.preventDefault();
+    const note=document.getElementById("rv-note").value.trim(); if(!note){document.getElementById("rv-note").focus();toast("Say what needs changing.");return;}
+    const {error}=await DB.client.rpc("send_back_venue",{p_venue:id,p_note:note});
+    if(error){toast("Couldn't send it back: "+error.message);return;}
+    toast("Sent back. The owner will see your note."); adminUI.review=null; await loadAdmin(); drawAdmin(); window.scrollTo(0,0);});
+}
+
 /* ---------- Messages ---------- */
 const THREADS={
   "b-lantern":{title:"Ellie Brennan",sub:"The Lantern Rooftop · Sister's 21st · Sat 6 Feb 2027",side:"guest",msgs:[["them","Hi Sophie, you're all booked in for the 6th. Would you like the heaters on from the start?","Mon 09:12"],["me","Yes please. Could we also bring a birthday cake?","Mon 09:40"],["them","Of course. We'll keep it in the fridge behind the bar and bring it out when you're ready.","Mon 10:02"]]},
@@ -2342,6 +2774,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.18.0",d:"2026-11-16",t:"Add and verify venues",n:["Venue owners can add their own venue: rooms and prices, extras, photos, house rules and cancellation policy. Save a draft and submit it when ready.","To get verified, owners upload photo ID, their premises licence and insurance certificate. Only the Vendo team can open these documents.","In the Admin tab, review each venue, tick off the three checks, then approve it or send it back with a note.","The Verified venue badge now shows only on venues Vendo has checked. New venues show their own photos, and \"New\" until they have reviews."]},
  {v:"0.17.0",d:"2026-11-16",t:"Admin dashboard",n:["A private Admin tab for the Vendo team: takings, profit, bookings, customers and venues, with monthly charts.","Approve new venues before they go live, and keep a list of running costs so profit is worked out for you.","Only people on the admin list can see it. The figures come from the database, which refuses everyone else."]},
  {v:"0.16.0",d:"2026-11-16",t:"Create an account",n:["A proper sign-up page: your name and email, whether you're planning events or run a venue, and your venue's details if you do.","A separate sign-in page that tells you if there's no account for your email.","After signing in, venue owners go to their dashboard, guests to their account, and anyone mid-booking straight back to it."]},
  {v:"0.15.1",d:"2026-11-16",t:"Our own address",n:["Vendo now lives at vendohire.com, with a secure connection. The old vendohire.netlify.app address takes you there automatically."]},
@@ -2458,14 +2891,14 @@ async function dbInit(){
     await dbLoadVenues();
     await onAuth(session);
   }catch(e){DB.live=false;console.info("Vendo is using its built-in example data:",e&&e.message);}
-  DB.done=true; if(state.view==="admin") renderAdmin();
+  DB.done=true; if(state.view==="admin") renderAdmin(); if(state.view==="addvenue") renderAddVenue();
 }
 // Sign-in needs the emailed link to come back to the same place, so it's website-only until emails carry a code.
 const authLive=()=>DB.live&&!NATIVE;
 const pounds=p=>Math.round(p)/100;
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 async function dbLoadVenues(){
-  const {data,error}=await DB.client.from("venues").select("id,slug,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(id,name,note,seated,standing,hour_price_pence,day_price_pence,min_hours,is_listed,sort_order),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
+  const {data,error}=await DB.client.from("venues").select("id,slug,verified,photos,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(id,name,note,seated,standing,hour_price_pence,day_price_pence,min_hours,is_listed,sort_order),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
   if(error) throw new Error(error.message);
   if(!data||!data.length) throw new Error("no live venues");
   const keep=[];
@@ -2476,6 +2909,7 @@ async function dbLoadVenues(){
     Object.assign(v,{name:row.name,kind:row.kind,type:row.venue_type,place:row.place,region:row.region,space:row.space_title||v.space,blurb:row.blurb,
       suits:row.suits,features:row.features,rules:row.house_rules,instant:row.instant_book,reply:row.reply_note||v.reply||"Usually replies within a day"});
     if(main) Object.assign(v,{seated:Math.max(...rooms.map(r=>r.seated)),standing:Math.max(...rooms.map(r=>r.standing)),hour:pounds(main.hour_price_pence),day:pounds(main.day_price_pence),minH:main.min_hours});
+    v.verified=row.verified!==false; v.photos=row.photos||[];
     if(row.lat!=null){v.lat=row.lat;v.lng=row.lng;LOC[v.id]=[row.lat,row.lng];}
     v.flags={stepfree:+row.step_free,bar:+row.licensed_bar,outdoor:+row.outdoor_space};FLAGS[v.id]=v.flags;
     VINFO[v.id]={finish:row.finish_time,music:row.music_note,park:row.parking,go:row.getting_there,own:row.own_cake_decor,rain:row.if_it_rains};
@@ -2493,6 +2927,7 @@ async function dbLoadVenues(){
   // Only venues that are live in the database are shown.
   for(let i=VENUES.length-1;i>=0;i--) if(!keep.includes(VENUES[i])) VENUES.splice(i,1);
   DB.live=true; updateAvatar();
+  if(state.view==="notfound"&&/^\/venues\//.test(location.pathname)){route();return;}   // a new venue that isn't in the built pages yet
   if(state.view==="find"&&document.getElementById("grid")&&!state.open) drawGrid();
   if(state.view==="account") renderAccount();
   if(state.view==="admin") renderAdmin();
@@ -2517,7 +2952,7 @@ function dbBusy(v,d,ri){
 async function onAuth(session){
   const u=(session&&session.user)||null;
   if((u&&u.id)===(DB.user&&DB.user.id)&&DB.profile!==undefined&&(u?DB.profile:true)) return;
-  DB.user=u; DB.profile=null; DB.bookings=null;
+  DB.user=u; DB.profile=null; DB.bookings=null; myv.list=null; if(!u){myv.form=null;setEditId(null);}
   if(u){
     const {data}=await DB.client.from("profiles").select("full_name,phone,town,account_type,business_name,business_type,is_admin").eq("id",u.id).maybeSingle();
     DB.profile=data||{full_name:"",phone:"",town:"",account_type:"guest"};
@@ -2531,6 +2966,7 @@ async function onAuth(session){
   if(state.view==="account") renderAccount();
   if(state.view==="admin") renderAdmin();
   if(state.view==="host"&&u) renderHost();
+  if(state.view==="addvenue") renderAddVenue();
   if(state.view==="book"&&checkout&&!checkout.done){
     if(u){if(!checkout.name||checkout.name===ME.name) checkout.name=DB.profile.full_name||"";
       if(!checkout.email||checkout.email===ME.email) checkout.email=u.email;
@@ -2695,7 +3131,7 @@ function afterSignIn(){
 }
 function savedPanelHTML(){
   return `<div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
-      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
+      ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
       :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>`;
 }
 function renderRealAccount(){
@@ -2880,7 +3316,7 @@ async function renderAdmin(){
   if(!DB.profile.is_admin){adminShell(`<p class="pnote">This page is for the Vendo team.</p>`);return;}
   if(!adminUI.data&&!adminUI.loading){adminShell(`<p class="pnote" role="status">Adding up the figures…</p>`);await loadAdmin();}
   if(state.view!=="admin") return;
-  drawAdmin();
+  adminUI.review?drawReview():drawAdmin();
 }
 function barChart(vals,labels,fmt,label){
   const W=600,H=200,L=52,R=8,T=18,B=26,n=vals.length,raw=Math.max(1,...vals);
@@ -2914,7 +3350,7 @@ function drawAdmin(){
       <div class="stat"><span class="eyebrow">Bookings this month</span><span class="v">${pnd(cur.gmv)}</span><span class="d ${delta==null||delta>=0?"up":"down"}">${delta==null?`${cur.bookings} bookings`:`${delta>=0?"+":""}${delta}% on last month`}</span></div>
       <div class="stat"><span class="eyebrow">All bookings</span><span class="v">${nB.toLocaleString("en-GB")}</span><span class="d ${b.requested?"down":"up"}">${b.requested||0} waiting for a reply · ${pnd(d.pipeline_pence)}</span></div>
       <div class="stat"><span class="eyebrow">Customers</span><span class="v">${(d.customers||0).toLocaleString("en-GB")}</span><span class="d up">+${d.signups_30d||0} in the last 30 days</span></div>
-      <div class="stat"><span class="eyebrow">Venues live</span><span class="v">${venues.live||0}</span><span class="d ${venues.pending_review?"down":"up"}">${venues.pending_review||0} waiting for approval · ${d.hosts||0} venue accounts</span></div>
+      <div class="stat"><span class="eyebrow">Venues live</span><span class="v">${venues.live||0}</span><span class="d ${venues.pending_review?"down":"up"}">${d.verified_venues!=null?`${d.verified_venues} verified · `:""}${venues.pending_review||0} waiting for approval · ${d.hosts||0} venue accounts</span></div>
     </div>
     <div class="cols even">
       <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">Booking fee + commission</span></div>
@@ -2924,7 +3360,7 @@ function drawAdmin(){
     </div>
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>Waiting for approval</h2><span class="eyebrow">${d.pending_venues.length} ${d.pending_venues.length===1?"venue":"venues"}</span></div>
-        ${d.pending_venues.length?`<div>${d.pending_venues.map(v=>`<div class="brow"><b>${escH(v.name)}</b>${ex?`<span class="pill new">Example</span>`:`<button type="button" class="btn primary" data-approve="${escH(v.id)}">Approve</button>`}
+        ${d.pending_venues.length?`<div>${d.pending_venues.map(v=>`<div class="brow"><b>${escH(v.name)}</b>${ex?`<span class="pill new">Example</span>`:`<button type="button" class="btn primary" data-review="${escH(v.id)}">Review</button>`}
           <span>${escH(v.kind||"")} · ${escH(v.place||"")} · added ${shortDate(v.created_at)}${v.owner?` by ${escH(v.owner)}`:""}</span></div>`).join("")}</div>`
           :`<p class="pnote">No venues are waiting. New listings from venue accounts appear here for you to check before they go live.</p>`}</div>
       <div class="panel"><div class="panel-head"><h2>Event types</h2><span class="eyebrow">All bookings</span></div>
@@ -2948,10 +3384,7 @@ function drawAdmin(){
     </div>`);
   const mode=document.getElementById("ad-mode"); if(mode) mode.addEventListener("click",()=>{adminUI.example=!adminUI.example;drawAdmin();});
   const rf=document.getElementById("ad-refresh"); if(rf) rf.addEventListener("click",async()=>{rf.disabled=true;rf.textContent="Refreshing…";await loadAdmin();drawAdmin();toast("Figures updated.");});
-  app.querySelectorAll("[data-approve]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;
-    const {error}=await DB.client.from("venues").update({status:"live"}).eq("id",btn.dataset.approve);
-    if(error){btn.disabled=false;toast("Couldn't approve it: "+error.message);return;}
-    toast("Venue approved. It's now live on Vendo."); await loadAdmin(); drawAdmin();}));
+  app.querySelectorAll("[data-review]").forEach(btn=>btn.addEventListener("click",()=>{adminUI.review=btn.dataset.review;drawReview();window.scrollTo(0,0);}));
   app.querySelectorAll("[data-cost-del]").forEach(btn=>btn.addEventListener("click",async()=>{
     const {error}=await DB.client.from("admin_costs").delete().eq("id",btn.dataset.costDel);
     if(error){toast("Couldn't remove it: "+error.message);return;}
@@ -3199,7 +3632,7 @@ const PATH_MODE=/^https?:$/.test(location.protocol)&&(location.hostname===new UR
 // Venue pages stay out of search results while the listings are fictional. Set to true when real venues go live.
 const INDEX_VENUES=false;
 const slugOf=v=>v.name.toLowerCase().replace(/&/g,"and").replace(/['’]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",admin:"/admin",account:"/account",signin:"/sign-in",signup:"/create-account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
+const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",admin:"/admin","add-venue":"/for-venues/add",account:"/account",signin:"/sign-in",signup:"/create-account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
 const isRouteKey=k=>k in PAGE_PATHS||/^(venue|book)-./.test(k);
 function pathFor(key){
   const m=key.match(/^(venue|book)-(.+)$/);
@@ -3247,6 +3680,7 @@ function metaFor(key){
     desc:`${v.space} for up to ${Math.max(v.seated,v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, including all fees. Ideal for ${v.suits.slice(0,3).join(", ").toLowerCase()}.`,index:INDEX_VENUES};
   if(v) return {title:`${checkout&&checkout.done?"Booked":"Book"}: ${v.name} · Vendo`,desc:META_DESC.find,index:false};
   if(key==="admin") return {title:"Admin · Vendo",desc:META_DESC.find,index:false};
+  if(key==="add-venue") return {title:"Add your venue · Vendo",desc:META_DESC["list-your-venue"],index:false};
   if(key==="host") return {title:"Host dashboard · Vendo",desc:META_DESC["list-your-venue"],index:false};
   if(key==="account") return {title:"My account · Vendo",desc:META_DESC.find,index:false};
   if(key==="signin") return {title:"Sign in · Vendo",desc:"Sign in to Vendo with a link we email you. No password needed.",index:false};
@@ -3275,7 +3709,7 @@ function renderNotFound(){
   linkify(app);
 }
 /* ---------- Routing ---------- */
-function setTitle(){setMeta(state.open?"venue-"+state.open.id:state.view==="book"&&checkout?"book-"+checkout.id:state.view==="list"?"list-your-venue":state.view);}
+function setTitle(){setMeta(state.open?"venue-"+state.open.id:state.view==="book"&&checkout?"book-"+checkout.id:state.view==="list"?"list-your-venue":state.view==="addvenue"?"add-venue":state.view);}
 function focusMain(){const m=document.getElementById("app");m.tabIndex=-1;m.focus({preventScroll:true});}
 document.getElementById("skip").addEventListener("click",e=>{e.preventDefault();focusMain();});
 function route(){
@@ -3300,15 +3734,15 @@ function route(){
     setUrl("venue-"+id,false); route(); return;
   }
   if(key==="notfound"){state.view="notfound";if(state.open) closeVenue(true);["tab-find","tab-host","tab-me"].forEach(t=>document.getElementById(t).setAttribute("aria-pressed","false"));renderNotFound();setTitle();return;}
-  const pk=key; const v=pk==="host"?"host":pk==="admin"?"admin":pk==="account"?"account":pk==="signin"||pk==="signup"?pk:pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
+  const pk=key; const v=pk==="host"?"host":pk==="add-venue"?"addvenue":pk==="admin"?"admin":pk==="account"?"account":pk==="signin"||pk==="signup"?pk:pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
-  document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
+  document.getElementById("tab-host").setAttribute("aria-pressed",v==="host"||v==="addvenue");
   document.getElementById("tab-admin").setAttribute("aria-pressed",v==="admin");
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account"||v==="signin"||v==="signup");
   if(state.open) closeVenue(true);
   if((v==="signin"||v==="signup")&&NATIVE){state.view="account";setUrl("account",false);renderAccount();linkify(app);setTitle();return;}
   if((v==="signin"||v==="signup")&&DB.user){afterSignIn();return;}
-  v==="host"?renderHost():v==="admin"?renderAdmin():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
+  v==="host"?renderHost():v==="addvenue"?renderAddVenue():v==="admin"?renderAdmin():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
   linkify(app); setTitle();
 }
 document.getElementById("tab-find").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);focusMain();});
