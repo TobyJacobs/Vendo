@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.21.0 · Sliding event and filter menus
+
+_2026-11-17_
+
+- On the home page, events and filters now sit behind two buttons that slide open sideways.
+- Picking an event closes the menu and shows your choice on the button. The Filters button shows how many filters are on.
+
 ## 0.20.0 · A simpler home page
 
 _2026-11-16_
