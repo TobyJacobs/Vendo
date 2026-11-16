@@ -712,10 +712,9 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .planner>summary::after{content:"";position:absolute;right:4px;top:12px;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
 .planner[open]>summary::after{transform:rotate(-135deg);top:17px}
 .planner:not([open]){gap:0}
-.fbar{display:flex;align-items:center;gap:8px;min-width:0}
-.fx{display:flex;align-items:center;min-width:0;max-width:480px;transition:max-width .5s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
-.fx.open{flex:1 1 auto;max-width:100%}
-.fbar.has-open .fx:not(.open){max-width:0;opacity:0;overflow:hidden;pointer-events:none;margin-right:-8px}
+.fbar{display:grid;grid-template-columns:auto minmax(0,1fr);row-gap:8px;align-items:center;min-width:0}
+.fx{display:grid;grid-template-columns:subgrid;grid-column:1/-1;align-items:center;min-width:0}
+.fx>.fx-t{justify-self:stretch;justify-content:space-between}
 .fx-in.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 .fx-t{flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 10px 8px 14px;font-weight:600;font-size:13.5px;color:var(--ink);white-space:nowrap;transition:background-color .3s,color .3s,border-color .3s}
 .fx-t .fx-l{color:var(--muted);font-weight:500;transition:color .3s}
@@ -1403,7 +1402,7 @@ function renderFind(){
   document.getElementById("v-map").addEventListener("click",()=>setMode("map"));
   app.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{state.event=c.dataset.ev;
     app.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));applyMood();drawGrid();
-    document.getElementById("fx-ev-v").textContent=state.event; setTimeout(()=>fxOpen(null,true),260);}));
+    document.getElementById("fx-ev-v").textContent=state.event; setTimeout(()=>fxSet(document.getElementById("fx-ev"),false,true),260);}));
   bindFilterBar();
   drawRecent(); drawArea(); autoArea(); bindPlanner();
 }
@@ -2406,21 +2405,20 @@ function drawLyvForm(){
 /* ---------- Event and filter menus that slide open sideways ---------- */
 function fxCount(){return FILTERS.filter(([k])=>state.f[k]).length+(state.f.max?1:0)+(state.near?1:0);}
 function fxBadge(){const n=document.getElementById("fx-f-n"); if(!n) return; const c=fxCount(); n.hidden=!c; n.textContent=c;}
-function fxOpen(id,focusTrigger){
-  const bar=document.getElementById("fbar"); if(!bar) return;
-  bar.querySelectorAll(".fx").forEach(fx=>{const on=fx.id===id, t=fx.querySelector(".fx-t"), p=fx.querySelector(".fx-p");
-    const was=fx.classList.contains("open");
-    fx.classList.toggle("open",on); t.setAttribute("aria-expanded",on); p.inert=!on;
-    p.querySelectorAll(".fx-in > *").forEach((el,i)=>el.style.setProperty("--i",i));
-    if(was&&!on&&focusTrigger&&fx.contains(document.activeElement)) t.focus();});
-  bar.classList.toggle("has-open",!!id);
+// Each menu opens and closes on its own row: Event on top, Filters underneath.
+function fxSet(fx,on,focusTrigger){
+  if(!fx) return; const t=fx.querySelector(".fx-t"), p=fx.querySelector(".fx-p"), was=fx.classList.contains("open");
+  fx.classList.toggle("open",on); t.setAttribute("aria-expanded",on); p.inert=!on;
+  p.querySelectorAll(".fx-in > *").forEach((el,i)=>el.style.setProperty("--i",i));
+  if(was&&!on&&focusTrigger&&fx.contains(document.activeElement)) t.focus();
   setTimeout(fxFade,600);
 }
+function fxOpen(id,focusTrigger){document.querySelectorAll("#fbar .fx").forEach(fx=>fxSet(fx,fx.id===id,focusTrigger));}
 function fxFade(){document.querySelectorAll("#fbar .fx-in").forEach(el=>el.classList.toggle("more",el.closest(".fx").classList.contains("open")&&el.scrollLeft+el.clientWidth<el.scrollWidth-4));}
 function bindFilterBar(){
   const bar=document.getElementById("fbar"); if(!bar) return;
-  bar.querySelectorAll(".fx").forEach(fx=>fx.querySelector(".fx-t").addEventListener("click",()=>fxOpen(fx.classList.contains("open")?null:fx.id,true)));
-  bar.addEventListener("keydown",e=>{if(e.key==="Escape"&&bar.classList.contains("has-open")){e.stopPropagation();const o=bar.querySelector(".fx.open");fxOpen(null);o.querySelector(".fx-t").focus();}});
+  bar.querySelectorAll(".fx").forEach(fx=>fx.querySelector(".fx-t").addEventListener("click",()=>fxSet(fx,!fx.classList.contains("open"),true)));
+  bar.addEventListener("keydown",e=>{if(e.key!=="Escape") return; const o=e.target.closest(".fx.open"); if(!o) return; e.stopPropagation(); fxSet(o,false); o.querySelector(".fx-t").focus();});
   bar.querySelectorAll(".fx-in").forEach(el=>el.addEventListener("scroll",fxFade,{passive:true})); addEventListener("resize",fxFade);
   bar.addEventListener("change",fxBadge); bar.addEventListener("click",e=>{if(e.target.closest(".fchip")) fxBadge();});
   fxBadge();
@@ -2895,6 +2893,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.22.1",d:"2026-11-17",t:"Filters under events",n:["On the home page, Filters now sits underneath Event, and each opens on its own row."]},
  {v:"0.22.0",d:"2026-11-17",t:"Great venues in your area",n:["A new row on the home page shows top-rated venues near you. Choose a town, or use your location.","The town you pick is remembered on your device. If you've already let Vendo use your location, it's used without asking again.","Until you choose, it shows the top-rated venues on Vendo."]},
  {v:"0.21.0",d:"2026-11-17",t:"Sliding event and filter menus",n:["On the home page, events and filters now sit behind two buttons that slide open sideways.","Picking an event closes the menu and shows your choice on the button. The Filters button shows how many filters are on."]},
  {v:"0.20.0",d:"2026-11-16",t:"A simpler home page",n:["A shorter introduction and a simpler search: where, date and guests.","Feature, price and distance filters now sit behind More filters, and open by themselves when one is in use.","The budget planner folds away until you open it, and the questions below it are cut to the five people ask most."]},
