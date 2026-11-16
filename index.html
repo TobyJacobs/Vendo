@@ -905,6 +905,7 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .rolecard:has(input:focus-visible){outline:2px solid var(--accent-text);outline-offset:2px}
 .rolecard b{font-size:15.5px}.rolecard span{font-size:13px;color:var(--muted)}
 .auth-checks{display:grid;gap:10px}
+.auth-card .pnote a,.auth-card .err a,.auth-card .agree a{color:var(--accent-text);font-weight:700}
 .auth-aside{display:grid;gap:14px;padding-top:8px}
 .auth-aside h2{font-size:22px}
 .auth-aside ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
@@ -2774,6 +2775,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.18.1",d:"2026-11-16",t:"Sign in on iPhone",n:["Create an account and sign in inside the iPhone app, with the 6-digit code from the email.","Sign-in emails now say \"code\" everywhere, since every email includes one."]},
  {v:"0.18.0",d:"2026-11-16",t:"Add and verify venues",n:["Venue owners can add their own venue: rooms and prices, extras, photos, house rules and cancellation policy. Save a draft and submit it when ready.","To get verified, owners upload photo ID, their premises licence and insurance certificate. Only the Vendo team can open these documents.","In the Admin tab, review each venue, tick off the three checks, then approve it or send it back with a note.","The Verified venue badge now shows only on venues Vendo has checked. New venues show their own photos, and \"New\" until they have reviews."]},
  {v:"0.17.0",d:"2026-11-16",t:"Admin dashboard",n:["A private Admin tab for the Vendo team: takings, profit, bookings, customers and venues, with monthly charts.","Approve new venues before they go live, and keep a list of running costs so profit is worked out for you.","Only people on the admin list can see it. The figures come from the database, which refuses everyone else."]},
  {v:"0.16.0",d:"2026-11-16",t:"Create an account",n:["A proper sign-up page: your name and email, whether you're planning events or run a venue, and your venue's details if you do.","A separate sign-in page that tells you if there's no account for your email.","After signing in, venue owners go to their dashboard, guests to their account, and anyone mid-booking straight back to it."]},
@@ -2893,8 +2895,9 @@ async function dbInit(){
   }catch(e){DB.live=false;console.info("Vendo is using its built-in example data:",e&&e.message);}
   DB.done=true; if(state.view==="admin") renderAdmin(); if(state.view==="addvenue") renderAddVenue();
 }
-// Sign-in needs the emailed link to come back to the same place, so it's website-only until emails carry a code.
-const authLive=()=>DB.live&&!NATIVE;
+// Accounts work everywhere the database is reachable. In the iPhone app people type the 6-digit code from the
+// email, because the email's link opens Safari rather than the app.
+const authLive=()=>DB.live;
 const pounds=p=>Math.round(p)/100;
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 async function dbLoadVenues(){
@@ -3032,8 +3035,8 @@ function emailRedirect(){const back=getReturn();return PATH_MODE?location.origin
 function renderAuthPage(mode){
   const up=mode==="signup", f=authForm, host=f.role==="host";
   const aside=up?(host?`<h2>Why list with Vendo</h2><ul><li>Free to list. Pay a small fee only when you get a booking.</li><li>See every guest's rating before you say yes.</li><li>Payments, deposits and reminders handled for you.</li><li>One calendar for Vendo and phone bookings.</li></ul>`
-      :`<h2>Why create an account</h2><ul><li>Book pubs, halls, bars and clubs with prices that include every fee.</li><li>See all your bookings and messages in one place.</li><li>Keep your saved venues on every device.</li><li>No password to remember: we email you a link.</li></ul>`)
-    :`<h2>Good to have you back</h2><ul><li>We'll email you a link to sign in. No password needed.</li><li>Open it on this device and you'll come straight back here.</li></ul>`;
+      :`<h2>Why create an account</h2><ul><li>Book pubs, halls, bars and clubs with prices that include every fee.</li><li>See all your bookings and messages in one place.</li><li>Keep your saved venues on every device.</li><li>No password to remember: we email you a code.</li></ul>`)
+    :`<h2>Good to have you back</h2><ul><li>We'll email you a 6-digit code to sign in. No password needed.</li><li>${NATIVE?"Type the code into the app and you're in.":"Type the code here, or tap the link in the email on this device."}</li></ul>`;
   app.innerHTML=`<section class="wrap auth-page">
     <div class="auth-card" id="auth-card">
       <nav class="auth-switch" aria-label="Account"><a href="#signup" ${up?'aria-current="page"':""}>Create account</a><a href="#signin" ${up?"":'aria-current="page"'}>Sign in</a></nav>
@@ -3058,7 +3061,7 @@ function renderAuthPage(mode){
       </form>`
       :`<form class="lform" id="auth-form" novalidate>
         <div class="lf full"><label for="au-email">Email</label><input id="au-email" type="email" autocomplete="email" inputmode="email" value="${escH(f.email)}"><span class="err" id="ae-email"></span></div>
-        <div class="lf full"><button class="cta" type="submit" id="au-go">Email me a sign-in link</button></div>
+        <div class="lf full"><button class="cta" type="submit" id="au-go">Email me a sign-in code</button></div>
       </form>`}
       <p class="pnote">${up?`Already have an account? <a href="#signin">Sign in</a>`:`New to Vendo? <a href="#signup">Create an account</a>`}${up?"":` · <button type="button" class="linkbtn" id="demo-acct" style="display:inline">See an example account</button>`}</p>
     </div>
@@ -3091,7 +3094,7 @@ async function submitAuth(mode){
   if(up) options.data={full_name:f.name.trim().slice(0,80),account_type:f.role,phone:f.phone.trim().slice(0,30),town:f.town.trim().slice(0,60),
     business_name:f.role==="host"?f.venue.trim().slice(0,120):"",business_type:f.role==="host"?f.venueType:"",terms_accepted:String(f.terms),marketing_opt_in:String(f.news)};
   const {error}=await DB.client.auth.signInWithOtp({email:f.email,options});
-  go.disabled=false; go.textContent=up?"Create account":"Email me a sign-in link";
+  go.disabled=false; go.textContent=up?"Create account":"Email me a sign-in code";
   if(error){const t=otpErrorText(error), e=document.getElementById("ae-email");
     if(t==="NO_ACCOUNT"){e.innerHTML=`There's no Vendo account for that email. <a href="#signup" id="ae-create">Create one</a>.`;linkify(e);}
     else e.textContent=t;
@@ -3103,8 +3106,8 @@ function showAuthSent(mode){
   card.innerHTML=`<div class="auth-sent" role="status">
       <span class="big" aria-hidden="true">✉</span>
       <h1>Check your email</h1>
-      <p style="margin:0">We've sent a link to <b>${escH(f.email)}</b>. Open it on this device to ${mode==="signup"?"finish creating your account":"sign in"}. It may take a minute, and it can land in spam.</p>
-      <div class="lf"><label for="au-code">Or type the 6-digit code, if your email has one</label><input id="au-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><span class="err" id="ae-code"></span></div>
+      <p style="margin:0">We've sent an email to <b>${escH(f.email)}</b>. ${NATIVE?`Type the 6-digit code from it below to ${mode==="signup"?"finish creating your account":"sign in"}.`:`Type the 6-digit code from it below, or tap the link in it on this device.`} It may take a minute, and it can land in spam.</p>
+      <div class="lf"><label for="au-code">6-digit code</label><input id="au-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><span class="err" id="ae-code"></span></div>
       <div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="button" id="au-verify">Continue</button><button class="btn" type="button" id="au-resend" disabled>Send again in 60s</button><button class="linkbtn" type="button" id="au-back">Use a different email</button></div>
     </div>`;
   document.getElementById("au-code").focus();
@@ -3740,7 +3743,6 @@ function route(){
   document.getElementById("tab-admin").setAttribute("aria-pressed",v==="admin");
   document.getElementById("tab-me").setAttribute("aria-pressed",v==="account"||v==="signin"||v==="signup");
   if(state.open) closeVenue(true);
-  if((v==="signin"||v==="signup")&&NATIVE){state.view="account";setUrl("account",false);renderAccount();linkify(app);setTitle();return;}
   if((v==="signin"||v==="signup")&&DB.user){afterSignIn();return;}
   v==="host"?renderHost():v==="addvenue"?renderAddVenue():v==="admin"?renderAdmin():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
   linkify(app); setTitle();

@@ -35,7 +35,7 @@ The website reads from the Vendo database on Supabase (see [supabase/README.md](
 
 - **Venues** (details, rooms, extras, reviews) load from the database. If it can't be reached, the built-in example venues are shown instead.
 - **Calendars** show real booked dates from the database, alongside the example ones. Guests only ever see dates, never who booked.
-- **Accounts**: `/create-account` asks for your name, email, whether you're planning events or run a venue (venue owners also give the venue's name, type and a mobile number), and agreement to the terms. `/sign-in` takes just an email. Both work by an emailed link, with no passwords. Afterwards guests go to their account and venue owners to the venue dashboard, or back to the booking they were making.
+- **Accounts**: `/create-account` asks for your name, email, whether you're planning events or run a venue (venue owners also give the venue's name, type and a mobile number), and agreement to the terms. `/sign-in` takes just an email. Both work by an emailed 6-digit code (or the link in the same email), with no passwords. In the iPhone app you type the code, since the link opens Safari. Afterwards guests go to their account and venue owners to the venue dashboard, or back to the booking they were making.
 - **Bookings** are saved to the database as requests once you're signed in. Card payments aren't connected yet, so nothing is charged.
 - **Saved venues** (hearts) follow you to any device once you're signed in.
 
@@ -44,7 +44,6 @@ The connection uses the project's publishable key, which is made to be public. T
 Not connected yet:
 
 - Supabase's built-in email only sends to the Vendo team's own addresses, and its email wording can't be changed. Connect an email service (SMTP, for example Resend or Postmark) to email everyone and add a 6-digit code to the email.
-- Sign-in in the iPhone app waits for that code. The app already shows live venues and dates.
 - The venue dashboard, messages, payments and payouts still use example data.
 
 ## Admin dashboard
