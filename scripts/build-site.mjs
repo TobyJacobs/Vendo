@@ -54,8 +54,7 @@ const DESC = {
   changelog: "Every Vendo release, from the first demo to the latest version.",
 };
 const homeBody = () => `<section class="wrap page">
-  <h1>Every great party needs a room. Find yours.</h1>
-  <p class="lead">Book function rooms, halls and private bars straight from the people who run them. See real availability, build a quote, and send a request in a couple of minutes.</p>
+  <h1>Every great event needs a space. Find yours.</h1>
   <h2>Venues on Vendo</h2>
   <ul>${VENUES.map(v => `<li><a href="/venues/${slugOf(v)}">${esc(v.name)}</a>: ${esc(v.kind.toLowerCase())} in ${esc(v.place)}, for up to ${Math.max(v.seated, v.standing)} guests, from ${gbp(full(v.hour))} an hour.</li>`).join("")}</ul>
   <h2>How Vendo works</h2>

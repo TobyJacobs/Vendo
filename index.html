@@ -1008,7 +1008,7 @@ const gbp = n => "£" + Math.round(n).toLocaleString("en-GB");
 
 const EVENTS = ["All events","Weddings","Birthdays","Wakes","Christenings","Corporate","Clubs & classes"];
 const MOODS = {
-  "All events":     {k:null,         h:'Every great party needs a room. <em>Find yours.</em>', n:""},
+  "All events":     {k:null,         h:'Every great event needs a space. <em>Find yours.</em>', n:""},
   "Weddings":       {k:"wedding",    h:'The room where you say <em>I do.</em>',              n:"Wedding palette: black and white"},
   "Birthdays":      {k:"birthday",   h:'Another year. <em>A bigger party.</em>',             n:"Birthday palette: raspberry and gold"},
   "Wakes":          {k:"wake",       h:'A warm room to <em>remember them.</em>',             n:"Wake palette: quiet slate"},
@@ -1321,7 +1321,6 @@ function renderFind(){
   <section class="wrap intro">
     <div class="eyebrow">Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres</div>
     <h1 id="headline"></h1>
-    <p>Book function rooms, halls and private bars straight from the people who run them.</p>
     <form class="search" id="search">
       <div class="field"><label for="q">Where or what</label><input id="q" placeholder="Village, town or venue name" value="${state.q}"></div>
       <div class="field"><label for="sdate">Date</label><input id="sdate" type="date" min="${isoDay(TODAY)}" value="${state.date}"></div>
@@ -2893,6 +2892,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.22.2",d:"2026-11-17",t:"New slogan",n:["The home page now reads: Every great event needs a space. Find yours.","The line of text under it is gone, so the search box sits higher up."]},
  {v:"0.22.1",d:"2026-11-17",t:"Filters under events",n:["On the home page, Filters now sits underneath Event, and each opens on its own row."]},
  {v:"0.22.0",d:"2026-11-17",t:"Great venues in your area",n:["A new row on the home page shows top-rated venues near you. Choose a town, or use your location.","The town you pick is remembered on your device. If you've already let Vendo use your location, it's used without asking again.","Until you choose, it shows the top-rated venues on Vendo."]},
  {v:"0.21.0",d:"2026-11-17",t:"Sliding event and filter menus",n:["On the home page, events and filters now sit behind two buttons that slide open sideways.","Picking an event closes the menu and shows your choice on the button. The Filters button shows how many filters are on."]},
