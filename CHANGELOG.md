@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.16.0 · Create an account
+
+_2026-11-16_
+
+- A proper sign-up page: your name and email, whether you're planning events or run a venue, and your venue's details if you do.
+- A separate sign-in page that tells you if there's no account for your email.
+- After signing in, venue owners go to their dashboard, guests to their account, and anyone mid-booking straight back to it.
+
 ## 0.15.1 · Our own address
 
 _2026-11-16_
