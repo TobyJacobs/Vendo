@@ -94,6 +94,8 @@ const pages = [
   ...VENUES.map(v => ({ path: `/book/${slugOf(v)}`, title: `Book: ${v.name} · Vendo`, desc: DESC.home, body: "", index: false })),
   { path: "/for-venues/dashboard", title: "Host dashboard · Vendo", desc: DESC.list, body: "", index: false },
   { path: "/account", title: "My account · Vendo", desc: DESC.home, body: "", index: false },
+  { path: "/sign-in", title: "Sign in · Vendo", desc: "Sign in to Vendo with a link we email you. No password needed.", body: "", index: false },
+  { path: "/create-account", title: "Create your account · Vendo", desc: "Create a free Vendo account to book venues, or to list your pub, hall, bar or club.", body: "", index: false },
 ];
 
 // ---- write one HTML file per address ----
@@ -140,7 +142,7 @@ if (SITE) {
   writeFileSync(`${OUT}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${listed
     .map(p => `  <url><loc>${SITE}${p.path === "/" ? "/" : p.path}</loc><lastmod>${today}</lastmod><priority>${p.priority}</priority></url>`).join("\n")}\n</urlset>\n`);
 }
-writeFileSync(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /book/\nDisallow: /account\nDisallow: /for-venues/dashboard\n${SITE ? `\nSitemap: ${SITE}/sitemap.xml\n` : ""}`);
+writeFileSync(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /book/\nDisallow: /account\nDisallow: /sign-in\nDisallow: /create-account\nDisallow: /for-venues/dashboard\n${SITE ? `\nSitemap: ${SITE}/sitemap.xml\n` : ""}`);
 writeFileSync(`${OUT}/_headers`, `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n/sw.js\n  Cache-Control: no-cache\n/*.png\n  Cache-Control: public, max-age=604800\n/*.jpg\n  Cache-Control: public, max-age=604800\n`);
 // Send visitors on the old Netlify address to the real domain, keeping the page they asked for.
 const NETLIFY_HOST = "https://vendohire.netlify.app";

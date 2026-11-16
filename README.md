@@ -35,7 +35,7 @@ The website reads from the Vendo database on Supabase (see [supabase/README.md](
 
 - **Venues** (details, rooms, extras, reviews) load from the database. If it can't be reached, the built-in example venues are shown instead.
 - **Calendars** show real booked dates from the database, alongside the example ones. Guests only ever see dates, never who booked.
-- **Sign-in** on the website is by an emailed link: no passwords. Signing in for the first time creates the account.
+- **Accounts**: `/create-account` asks for your name, email, whether you're planning events or run a venue (venue owners also give the venue's name, type and a mobile number), and agreement to the terms. `/sign-in` takes just an email. Both work by an emailed link, with no passwords. Afterwards guests go to their account and venue owners to the venue dashboard, or back to the booking they were making.
 - **Bookings** are saved to the database as requests once you're signed in. Card payments aren't connected yet, so nothing is charged.
 - **Saved venues** (hearts) follow you to any device once you're signed in.
 

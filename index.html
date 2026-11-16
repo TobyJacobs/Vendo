@@ -859,6 +859,33 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .tpin.rail{background:#2B74B3}.tpin.bus{background:#E07A5F}
 .tkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
 .tkey span{display:inline-flex;align-items:center;gap:6px}.tkey .tpin{display:inline-block;width:12px;height:12px;border-width:1.5px}.tkey .tpin.v{width:12px;height:12px}
+/* sign up and sign in pages */
+.auth-page{padding-block:32px 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:32px;align-items:start}
+@media (max-width:900px){.auth-page{grid-template-columns:minmax(0,1fr)}}
+.auth-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;gap:18px;min-width:0}
+.auth-card h1{font-size:clamp(28px,4vw,38px)}
+.auth-switch{display:flex;gap:4px;background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:4px;justify-self:start}
+.auth-switch a{padding:8px 16px;border-radius:9px;font-weight:700;font-size:14px;color:var(--muted);text-decoration:none}
+.auth-switch a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.rolecards{display:grid;grid-template-columns:1fr 1fr;gap:10px;border:0;margin:0;padding:0;min-width:0}
+.rolecards legend{grid-column:1/-1;font-size:13px;font-weight:700;margin-bottom:6px;padding:0}
+@media (max-width:520px){.rolecards{grid-template-columns:1fr}}
+.rolecard{position:relative;display:grid;gap:3px;border:1.5px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;background:var(--surface)}
+.rolecard input{position:absolute;opacity:0;width:1px;height:1px}
+.rolecard:has(input:checked){border-color:var(--accent-text);background:var(--accent-soft)}
+.rolecard:has(input:focus-visible){outline:2px solid var(--accent-text);outline-offset:2px}
+.rolecard b{font-size:15.5px}.rolecard span{font-size:13px;color:var(--muted)}
+.auth-checks{display:grid;gap:10px}
+.auth-aside{display:grid;gap:14px;padding-top:8px}
+.auth-aside h2{font-size:22px}
+.auth-aside ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.auth-aside li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.auth-aside li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;font-weight:800;font-size:12px}
+.auth-sent{display:grid;gap:12px}
+.auth-sent .big{font-size:40px;line-height:1}
+.need-auth{display:grid;gap:10px;background:var(--sunk);border-radius:12px;padding:14px}
+.need-auth .row{display:flex;gap:8px;flex-wrap:wrap}
+.need-auth .btn{text-decoration:none}
 </style>
 
 </head>
@@ -1821,7 +1848,9 @@ const HTABS=[["overview","Overview"],["calendar","Calendar"],["rooms","Rooms & p
 host.tab="overview"; host.qdone={desc:1,gtk:1,cancel:1,reply:1,verify:1};
 function renderHost(){
   const v=VENUES[0];
+  const me=authLive()&&DB.user&&DB.profile&&DB.profile.account_type==="host"?DB.profile:null;
   app.innerHTML=`<section class="wrap dash">
+    ${me?`<div class="demo-banner"><span>Welcome, ${escH((me.full_name||"").split(" ")[0]||"there")}. These figures are examples until ${escH(me.business_name||"your venue")} is set up on Vendo.</span><a class="btn primary" href="#list-your-venue" style="text-decoration:none">Set up ${escH(me.business_name||"your venue")}</a></div>`:""}
     <div class="dash-head"><div><div class="eyebrow">Host dashboard · November 2026</div><h1>Good afternoon, Jo.</h1><p>${v.name} · ${hostRooms().length} ${hostRooms().length===1?"room":"rooms"} on Vendo</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="preview">View your listing</button><button class="btn primary" id="addspace">Add another venue</button></div></div>
     <div class="htabs" role="tablist" aria-label="Dashboard sections">${HTABS.map(([k,l])=>`<button type="button" role="tab" id="ht-${k}" data-ht="${k}" aria-controls="hbody" aria-selected="${host.tab===k}" tabindex="${host.tab===k?0:-1}">${l}</button>`).join("")}</div>
@@ -2069,7 +2098,7 @@ function waitHTML(){if(!waitlist.length) return "";
       <span>${niceDay(dayFromIso(w.date))}${w.room?" · "+w.room:""}</span><span class="brow-acts"><button class="linkbtn" data-open="${v.id}">View venue</button><button class="linkbtn" data-unwait="${i}">Leave list</button></span></div>`;}).join("")}</div></div>`;}
 function renderAccount(){
   if(authLive()&&DB.user) return renderRealAccount();
-  if(authLive()&&!state.demoAccount) return renderSignIn();
+  if(authLive()&&!state.demoAccount){setUrl("signin",false);state.view="signin";document.getElementById("tab-me").setAttribute("aria-pressed","true");renderAuthPage("signin");setTitle();return;}
   const sc=guestScore(), n=ME.reviews.length;
   app.innerHTML=`<section class="wrap dash">
     ${authLive()?`<div class="demo-banner"><span>This is an example account, so you can see how it works.</span><button type="button" class="btn primary" id="real-signin">Sign in to your own</button></div>`:""}
@@ -2297,6 +2326,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.16.0",d:"2026-11-16",t:"Create an account",n:["A proper sign-up page: your name and email, whether you're planning events or run a venue, and your venue's details if you do.","A separate sign-in page that tells you if there's no account for your email.","After signing in, venue owners go to their dashboard, guests to their account, and anyone mid-booking straight back to it."]},
  {v:"0.15.1",d:"2026-11-16",t:"Our own address",n:["Vendo now lives at vendohire.com, with a secure connection. The old vendohire.netlify.app address takes you there automatically."]},
  {v:"0.15.0",d:"2026-11-16",t:"Getting there by public transport",n:["Each venue page shows the nearest stations, tram stops and bus stops, with walking times and step-free details.","See the bus numbers that stop nearby, a map of the stops, and a link to plan your journey."]},
  {v:"0.14.1",d:"2026-11-16",t:"Clearer sign-in limits",n:["If too many sign-in emails have been sent, the message now says whether to wait seconds or an hour."]},
@@ -2470,12 +2500,16 @@ async function onAuth(session){
   if((u&&u.id)===(DB.user&&DB.user.id)&&DB.profile!==undefined&&(u?DB.profile:true)) return;
   DB.user=u; DB.profile=null; DB.bookings=null;
   if(u){
-    const {data}=await DB.client.from("profiles").select("full_name,phone,town").eq("id",u.id).maybeSingle();
-    DB.profile=data||{full_name:"",phone:"",town:""};
+    const {data}=await DB.client.from("profiles").select("full_name,phone,town,account_type,business_name,business_type").eq("id",u.id).maybeSingle();
+    DB.profile=data||{full_name:"",phone:"",town:"",account_type:"guest"};
     await syncSaved(); await dbLoadBookings();
   }
   updateAvatar();
+  if(u&&(state.view==="signin"||state.view==="signup")) return afterSignIn();
+  if(u&&getReturn()===currentKey()) setReturn("");   // arrived where the sign-in link was taking you
+  if(u&&getReturn()&&state.view!=="book") return afterSignIn();
   if(state.view==="account") renderAccount();
+  if(state.view==="host"&&u) renderHost();
   if(state.view==="book"&&checkout&&!checkout.done){
     if(u){if(!checkout.name||checkout.name===ME.name) checkout.name=DB.profile.full_name||"";
       if(!checkout.email||checkout.email===ME.email) checkout.email=u.email;
@@ -2520,66 +2554,134 @@ async function dbLoadBookings(){
 }
 function acctBookings(){return authLive()&&DB.user?(DB.bookings||[]):ME.bookings;}
 
-// Sign-in box: an emailed sign-in link (or a 6-digit code once emails carry one). No passwords.
-// Built from sections and buttons, not forms, so it can sit inside the booking form.
-function authHTML(px){
-  return `<div class="authbox" id="${px}-step1" role="group" aria-label="Sign in">
-      <div class="lf"><label for="${px}-email">Email</label><input id="${px}-email" type="email" autocomplete="email" inputmode="email"><span class="err" id="${px}-err"></span></div>
-      <div class="row"><button class="btn primary" type="button" id="${px}-send">Email me a sign-in link</button><span class="hint">No password needed. New here? This creates your account.</span></div></div>
-    <div class="authbox" id="${px}-step2" role="group" aria-label="Enter your sign-in code" hidden>
-      <p class="pnote" id="${px}-sent" role="status"></p>
-      <div class="lf"><label for="${px}-code">6-digit code (if your email has one)</label><input id="${px}-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><span class="err" id="${px}-cerr"></span></div>
-      <div class="row"><button class="btn primary" type="button" id="${px}-verify">Sign in</button><button type="button" class="linkbtn" id="${px}-again">Use a different email</button></div></div>`;
+// Sign up and sign in: passwordless, by an emailed link (or a 6-digit code once emails carry one).
+const VENUE_TYPES=["Pub","Bar or cocktail bar","Nightclub","Village or community hall","Church hall","Sports or social club","Leisure centre","Barn or outdoor venue","Hotel or restaurant","Something else"];
+const authForm={role:"guest",name:"",email:"",phone:"",town:"",venue:"",venueType:"",terms:false,news:false};
+const RETURN_KEY="vendo-return";
+function setReturn(key){try{key?localStorage.setItem(RETURN_KEY,key):localStorage.removeItem(RETURN_KEY);}catch(e){}}
+function getReturn(){try{return localStorage.getItem(RETURN_KEY)||"";}catch(e){return "";}}
+function otpErrorText(error){
+  const m=(error&&error.message)||"", wait=m.match(/after (\d+) seconds?/i);
+  return /email rate limit|over_email_send_rate_limit/i.test(m+" "+((error&&error.code)||""))?"We've hit this hour's limit on sign-in emails. Please try again in an hour."
+    :wait?`Please wait ${wait[1]} seconds before asking for another email.`
+    :/signups? not allowed|user not found|otp_disabled/i.test(m)?"NO_ACCOUNT"
+    :/rate|too many/i.test(m)?"Too many attempts just now. Wait a few minutes and try again."
+    :/not authorized|not allowed/i.test(m)?"Sign-in emails can only go to the Vendo team's addresses until email sending is set up."
+    :/invalid/i.test(m)?"That email address doesn't look right. Check it and try again."
+    :"We couldn't send the email: "+m;
 }
-function bindAuth(px){
-  const s1=document.getElementById(px+"-step1"), s2=document.getElementById(px+"-step2"); if(!s1) return;
-  const em=document.getElementById(px+"-email"), er=document.getElementById(px+"-err"), code=document.getElementById(px+"-code");
-  const send=async()=>{const email=em.value.trim(); er.textContent="";
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){er.textContent="Enter an email address like name@example.com.";em.focus();return;}
-    const btn=document.getElementById(px+"-send"); btn.disabled=true; btn.textContent="Sending…";
-    const redirect=PATH_MODE?location.origin+location.pathname:SITE_URL+"/account";
-    const {error}=await DB.client.auth.signInWithOtp({email,options:{emailRedirectTo:redirect,shouldCreateUser:true}});
-    btn.disabled=false; btn.textContent="Email me a sign-in link";
-    const wait=(error&&error.message||"").match(/after (\d+) seconds?/i);
-    if(error){er.textContent=/email rate limit|over_email_send_rate_limit/i.test(error.message+" "+(error.code||""))?"We've hit this hour's limit on sign-in emails. Please try again in an hour."
-      :wait?`Please wait ${wait[1]} seconds before asking for another email.`
-      :/rate|too many/i.test(error.message)?"Too many sign-in attempts just now. Wait a few minutes and try again."
-      :/not authorized|not allowed/i.test(error.message)?"Sign-in emails can only go to the Vendo team's addresses until email sending is set up."
-      :/invalid/i.test(error.message)?"That email address doesn't look right. Check it and try again."
-      :"We couldn't send the email: "+error.message;em.focus();return;}
-    s1.hidden=true; s2.hidden=false; document.getElementById(px+"-sent").innerHTML=`We've emailed <b>${escH(email)}</b>. Open it on this device and tap the sign-in link. If the email shows a 6-digit code, you can type it here instead.`;
-    code.focus();};
-  const verify=async()=>{const t=code.value.replace(/\D/g,""), ce=document.getElementById(px+"-cerr"); ce.textContent="";
-    if(t.length!==6){ce.textContent="Enter the 6 numbers from the email.";code.focus();return;}
-    const btn=document.getElementById(px+"-verify"); btn.disabled=true; btn.textContent="Checking…";
-    const {error}=await DB.client.auth.verifyOtp({email:em.value.trim(),token:t,type:"email"});
-    btn.disabled=false; btn.textContent="Sign in";
-    if(error){ce.textContent=/expired|invalid/i.test(error.message)?"That code didn't work or has expired. Check it, or send a new one.":error.message;code.focus();return;}
+function emailRedirect(){const back=getReturn();return PATH_MODE?location.origin+pathFor(back||"account"):SITE_URL+pathFor(back||"account");}
+function renderAuthPage(mode){
+  const up=mode==="signup", f=authForm, host=f.role==="host";
+  const aside=up?(host?`<h2>Why list with Vendo</h2><ul><li>Free to list. Pay a small fee only when you get a booking.</li><li>See every guest's rating before you say yes.</li><li>Payments, deposits and reminders handled for you.</li><li>One calendar for Vendo and phone bookings.</li></ul>`
+      :`<h2>Why create an account</h2><ul><li>Book pubs, halls, bars and clubs with prices that include every fee.</li><li>See all your bookings and messages in one place.</li><li>Keep your saved venues on every device.</li><li>No password to remember: we email you a link.</li></ul>`)
+    :`<h2>Good to have you back</h2><ul><li>We'll email you a link to sign in. No password needed.</li><li>Open it on this device and you'll come straight back here.</li></ul>`;
+  app.innerHTML=`<section class="wrap auth-page">
+    <div class="auth-card" id="auth-card">
+      <nav class="auth-switch" aria-label="Account"><a href="#signup" ${up?'aria-current="page"':""}>Create account</a><a href="#signin" ${up?"":'aria-current="page"'}>Sign in</a></nav>
+      <h1>${up?"Create your Vendo account":"Sign in to Vendo"}</h1>
+      ${up?`<form class="lform" id="auth-form" novalidate>
+        <fieldset class="rolecards lf full"><legend>What brings you to Vendo?</legend>
+          <label class="rolecard"><input type="radio" name="au-role" value="guest" ${host?"":"checked"}><b>I'm planning an event</b><span>Book a room for a party, wedding, wake or get-together.</span></label>
+          <label class="rolecard"><input type="radio" name="au-role" value="host" ${host?"checked":""}><b>I run a venue</b><span>List your pub, hall, bar or club and take bookings.</span></label>
+        </fieldset>
+        <div class="lf"><label for="au-name">Full name</label><input id="au-name" autocomplete="name" maxlength="80" value="${escH(f.name)}"><span class="err" id="ae-name"></span></div>
+        <div class="lf"><label for="au-email">Email</label><input id="au-email" type="email" autocomplete="email" inputmode="email" value="${escH(f.email)}"><span class="err" id="ae-email"></span></div>
+        <div class="lf"><label for="au-phone">Mobile number${host?"":" (optional)"}</label><input id="au-phone" type="tel" autocomplete="tel" value="${escH(f.phone)}"><span class="err" id="ae-phone"></span></div>
+        <div class="lf"><label for="au-town">Town or city (optional)</label><input id="au-town" autocomplete="address-level2" maxlength="60" value="${escH(f.town)}"></div>
+        ${host?`<div class="lf"><label for="au-venue">Venue name</label><input id="au-venue" autocomplete="organization" maxlength="120" value="${escH(f.venue)}"><span class="err" id="ae-venue"></span></div>
+        <div class="lf"><label for="au-vtype">Type of venue</label><select id="au-vtype"><option value="">Choose one</option>${VENUE_TYPES.map(t=>`<option ${t===f.venueType?"selected":""}>${t}</option>`).join("")}</select><span class="err" id="ae-vtype"></span></div>`:""}
+        <div class="lf full auth-checks">
+          <label class="agree"><input type="checkbox" id="au-terms" ${f.terms?"checked":""}><span>I agree to Vendo's <a href="#terms">terms</a> and <a href="#privacy">privacy notice</a>.</span></label>
+          <span class="err" id="ae-terms"></span>
+          <label class="agree"><input type="checkbox" id="au-news" ${f.news?"checked":""}><span>Send me occasional tips${host?" for venues":" and offers"}. You can stop these any time.</span></label>
+        </div>
+        <div class="lf full"><button class="cta" type="submit" id="au-go">Create account</button></div>
+      </form>`
+      :`<form class="lform" id="auth-form" novalidate>
+        <div class="lf full"><label for="au-email">Email</label><input id="au-email" type="email" autocomplete="email" inputmode="email" value="${escH(f.email)}"><span class="err" id="ae-email"></span></div>
+        <div class="lf full"><button class="cta" type="submit" id="au-go">Email me a sign-in link</button></div>
+      </form>`}
+      <p class="pnote">${up?`Already have an account? <a href="#signin">Sign in</a>`:`New to Vendo? <a href="#signup">Create an account</a>`}${up?"":` · <button type="button" class="linkbtn" id="demo-acct" style="display:inline">See an example account</button>`}</p>
+    </div>
+    <aside class="auth-aside" aria-label="${up?"Why join":"Signing in"}">${aside}</aside>
+  </section>`;
+  linkify(app);
+  const d=document.getElementById("demo-acct"); if(d) d.addEventListener("click",()=>{state.demoAccount=true;nav("account");});
+  const bind=(id,k)=>{const el=document.getElementById(id); if(el) el.addEventListener(el.type==="checkbox"?"change":"input",()=>{f[k]=el.type==="checkbox"?el.checked:el.value;const e=document.getElementById("ae-"+id.slice(3));if(e)e.textContent="";});};
+  [["au-name","name"],["au-email","email"],["au-phone","phone"],["au-town","town"],["au-venue","venue"],["au-terms","terms"],["au-news","news"]].forEach(([i,k])=>bind(i,k));
+  const vt=document.getElementById("au-vtype"); if(vt) vt.addEventListener("change",()=>{f.venueType=vt.value;document.getElementById("ae-vtype").textContent="";});
+  app.querySelectorAll('[name="au-role"]').forEach(r=>r.addEventListener("change",()=>{f.role=r.value;renderAuthPage("signup");document.querySelector(`[name="au-role"][value="${r.value}"]`).focus();}));
+  document.getElementById("auth-form").addEventListener("submit",e=>{e.preventDefault();submitAuth(mode);});
+}
+async function submitAuth(mode){
+  const f=authForm, up=mode==="signup", er={};
+  f.email=f.email.trim();
+  if(up&&!f.name.trim()) er.name="Enter your full name.";
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) er.email="Enter an email address like name@example.com.";
+  if(up&&f.role==="host"&&f.phone.replace(/\D/g,"").length<10) er.phone="Enter a mobile number so guests and Vendo can reach you.";
+  else if(up&&f.phone.trim()&&f.phone.replace(/\D/g,"").length<10) er.phone="Check the number: it looks too short.";
+  if(up&&f.role==="host"&&!f.venue.trim()) er.venue="Enter your venue's name.";
+  if(up&&f.role==="host"&&!f.venueType) er.vtype="Choose the type of venue.";
+  if(up&&!f.terms) er.terms="Tick the box to agree before you create your account.";
+  ["name","email","phone","venue","vtype","terms"].forEach(k=>{const e=document.getElementById("ae-"+k); if(e) e.textContent=er[k]||"";});
+  const first=Object.keys(er)[0];
+  if(first){document.getElementById({name:"au-name",email:"au-email",phone:"au-phone",venue:"au-venue",vtype:"au-vtype",terms:"au-terms"}[first]).focus();return;}
+  if(!DB.client){toast("Accounts aren't available just now. Please try again in a moment.");return;}
+  const go=document.getElementById("au-go"); go.disabled=true; go.textContent="Sending…";
+  const options={emailRedirectTo:emailRedirect(),shouldCreateUser:up};
+  if(up) options.data={full_name:f.name.trim().slice(0,80),account_type:f.role,phone:f.phone.trim().slice(0,30),town:f.town.trim().slice(0,60),
+    business_name:f.role==="host"?f.venue.trim().slice(0,120):"",business_type:f.role==="host"?f.venueType:"",terms_accepted:String(f.terms),marketing_opt_in:String(f.news)};
+  const {error}=await DB.client.auth.signInWithOtp({email:f.email,options});
+  go.disabled=false; go.textContent=up?"Create account":"Email me a sign-in link";
+  if(error){const t=otpErrorText(error), e=document.getElementById("ae-email");
+    if(t==="NO_ACCOUNT"){e.innerHTML=`There's no Vendo account for that email. <a href="#signup" id="ae-create">Create one</a>.`;linkify(e);}
+    else e.textContent=t;
+    document.getElementById("au-email").focus();return;}
+  showAuthSent(mode);
+}
+function showAuthSent(mode){
+  const f=authForm, card=document.getElementById("auth-card");
+  card.innerHTML=`<div class="auth-sent" role="status">
+      <span class="big" aria-hidden="true">✉</span>
+      <h1>Check your email</h1>
+      <p style="margin:0">We've sent a link to <b>${escH(f.email)}</b>. Open it on this device to ${mode==="signup"?"finish creating your account":"sign in"}. It may take a minute, and it can land in spam.</p>
+      <div class="lf"><label for="au-code">Or type the 6-digit code, if your email has one</label><input id="au-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><span class="err" id="ae-code"></span></div>
+      <div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="button" id="au-verify">Continue</button><button class="btn" type="button" id="au-resend" disabled>Send again in 60s</button><button class="linkbtn" type="button" id="au-back">Use a different email</button></div>
+    </div>`;
+  document.getElementById("au-code").focus();
+  const rs=document.getElementById("au-resend"); let left=60;
+  const tick=setInterval(()=>{if(!document.body.contains(rs)){clearInterval(tick);return;} left--; if(left<=0){clearInterval(tick);rs.disabled=false;rs.textContent="Send again";} else rs.textContent=`Send again in ${left}s`;},1000);
+  rs.addEventListener("click",async()=>{rs.disabled=true;rs.textContent="Sending…";
+    const {error}=await DB.client.auth.signInWithOtp({email:f.email,options:{emailRedirectTo:emailRedirect(),shouldCreateUser:mode==="signup"}});
+    rs.textContent=error?"Couldn't send":"Sent";toast(error?otpErrorText(error).replace("NO_ACCOUNT","There's no account for that email."):"We've sent another email.");});
+  document.getElementById("au-back").addEventListener("click",()=>renderAuthPage(mode));
+  const verify=async()=>{const code=document.getElementById("au-code").value.replace(/\D/g,""), ce=document.getElementById("ae-code"); ce.textContent="";
+    if(code.length!==6){ce.textContent="Enter the 6 numbers from the email.";document.getElementById("au-code").focus();return;}
+    const b=document.getElementById("au-verify"); b.disabled=true; b.textContent="Checking…";
+    const {error}=await DB.client.auth.verifyOtp({email:f.email,token:code,type:"email"});
+    b.disabled=false; b.textContent="Continue";
+    if(error){ce.textContent=/expired|invalid/i.test(error.message)?"That code didn't work or has expired. Check it, or send a new email.":error.message;return;}
     toast("You're signed in.");};
-  document.getElementById(px+"-send").addEventListener("click",send);
-  document.getElementById(px+"-verify").addEventListener("click",verify);
-  em.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();send();}});
-  code.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();verify();}});
-  document.getElementById(px+"-again").addEventListener("click",()=>{s2.hidden=true;s1.hidden=false;em.focus();});
+  document.getElementById("au-verify").addEventListener("click",verify);
+  document.getElementById("au-code").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();verify();}});
+}
+// After signing in from the sign-up or sign-in page, carry on where you were going.
+function afterSignIn(){
+  const back=getReturn(); setReturn("");
+  nav(back||(DB.profile&&DB.profile.account_type==="host"?"host":"account")); window.scrollTo(0,0);
 }
 function savedPanelHTML(){
   return `<div class="panel"><div class="panel-head"><h2>Saved venues</h2><span class="eyebrow">${saved.size} saved</span></div>
       ${saved.size?`<div class="savedlist">${VENUES.filter(v=>saved.has(v.id)).map(v=>`<div class="srow"><button type="button" class="srow-main" data-open="${v.id}"><span class="mthumb">${scene(v,"s")}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ★ ${v.rating.toFixed(1)}</span></span></button>${heartBtn(v)}</div>`).join("")}</div>`
       :`<p style="margin:0;color:var(--muted)">Tap the heart on any venue to save it here and compare later.</p>`}</div>`;
 }
-function renderSignIn(){
-  app.innerHTML=`<section class="wrap dash"><div class="dash-head"><div><div class="eyebrow">My account</div><h1>Sign in to Vendo</h1>
-      <p>See your bookings, keep your saved venues on every device, and book in a couple of taps.</p></div></div>
-    <div class="panel signin">${authHTML("acct")}</div>
-    <p class="pnote">Just looking? <button type="button" class="linkbtn" id="demo-acct" style="display:inline">See an example account</button></p></section>`;
-  bindAuth("acct");
-  document.getElementById("demo-acct").addEventListener("click",()=>{state.demoAccount=true;renderAccount();});
-}
 function renderRealAccount(){
   const p=DB.profile||{}, name=p.full_name||"", first=(name||DB.user.email).split(/[\s@]/)[0], bk=DB.bookings||[];
   app.innerHTML=`<section class="wrap dash">
     <div class="dash-head"><div><div class="eyebrow">My account</div><h1>Hello, ${escH(first)}.</h1><p>Signed in as ${escH(DB.user.email)}</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sign-out">Sign out</button></div></div>
+    ${p.account_type==="host"?`<div class="demo-banner"><span><b>${escH(p.business_name||"Your venue")}</b>${p.business_type?` · ${escH(p.business_type)}`:""}. Manage bookings, prices and your calendar in the venue dashboard.</span><a class="btn primary" href="#host" style="text-decoration:none">Go to your venue dashboard</a></div>`:""}
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>Your bookings</h2><span class="eyebrow">${bk.length} ${bk.length===1?"booking":"bookings"}</span></div>
         ${bk.length?`<div>${bk.map(b=>`<div class="brow"><b>${escH(b.event)}</b><span class="pill ${b.status==="Confirmed"?"ok":b.status==="Request sent"?"new":"no"}">${b.status}</span>
@@ -2590,6 +2692,7 @@ function renderRealAccount(){
           <div class="lf full"><label for="pf-name">Full name</label><input id="pf-name" autocomplete="name" value="${escH(name)}"></div>
           <div class="lf"><label for="pf-phone">Mobile number</label><input id="pf-phone" type="tel" autocomplete="tel" value="${escH(p.phone||"")}"></div>
           <div class="lf"><label for="pf-town">Town</label><input id="pf-town" autocomplete="address-level2" value="${escH(p.town||"")}"></div>
+          <div class="lf full"><label for="pf-type">Account type</label><select id="pf-type"><option value="guest" ${p.account_type==="host"?"":"selected"}>I'm planning events</option><option value="host" ${p.account_type==="host"?"selected":""}>I run a venue</option></select></div>
           <div class="lf full"><button class="btn primary" type="submit">Save details</button></div></form>
         <p class="pnote">Venues only see your phone number once a booking is confirmed.</p></div>
     </div>
@@ -2599,7 +2702,7 @@ function renderRealAccount(){
   </section>`;
   document.getElementById("sign-out").addEventListener("click",async()=>{await DB.client.auth.signOut();toast("You're signed out.");});
   document.getElementById("prof-form").addEventListener("submit",async e=>{e.preventDefault();
-    const row={full_name:document.getElementById("pf-name").value.trim().slice(0,80),phone:document.getElementById("pf-phone").value.trim().slice(0,30)||null,town:document.getElementById("pf-town").value.trim().slice(0,60)||null};
+    const row={full_name:document.getElementById("pf-name").value.trim().slice(0,80),phone:document.getElementById("pf-phone").value.trim().slice(0,30)||null,town:document.getElementById("pf-town").value.trim().slice(0,60)||null,account_type:document.getElementById("pf-type").value==="host"?"host":"guest"};
     const {error}=await DB.client.from("profiles").update(row).eq("id",DB.user.id);
     if(error){toast("Couldn't save your details: "+error.message);return;}
     Object.assign(DB.profile,row); updateAvatar(); toast("Details saved."); renderRealAccount();});
@@ -2768,7 +2871,8 @@ function renderCheckout(){
           <div class="lf"><label for="ck-notes">Anything ${v.host.split(",")[0]} should know? (optional)</label><textarea id="ck-notes" maxlength="500" placeholder="Dietary needs, set-up time, a surprise to keep quiet">${escH(c.notes)}</textarea></div>
         </fieldset>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">2</span>Your details</legend>
-          ${needAuth?`<p class="pnote">Sign in to book, so your booking is saved to your account. We'll email you a sign-in link: no password needed. Your booking details here are kept while you sign in.</p>${authHTML("ckauth")}<span class="err" id="ce-auth"></span>`:`
+          ${needAuth?`<div class="need-auth"><p class="pnote">Create a free account or sign in to book, so your booking is saved to your account. Your booking details are kept while you do.</p>
+            <div class="row"><a class="btn primary" href="#signup" id="ck-signup">Create an account</a><a class="btn" href="#signin" id="ck-signin">Sign in</a></div><span class="err" id="ce-auth"></span></div>`:`
           <div class="lf"><label for="ck-name">Full name</label><input id="ck-name" autocomplete="name" value="${escH(c.name)}"><span class="err" id="ce-name"></span></div>
           <div class="ckrow">
             <div class="lf"><label for="ck-email">Email</label><input id="ck-email" type="email" autocomplete="email" value="${escH(c.email)}"><span class="err" id="ce-email"></span></div>
@@ -2799,7 +2903,8 @@ function renderCheckout(){
   const f=c, set=(k,val)=>{f[k]=val;saveCheckout();};
   const bindIn=(id,k,fn)=>{const el=document.getElementById(id);el.addEventListener("input",()=>{set(k,el.value);const e=document.getElementById("ce-"+k);if(e)e.textContent="";if(fn)fn();});};
   bindIn("ck-other","other"); bindIn("ck-notes","notes");
-  if(needAuth) bindAuth("ckauth"); else {bindIn("ck-name","name"); bindIn("ck-email","email"); bindIn("ck-phone","phone");}
+  if(needAuth){["ck-signup","ck-signin"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{setReturn("book-"+c.id);authForm.role="guest";if(!authForm.name&&c.name!==ME.name)authForm.name=c.name;},true));}
+  else {bindIn("ck-name","name"); bindIn("ck-email","email"); bindIn("ck-phone","phone");}
   document.getElementById("ck-event").addEventListener("change",e=>{set("event",e.target.value);document.getElementById("ce-event").textContent="";document.getElementById("ck-other-wrap").hidden=e.target.value!=="other";});
   document.getElementById("ck-start").addEventListener("change",e=>{set("start",e.target.value);drawCkSum();});
   const g=document.getElementById("ck-guests");
@@ -2833,12 +2938,12 @@ function drawCkSum(){
       <div class="hint"><span>Damage deposit, held then released</span><span>${gbp(p.damage)}</span></div></div>
     <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>`;
-  document.getElementById("ck-go").textContent=authLive()?(DB.user?"Send booking request":"Sign in above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
+  document.getElementById("ck-go").textContent=authLive()?(DB.user?"Send booking request":"Create an account above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
   document.getElementById("ck-go-note").textContent=authLive()?"Card payments are coming soon. For now your request is saved to your account and nothing is charged.":v.instant?"Your booking is confirmed straight away.":`${v.reply}. You'll only pay if ${v.host.split(",")[0]} accepts.`;
 }
 async function submitCheckout(maxG){
   const c=checkout, er={}, n=parseInt(document.getElementById("ck-guests").value,10);
-  if(authLive()&&!DB.user){const e=document.getElementById("ce-auth");if(e)e.textContent="Sign in first, so we can save your booking.";const i=document.getElementById("ckauth-email");if(i)i.focus();return;}
+  if(authLive()&&!DB.user){const e=document.getElementById("ce-auth");if(e)e.textContent="Create an account or sign in first, so we can save your booking.";const i=document.getElementById("ck-signup");if(i)i.focus();return;}
   if(!c.event) er.event="Choose the occasion.";
   if(c.event==="other"&&!c.other.trim()) er.other="Tell us the occasion.";
   if(!(n>=1&&n<=maxG)) er.guests=`Enter a number from 1 to ${maxG}.`;
@@ -2943,7 +3048,7 @@ const PATH_MODE=/^https?:$/.test(location.protocol)&&(location.hostname===new UR
 // Venue pages stay out of search results while the listings are fictional. Set to true when real venues go live.
 const INDEX_VENUES=false;
 const slugOf=v=>v.name.toLowerCase().replace(/&/g,"and").replace(/['’]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",account:"/account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
+const PAGE_PATHS={find:"/",host:"/for-venues/dashboard",account:"/account",signin:"/sign-in",signup:"/create-account","list-your-venue":"/list-your-venue",about:"/about",contact:"/contact",terms:"/terms",privacy:"/privacy",cookies:"/cookies",changelog:"/whats-new"};
 const isRouteKey=k=>k in PAGE_PATHS||/^(venue|book)-./.test(k);
 function pathFor(key){
   const m=key.match(/^(venue|book)-(.+)$/);
@@ -2992,6 +3097,8 @@ function metaFor(key){
   if(v) return {title:`${checkout&&checkout.done?"Booked":"Book"}: ${v.name} · Vendo`,desc:META_DESC.find,index:false};
   if(key==="host") return {title:"Host dashboard · Vendo",desc:META_DESC["list-your-venue"],index:false};
   if(key==="account") return {title:"My account · Vendo",desc:META_DESC.find,index:false};
+  if(key==="signin") return {title:"Sign in · Vendo",desc:"Sign in to Vendo with a link we email you. No password needed.",index:false};
+  if(key==="signup") return {title:"Create your account · Vendo",desc:"Create a free Vendo account to book venues, or to list your pub, hall, bar or club.",index:false};
   if(key==="list-your-venue") return {title:"List your venue for free · Vendo",desc:META_DESC[key],index:true};
   if(key==="notfound") return {title:"Page not found · Vendo",desc:META_DESC.find,index:false};
   if(PAGES[key]) return {title:`${PAGES[key].title} · Vendo`,desc:META_DESC[key]||META_DESC.find,index:true};
@@ -3041,17 +3148,19 @@ function route(){
     setUrl("venue-"+id,false); route(); return;
   }
   if(key==="notfound"){state.view="notfound";if(state.open) closeVenue(true);["tab-find","tab-host","tab-me"].forEach(t=>document.getElementById(t).setAttribute("aria-pressed","false"));renderNotFound();setTitle();return;}
-  const pk=key; const v=pk==="host"?"host":pk==="account"?"account":pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
+  const pk=key; const v=pk==="host"?"host":pk==="account"?"account":pk==="signin"||pk==="signup"?pk:pk==="list-your-venue"?"list":PAGES[pk]?pk:"find"; state.view=v;
   document.getElementById("tab-find").setAttribute("aria-pressed",v==="find");
   document.getElementById("tab-host").setAttribute("aria-pressed",v==="host");
-  document.getElementById("tab-me").setAttribute("aria-pressed",v==="account");
+  document.getElementById("tab-me").setAttribute("aria-pressed",v==="account"||v==="signin"||v==="signup");
   if(state.open) closeVenue(true);
-  v==="host"?renderHost():v==="account"?renderAccount():v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
+  if((v==="signin"||v==="signup")&&NATIVE){state.view="account";setUrl("account",false);renderAccount();linkify(app);setTitle();return;}
+  if((v==="signin"||v==="signup")&&DB.user){afterSignIn();return;}
+  v==="host"?renderHost():v==="account"?renderAccount():v==="signin"||v==="signup"?renderAuthPage(v):v==="list"?(renderList(),window.scrollTo(0,0)):PAGES[v]?renderPage(v):renderFind();
   linkify(app); setTitle();
 }
 document.getElementById("tab-find").addEventListener("click",()=>{nav("find");window.scrollTo(0,0);focusMain();});
 document.getElementById("tab-host").addEventListener("click",()=>{nav("host");window.scrollTo(0,0);focusMain();});
-document.getElementById("tab-me").addEventListener("click",()=>{nav("account");window.scrollTo(0,0);focusMain();});
+document.getElementById("tab-me").addEventListener("click",()=>{nav(authLive()&&!DB.user?"signin":"account");window.scrollTo(0,0);focusMain();});
 if(PATH_MODE) window.addEventListener("popstate",()=>{if(location.hash&&!isRouteKey(location.hash.slice(1))) return; route();});
 else window.addEventListener("hashchange",route);
 linkify(document.querySelector("header"));linkify(document.querySelector("footer"));
