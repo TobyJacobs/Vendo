@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.18.1 · Sign in on iPhone
+
+_2026-11-16_
+
+- Create an account and sign in inside the iPhone app, with the 6-digit code from the email.
+- Sign-in emails now say "code" everywhere, since every email includes one.
+
 ## 0.18.0 · Add and verify venues
 
 _2026-11-16_
