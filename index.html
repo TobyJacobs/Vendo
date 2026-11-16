@@ -202,12 +202,12 @@ h1,h2,h3{font-family:var(--f-display);font-weight:650;text-wrap:balance;margin:0
 .intro h1{font-size:clamp(34px,5.2vw,58px);line-height:1.04;max-width:16ch}
 .intro h1 em{font-style:normal;color:var(--accent-text)}
 .intro p{color:var(--muted);max-width:58ch;margin:0;font-size:16.5px}
-.search{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr auto;gap:0;overflow:hidden}
+.search{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.6fr 1fr 0.8fr auto;gap:0;overflow:hidden}
 .field{padding:12px 18px;border-right:1px solid var(--line);display:grid;gap:2px;min-width:0}
 .field label{font-size:12.5px;font-weight:600;color:var(--muted)}
 .field input,.field select{border:0;background:none;padding:2px 0;outline:none;font-weight:600;font-size:15px;min-width:0;width:100%}
 .search .go{border:0;margin:8px;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:600;padding:0 24px}
-@media (max-width:760px){.search{grid-template-columns:1fr 1fr}.field:first-child{grid-column:1/-1;border-right:0}.field:nth-child(-n+3){border-bottom:1px solid var(--line)}.field:nth-child(3){border-right:0}.field:nth-child(4){grid-column:1/-1;border-right:0}.search .go{grid-column:1/-1;padding:12px}}
+@media (max-width:760px){.search{grid-template-columns:1fr 1fr}.field:first-child{grid-column:1/-1;border-right:0}.field:nth-child(-n+3){border-bottom:1px solid var(--line)}.field:nth-child(3){border-right:0}.search .go{grid-column:1/-1;padding:12px}}
 
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:13.5px;white-space:nowrap;color:var(--ink)}
@@ -704,6 +704,13 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .roomseg button{display:grid;gap:1px;text-align:left;padding:7px 9px}
 .roomseg small{font-size:11px;font-weight:600;color:var(--muted)}
 /* budget planner */
+.planner>summary{list-style:none;cursor:pointer;display:block;position:relative;padding-right:36px}
+.planner>summary::-webkit-details-marker{display:none}
+.planner>summary::after{content:"";position:absolute;right:4px;top:12px;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+.planner[open]>summary::after{transform:rotate(-135deg);top:17px}
+.planner:not([open]){gap:0}
+.moref>summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--accent-text);width:max-content}
+.moref[open]>summary{margin-bottom:10px}
 .planner{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:22px;display:grid;gap:18px;margin-bottom:40px;min-width:0}
 .pl-intro h2{font-size:28px}.pl-intro p{margin:6px 0 0;color:var(--muted)}
 .pl-ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:18px;align-items:end}
@@ -1290,22 +1297,24 @@ function filtered(ignoreDate){
   return list;
 }
 function renderFind(){
-  const regions=["Anywhere",...new Set(VENUES.map(v=>v.region))];
   app.innerHTML = `
   <section class="wrap intro">
     <div class="eyebrow">Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres</div>
     <h1 id="headline"></h1>
-    <p>Book function rooms, halls and private bars straight from the people who run them. See real availability, build a quote, and send a request in a couple of minutes.</p>
+    <p>Book function rooms, halls and private bars straight from the people who run them.</p>
     <form class="search" id="search">
       <div class="field"><label for="q">Where or what</label><input id="q" placeholder="Village, town or venue name" value="${state.q}"></div>
       <div class="field"><label for="sdate">Date</label><input id="sdate" type="date" min="${isoDay(TODAY)}" value="${state.date}"></div>
-      <div class="field"><label for="region">Region</label><select id="region">${regions.map(r=>`<option ${r===state.region?"selected":""}>${r}</option>`).join("")}</select></div>
       <div class="field"><label for="guests">Guests</label><input id="guests" type="number" min="1" inputmode="numeric" placeholder="How many?" value="${state.guests}"></div>
       <button class="go" type="submit">Search</button>
     </form>
     <div class="chips" role="group" aria-label="Event type">${EVENTS.map(e=>`<button class="chip" data-ev="${e}" aria-pressed="${e===state.event}">${e}</button>`).join("")}</div>
+    <details class="moref"${FILTERS.some(([k])=>state.f[k])||state.f.max||state.near?" open":""}><summary>More filters</summary>
     <div class="fchips" role="group" aria-label="More filters">${FILTERS.map(([k,l])=>`<button type="button" class="fchip" data-f="${k}" aria-pressed="${state.f[k]}">${l}</button>`).join("")}
-      <label class="fprice">Price <select id="fmax"><option value="0">Any price</option>${[50,100,150,200].map(m=>`<option value="${m}" ${state.f.max===m?"selected":""}>Up to £${m} an hour</option>`).join("")}</select></label></div>
+      <label class="fprice">Price <select id="fmax"><option value="0">Any price</option>${[50,100,150,200].map(m=>`<option value="${m}" ${state.f.max===m?"selected":""}>Up to £${m} an hour</option>`).join("")}</select></label>
+      <label class="fprice">Near <select id="near"><option value="">Anywhere</option>${TOWNS.map(t=>`<option value="${t.name}">${t.name}</option>`).join("")}<option value="__me">Use my location</option></select></label>
+      <label class="fprice">Within <select id="radius">${[10,25,50,100].map(r=>`<option value="${r}" ${r===state.radius?"selected":""}>${r} miles</option>`).join("")}</select></label></div>
+    </details>
     <div class="mood-note" id="mood-note" hidden><i aria-hidden="true"></i><span></span></div>
   </section>
   <section class="wrap">
@@ -1313,8 +1322,6 @@ function renderFind(){
     <div class="resultbar"><span class="count" id="count"></span>
       <div class="tools">
         <div class="seg" role="group" aria-label="Show venues as"><button type="button" id="v-list" aria-pressed="${state.mode==="list"}">List</button><button type="button" id="v-map" aria-pressed="${state.mode==="map"}">Map</button></div>
-        <label>Near <select id="near"><option value="">Anywhere</option>${TOWNS.map(t=>`<option value="${t.name}">${t.name}</option>`).join("")}<option value="__me">Use my location</option></select></label>
-        <label>Within <select id="radius">${[10,25,50,100].map(r=>`<option value="${r}" ${r===state.radius?"selected":""}>${r} miles</option>`).join("")}</select></label>
         <label>Sort <select id="sort">
           <option value="recommended">Recommended</option><option value="distance">Nearest first</option><option value="rating">Top rated</option>
           <option value="price">Lowest price</option><option value="capacity">Largest capacity</option></select></label>
@@ -1322,8 +1329,8 @@ function renderFind(){
     <div class="grid" id="grid"></div>
     <div id="booked-alt"></div>
     <div class="mapview" id="mapview" hidden><div id="map" role="region" aria-label="Map of venues"></div><div class="maplist" id="maplist"></div></div>
-    <div class="planner" aria-labelledby="pl-title">
-      <div class="pl-intro"><h2 id="pl-title">What can I get for my budget?</h2><p>Set a budget and guest numbers. We'll add up the room, food and drinks at each venue.</p></div>
+    <details class="planner">
+      <summary class="pl-intro"><h2 id="pl-title">What can I get for my budget?</h2><p>Set a budget and guest numbers. We'll add up the room, food and drinks at each venue.</p></summary>
       <div class="pl-ctl">
         <div class="ctl"><label for="pl-b">Total budget <span id="pl-b-v"></span></label><input id="pl-b" type="range" min="200" max="8000" step="50"></div>
         <div class="ctl"><label for="pl-g">Guests <span id="pl-g-v"></span></label><input id="pl-g" type="range" min="10" max="300" step="5"></div>
@@ -1331,7 +1338,7 @@ function renderFind(){
         <div class="pl-tog"><label class="addon" for="pl-f"><input type="checkbox" id="pl-f">Food</label><label class="addon" for="pl-d"><input type="checkbox" id="pl-d">Drinks</label></div>
       </div>
       <div id="pl-out" aria-live="polite"></div>
-    </div>
+    </details>
     <div class="how">
       <h2>How Vendo works</h2>
       <div class="steps">
@@ -1343,11 +1350,7 @@ function renderFind(){
         <details><summary>What is the booking fee?</summary><p>4% of the booking, already included in every price you see. There are no other charges.</p></details>
         <details><summary>How do deposits work?</summary><p>Most venues hold a refundable damage deposit. It's returned within 7 days of your event if all is well.</p></details>
         <details><summary>Can I cancel?</summary><p>Each venue sets its own cancellation policy, shown before you pay. Many offer a full refund up to 30 days before.</p></details>
-        <details><summary>Can we have a bar?</summary><p>Every listing says whether it has a licensed bar or if you can bring your own. Use the Licensed bar filter to find them.</p></details>
-        <details><summary>What is a guest rating?</summary><p>Venues you've booked rate how your event went. A good rating helps you get a yes next time. You can reply to any rating.</p></details>
         <details><summary>Can I see the venue first?</summary><p>Yes. Message the venue to arrange a viewing before you book.</p></details>
-        <details><summary>What is Booking Protection?</summary><p>Your money is held until after your event. If a venue cancels, we'll help you find a similar room or refund you in full.</p></details>
-        <details><summary>Can I get Vendo on my phone?</summary><p>Yes. Open Vendo in your phone's browser and add it to your home screen. On iPhone, tap Share, then Add to Home Screen. On Android, tap Install.</p></details>
         <details><summary>Are venues checked?</summary><p>Venues with a Verified badge have had the owner's ID, premises licence and insurance checked by Vendo.</p></details>
       </div>
     </div>
@@ -1359,7 +1362,6 @@ function renderFind(){
   const s=document.getElementById("search");
   s.addEventListener("submit",e=>{e.preventDefault();readSearch();drawGrid();});
   ["q","guests"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{readSearch();drawGrid();}));
-  document.getElementById("region").addEventListener("change",()=>{readSearch();drawGrid();});
   document.getElementById("sdate").addEventListener("change",()=>{readSearch();drawGrid();});
   app.querySelectorAll(".fchip").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.f;state.f[k]=!state.f[k];b.setAttribute("aria-pressed",state.f[k]);drawGrid();}));
   document.getElementById("fmax").addEventListener("change",e=>{state.f.max=+e.target.value;drawGrid();});
@@ -1435,7 +1437,7 @@ function openFromPlan(id){const v=VENUES.find(x=>x.id===id), r=planCost(v,state.
   if(quote.date&&bookedDay(v,quote.date,r.ri)){quote.want=quote.date;quote.date=null;}
   drawBook();
 }
-function readSearch(){state.date=document.getElementById("sdate").value;state.q=document.getElementById("q").value.trim();state.guests=document.getElementById("guests").value;state.region=document.getElementById("region").value;}
+function readSearch(){state.date=document.getElementById("sdate").value;state.q=document.getElementById("q").value.trim();state.guests=document.getElementById("guests").value;const rg=document.getElementById("region"); if(rg) state.region=rg.value;}
 function setNear(n){
   state.near=n;
   if(n&&state.sort==="recommended") state.sort="distance";
@@ -2789,6 +2791,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.20.0",d:"2026-11-16",t:"A simpler home page",n:["A shorter introduction and a simpler search: where, date and guests.","Feature, price and distance filters now sit behind More filters, and open by themselves when one is in use.","The budget planner folds away until you open it, and the questions below it are cut to the five people ask most."]},
  {v:"0.19.2",d:"2026-11-16",t:"Venue types in capitals",n:["The list of venue types above the main heading now starts each word with a capital: Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres."]},
  {v:"0.19.1",d:"2026-11-16",t:"Tidier header on phones",n:["On phones, the Book a venue, For venues and Admin tabs no longer squash onto two lines. When they can't fit beside the logo they get their own row."]},
  {v:"0.19.0",d:"2026-11-16",t:"A cleaner look",n:["A new typeface, Inter Tight, across the whole site.","Crisper colours, smaller corners, quieter shadows and plain-English labels instead of small capitals.","Proper icons in place of text symbols."]},

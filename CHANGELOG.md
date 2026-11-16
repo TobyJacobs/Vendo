@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.20.0 · A simpler home page
+
+_2026-11-16_
+
+- A shorter introduction and a simpler search: where, date and guests.
+- Feature, price and distance filters now sit behind More filters, and open by themselves when one is in use.
+- The budget planner folds away until you open it, and the questions below it are cut to the five people ask most.
+
 ## 0.19.2 · Venue types in capitals
 
 _2026-11-16_
