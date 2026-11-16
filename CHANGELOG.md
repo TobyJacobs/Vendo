@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.15.1 · Our own address
+
+_2026-11-16_
+
+- Vendo now lives at vendohire.com, with a secure connection. The old vendohire.netlify.app address takes you there automatically.
+
 ## 0.15.0 · Getting there by public transport
 
 _2026-11-16_
