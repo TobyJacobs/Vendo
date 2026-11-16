@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.22.2 · New slogan
+
+_2026-11-17_
+
+- The home page now reads: Every great event needs a space. Find yours.
+- The line of text under it is gone, so the search box sits higher up.
+
 ## 0.22.1 · Filters under events
 
 _2026-11-17_
