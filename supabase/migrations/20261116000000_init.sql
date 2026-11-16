@@ -284,11 +284,15 @@ create or replace function public.guard_admin_fields() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
   if auth.uid() is null or public.is_admin() then return new; end if;   -- server-side jobs and admins
-  if tg_table_name = 'profiles' and new.is_admin is distinct from old.is_admin then
-    raise exception 'Only an admin can change admin access';
-  end if;
-  if tg_table_name = 'venues' and new.status = 'live' and old.status is distinct from 'live' then
-    raise exception 'A Vendo admin reviews new venues before they go live';
+  -- Separate IFs: PL/pgSQL doesn't short-circuit AND, so a profiles field must not be read on a venues row.
+  if tg_table_name = 'profiles' then
+    if new.is_admin is distinct from old.is_admin then
+      raise exception 'Only an admin can change admin access';
+    end if;
+  elsif tg_table_name = 'venues' then
+    if new.status = 'live' and old.status is distinct from 'live' then
+      raise exception 'A Vendo admin reviews new venues before they go live';
+    end if;
   end if;
   return new;
 end $$;
