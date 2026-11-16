@@ -2,6 +2,15 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.18.0 · Add and verify venues
+
+_2026-11-16_
+
+- Venue owners can add their own venue: rooms and prices, extras, photos, house rules and cancellation policy. Save a draft and submit it when ready.
+- To get verified, owners upload photo ID, their premises licence and insurance certificate. Only the Vendo team can open these documents.
+- In the Admin tab, review each venue, tick off the three checks, then approve it or send it back with a note.
+- The Verified venue badge now shows only on venues Vendo has checked. New venues show their own photos, and "New" until they have reviews.
+
 ## 0.17.0 · Admin dashboard
 
 _2026-11-16_
