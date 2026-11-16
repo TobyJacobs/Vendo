@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.22.0 · Great venues in your area
+
+_2026-11-17_
+
+- A new row on the home page shows top-rated venues near you. Choose a town, or use your location.
+- The town you pick is remembered on your device. If you've already let Vendo use your location, it's used without asking again.
+- Until you choose, it shows the top-rated venues on Vendo.
+
 ## 0.21.0 · Sliding event and filter menus
 
 _2026-11-17_

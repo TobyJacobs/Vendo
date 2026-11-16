@@ -695,6 +695,9 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .recent-h{display:flex;justify-content:space-between;align-items:baseline}.recent-h h2{font-size:20px}
 .recent-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,300px);gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
 .recent-row>*{scroll-snap-align:start}
+.area .recent-h{flex-wrap:wrap;gap:8px 12px;align-items:center}
+.area-sub{margin:-4px 0 2px;color:var(--muted);font-size:14px}
+.area-pick select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:7px 10px;font:inherit;font-weight:600;font-size:13.5px}
 /* booking protection */
 .protect{display:flex;gap:10px;align-items:flex-start;background:var(--good-soft);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.45}
 .protect svg{flex:none;width:20px;height:20px;color:var(--good);margin-top:1px}
@@ -1270,7 +1273,7 @@ function lightbox(inner,cap){
   d.addEventListener("click",e=>{if(e.target===d||e.target.closest(".close"))close();});
   d.querySelector(".close").focus();
 }
-function miniCard(v,extra){return `<button type="button" class="mrow mini" data-open="${v.id}"><span class="mthumb">${scene(v,"m"+v.id)}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span>${extra||""}</span></button>`;}
+function miniCard(v,extra,pre="m"){return `<button type="button" class="mrow mini" data-open="${v.id}"><span class="mthumb">${scene(v,pre+v.id)}</span><span class="minfo"><b>${v.name}</b><span>${v.kind} · ${v.place.split(",").pop().trim()}</span><span class="mp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}</span>${extra||""}</span></button>`;}
 const FILTERS=[["instant","Instant book"],["stepfree","Step-free access"],["bar","Licensed bar"],["outdoor","Outdoor space"]];
 
 /* ---------- State ---------- */
@@ -1338,6 +1341,7 @@ function renderFind(){
     <div class="mood-note" id="mood-note" hidden><i aria-hidden="true"></i><span></span></div>
   </section>
   <section class="wrap">
+    <div id="area"></div>
     <div id="recent"></div>
     <div class="resultbar"><span class="count" id="count"></span>
       <div class="tools">
@@ -1401,7 +1405,52 @@ function renderFind(){
     app.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));applyMood();drawGrid();
     document.getElementById("fx-ev-v").textContent=state.event; setTimeout(()=>fxOpen(null,true),260);}));
   bindFilterBar();
-  drawRecent(); bindPlanner();
+  drawRecent(); drawArea(); autoArea(); bindPlanner();
+}
+/* "Great venues in your area": top-rated venues near a town the visitor picks (saved on this device),
+   or near them if they've already let Vendo use their location. Only affects this row, not the results below. */
+let area=(()=>{try{const n=localStorage.getItem("vendo-area");return TOWNS.find(t=>t.name===n)||null;}catch(e){return null;}})();
+const scoreOf=v=>v.reviews?v.rating:0;
+function drawArea(){const el=document.getElementById("area"); if(!el) return;
+  const a=area||state.near; let cards, sub;
+  if(a){
+    const ds=VENUES.map(v=>({v,d:miles(a.lat,a.lng,v.lat,v.lng)})).sort((x,y)=>x.d-y.d);
+    const close=ds.filter(x=>x.d<=40);
+    const pick=[...close].sort((x,y)=>scoreOf(y.v)-scoreOf(x.v)||x.d-y.d).concat(ds.filter(x=>x.d>40)).slice(0,6);
+    cards=pick.map(x=>miniCard(x.v,`<span>${milesText(x.d)} away</span>`,"a"));
+    const where=a.name==="you"?"you":a.name;
+    sub=close.length>=3?`Top-rated venues near ${where}.`:`Not many venues near ${where} yet, so here are the closest.`;
+  }else{
+    cards=[...VENUES].sort((x,y)=>scoreOf(y)-scoreOf(x)).slice(0,6).map(v=>miniCard(v,"","a"));
+    sub="Top-rated venues on Vendo. Choose your area to see ones near you.";
+  }
+  const cur=a?(a.name==="you"?"__me":a.name):"";
+  el.innerHTML=`<div class="recent area"><div class="recent-h"><h2>Great venues in your area</h2>
+    <label class="area-pick"><span class="sr-only">Your area</span><select id="area-sel"><option value="">Choose your area</option>${TOWNS.map(t=>`<option value="${t.name}" ${t.name===cur?"selected":""}>${t.name}</option>`).join("")}<option value="__me" ${cur==="__me"?"selected":""}>Use my location</option></select></label></div>
+    <p class="area-sub">${sub}</p>
+    <div class="recent-row">${cards.join("")}</div></div>`;
+  el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openVenue(b.dataset.open)));
+  document.getElementById("area-sel").addEventListener("change",e=>{
+    const val=e.target.value;
+    if(val==="__me"){
+      const fail=()=>{toast("We couldn't get your location. Pick a town instead.");drawArea();};
+      if(!navigator.geolocation){fail();return;}
+      toast("Finding your location…");
+      navigator.geolocation.getCurrentPosition(p=>{area={name:"you",lat:p.coords.latitude,lng:p.coords.longitude};drawArea();},fail,{timeout:8000,maximumAge:600000});
+      return;
+    }
+    area=TOWNS.find(t=>t.name===val)||null;
+    try{area?localStorage.setItem("vendo-area",area.name):localStorage.removeItem("vendo-area");}catch(e){}
+    drawArea();
+  });
+}
+// If the visitor has already allowed location for Vendo, use it without asking again.
+function autoArea(){
+  if(area||!navigator.permissions||!navigator.geolocation) return;
+  navigator.permissions.query({name:"geolocation"}).then(r=>{
+    if(r.state!=="granted") return;
+    navigator.geolocation.getCurrentPosition(p=>{if(area) return; area={name:"you",lat:p.coords.latitude,lng:p.coords.longitude};drawArea();},()=>{},{timeout:8000,maximumAge:600000});
+  }).catch(()=>{});
 }
 function drawRecent(){const el=document.getElementById("recent"); if(!el) return;
   const list=recent.map(id=>VENUES.find(v=>v.id===id)).filter(Boolean);
@@ -1466,6 +1515,7 @@ function setNear(n){
   if(!n&&state.sort==="distance") state.sort="recommended";
   const so=document.getElementById("sort"); if(so) so.value=state.sort;
   drawGrid();
+  if(!area) drawArea();
 }
 function locateMe(sel){
   const back=()=>{sel.value=state.near?(state.near.name==="you"?"__me":state.near.name):"";};
@@ -2831,6 +2881,7 @@ const PAGES={
   <ul>
     <li><b>Signing in.</b> Keeps you signed in until you sign out. Removed when you sign out.</li>
     <li><b>Saved and recently viewed venues.</b> So your shortlist is still there next time on the same device.</li>
+    <li><b>Your area.</b> The town you pick under "Great venues in your area", so it's remembered next time. If you use your location instead, it isn't stored.</li>
     <li><b>A booking in progress and your event checklist.</b> So you don't lose what you've filled in.</li>
     <li><b>Where to go after signing in.</b> Takes you back to the page you were on, then is deleted.</li>
   </ul>
@@ -2844,6 +2895,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.22.0",d:"2026-11-17",t:"Great venues in your area",n:["A new row on the home page shows top-rated venues near you. Choose a town, or use your location.","The town you pick is remembered on your device. If you've already let Vendo use your location, it's used without asking again.","Until you choose, it shows the top-rated venues on Vendo."]},
  {v:"0.21.0",d:"2026-11-17",t:"Sliding event and filter menus",n:["On the home page, events and filters now sit behind two buttons that slide open sideways.","Picking an event closes the menu and shows your choice on the button. The Filters button shows how many filters are on."]},
  {v:"0.20.0",d:"2026-11-16",t:"A simpler home page",n:["A shorter introduction and a simpler search: where, date and guests.","Feature, price and distance filters now sit behind More filters, and open by themselves when one is in use.","The budget planner folds away until you open it, and the questions below it are cut to the five people ask most."]},
  {v:"0.19.2",d:"2026-11-16",t:"Venue types in capitals",n:["The list of venue types above the main heading now starts each word with a capital: Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres."]},
