@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.23.0 · A home page backdrop
+
+_2026-11-17_
+
+- The top of the home page has a soft dotted texture and a drawn street of venues along the bottom: a pub, a village hall, a club, a church hall and a leisure centre, with festoon lights.
+- It's drawn in the site's own colours, so it changes with dark mode and the event colours.
+
 ## 0.22.3 · New link preview
 
 _2026-11-17_
