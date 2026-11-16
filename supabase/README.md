@@ -34,3 +34,9 @@ Row level security is on for every table:
 - Guests see their own bookings, messages, saved venues and waiting lists. Venues see bookings and messages for their own venues.
 - Only an admin can put a venue live for the first time, or give someone admin access.
 - Payouts are written only by the server.
+
+## Admin
+
+- `migrations/20261116150000_admin.sql`: the admin email list (`admin_emails`), automatic admin access for listed emails when they sign up, running costs (`admin_costs`) and `admin_stats()`, which returns every dashboard figure and refuses anyone who isn't an admin.
+- `tests/admin_check.sql`: proves a listed email becomes admin, a normal user can't read the stats or costs or make themselves admin, and an admin can. 10 checks, all passing.
+- To add an admin, run in the SQL editor: `insert into public.admin_emails (email) values ('name@example.com');` If they already have an account, also run: `update public.profiles set is_admin = true where id = (select id from auth.users where email = 'name@example.com');`
