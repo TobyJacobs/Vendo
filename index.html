@@ -1293,7 +1293,7 @@ function renderFind(){
   const regions=["Anywhere",...new Set(VENUES.map(v=>v.region))];
   app.innerHTML = `
   <section class="wrap intro">
-    <div class="eyebrow">Pubs · bars · nightclubs · village halls · clubs · leisure centres</div>
+    <div class="eyebrow">Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres</div>
     <h1 id="headline"></h1>
     <p>Book function rooms, halls and private bars straight from the people who run them. See real availability, build a quote, and send a request in a couple of minutes.</p>
     <form class="search" id="search">
@@ -2789,6 +2789,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.19.2",d:"2026-11-16",t:"Venue types in capitals",n:["The list of venue types above the main heading now starts each word with a capital: Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres."]},
  {v:"0.19.1",d:"2026-11-16",t:"Tidier header on phones",n:["On phones, the Book a venue, For venues and Admin tabs no longer squash onto two lines. When they can't fit beside the logo they get their own row."]},
  {v:"0.19.0",d:"2026-11-16",t:"A cleaner look",n:["A new typeface, Inter Tight, across the whole site.","Crisper colours, smaller corners, quieter shadows and plain-English labels instead of small capitals.","Proper icons in place of text symbols."]},
  {v:"0.18.1",d:"2026-11-16",t:"Sign in on iPhone",n:["Create an account and sign in inside the iPhone app, with the 6-digit code from the email.","Sign-in emails now say \"code\" everywhere, since every email includes one."]},

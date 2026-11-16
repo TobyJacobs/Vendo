@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.19.2 · Venue types in capitals
+
+_2026-11-16_
+
+- The list of venue types above the main heading now starts each word with a capital: Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres.
+
 ## 0.19.1 · Tidier header on phones
 
 _2026-11-16_
