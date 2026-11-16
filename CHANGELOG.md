@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.17.0 · Admin dashboard
+
+_2026-11-16_
+
+- A private Admin tab for the Vendo team: takings, profit, bookings, customers and venues, with monthly charts.
+- Approve new venues before they go live, and keep a list of running costs so profit is worked out for you.
+- Only people on the admin list can see it. The figures come from the database, which refuses everyone else.
+
 ## 0.16.0 · Create an account
 
 _2026-11-16_
