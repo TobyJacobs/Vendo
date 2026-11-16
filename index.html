@@ -709,8 +709,26 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 .planner>summary::after{content:"";position:absolute;right:4px;top:12px;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
 .planner[open]>summary::after{transform:rotate(-135deg);top:17px}
 .planner:not([open]){gap:0}
-.moref>summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--accent-text);width:max-content}
-.moref[open]>summary{margin-bottom:10px}
+.fbar{display:flex;align-items:center;gap:8px;min-width:0}
+.fx{display:flex;align-items:center;min-width:0;max-width:480px;transition:max-width .5s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
+.fx.open{flex:1 1 auto;max-width:100%}
+.fbar.has-open .fx:not(.open){max-width:0;opacity:0;overflow:hidden;pointer-events:none;margin-right:-8px}
+.fx-in.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
+.fx-t{flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 10px 8px 14px;font-weight:600;font-size:13.5px;color:var(--ink);white-space:nowrap;transition:background-color .3s,color .3s,border-color .3s}
+.fx-t .fx-l{color:var(--muted);font-weight:500;transition:color .3s}
+.fx-t svg{transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.fx.open .fx-t{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.fx.open .fx-t .fx-l{color:inherit;opacity:.7}
+.fx.open .fx-t svg{transform:rotate(180deg)}
+.fx-n{min-width:20px;height:20px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:12px;display:inline-grid;place-items:center;padding:0 6px}
+.fx-p{display:grid;grid-template-columns:0fr;flex:1 1 auto;min-width:0;transition:grid-template-columns .55s cubic-bezier(.2,.8,.2,1)}
+.fx.open .fx-p{grid-template-columns:1fr}
+.fx-in{min-width:0;overflow:hidden;display:flex;align-items:center;gap:8px;padding:3px 3px 3px 10px;scrollbar-width:none}
+.fx-in::-webkit-scrollbar{display:none}
+.fx.open .fx-in{overflow-x:auto}
+.fx-in>*{flex:none;opacity:0;transform:translateX(-18px) scale(.96);transition:opacity .2s ease,transform .2s ease}
+.fx.open .fx-in>*{opacity:1;transform:none;transition:opacity .35s ease,transform .5s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*40ms + 140ms)}
+@media (prefers-reduced-motion:reduce){.fx,.fx-p,.fx-t svg,.fx-in>*{transition:none!important}}
 .planner{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:22px;display:grid;gap:18px;margin-bottom:40px;min-width:0}
 .pl-intro h2{font-size:28px}.pl-intro p{margin:6px 0 0;color:var(--muted)}
 .pl-ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:18px;align-items:end}
@@ -1308,13 +1326,15 @@ function renderFind(){
       <div class="field"><label for="guests">Guests</label><input id="guests" type="number" min="1" inputmode="numeric" placeholder="How many?" value="${state.guests}"></div>
       <button class="go" type="submit">Search</button>
     </form>
-    <div class="chips" role="group" aria-label="Event type">${EVENTS.map(e=>`<button class="chip" data-ev="${e}" aria-pressed="${e===state.event}">${e}</button>`).join("")}</div>
-    <details class="moref"${FILTERS.some(([k])=>state.f[k])||state.f.max||state.near?" open":""}><summary>More filters</summary>
-    <div class="fchips" role="group" aria-label="More filters">${FILTERS.map(([k,l])=>`<button type="button" class="fchip" data-f="${k}" aria-pressed="${state.f[k]}">${l}</button>`).join("")}
+    <div class="fbar" id="fbar">
+      <div class="fx" id="fx-ev"><button type="button" class="fx-t" aria-expanded="false" aria-controls="fx-ev-p"><span class="fx-l">Event</span><b id="fx-ev-v">${state.event}</b><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="fx-p" id="fx-ev-p" inert><div class="fx-in" role="group" aria-label="Event type">${EVENTS.map(e=>`<button class="chip" data-ev="${e}" aria-pressed="${e===state.event}">${e}</button>`).join("")}</div></div></div>
+      <div class="fx" id="fx-f"><button type="button" class="fx-t" aria-expanded="false" aria-controls="fx-f-p"><span>Filters</span><span class="fx-n" id="fx-f-n" hidden></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="fx-p" id="fx-f-p" inert><div class="fx-in" role="group" aria-label="More filters">${FILTERS.map(([k,l])=>`<button type="button" class="fchip" data-f="${k}" aria-pressed="${state.f[k]}">${l}</button>`).join("")}
       <label class="fprice">Price <select id="fmax"><option value="0">Any price</option>${[50,100,150,200].map(m=>`<option value="${m}" ${state.f.max===m?"selected":""}>Up to £${m} an hour</option>`).join("")}</select></label>
       <label class="fprice">Near <select id="near"><option value="">Anywhere</option>${TOWNS.map(t=>`<option value="${t.name}">${t.name}</option>`).join("")}<option value="__me">Use my location</option></select></label>
-      <label class="fprice">Within <select id="radius">${[10,25,50,100].map(r=>`<option value="${r}" ${r===state.radius?"selected":""}>${r} miles</option>`).join("")}</select></label></div>
-    </details>
+      <label class="fprice">Within <select id="radius">${[10,25,50,100].map(r=>`<option value="${r}" ${r===state.radius?"selected":""}>${r} miles</option>`).join("")}</select></label></div></div></div>
+    </div>
     <div class="mood-note" id="mood-note" hidden><i aria-hidden="true"></i><span></span></div>
   </section>
   <section class="wrap">
@@ -1378,7 +1398,9 @@ function renderFind(){
   document.getElementById("v-list").addEventListener("click",()=>setMode("list"));
   document.getElementById("v-map").addEventListener("click",()=>setMode("map"));
   app.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{state.event=c.dataset.ev;
-    app.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));applyMood();drawGrid();}));
+    app.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));applyMood();drawGrid();
+    document.getElementById("fx-ev-v").textContent=state.event; setTimeout(()=>fxOpen(null,true),260);}));
+  bindFilterBar();
   drawRecent(); bindPlanner();
 }
 function drawRecent(){const el=document.getElementById("recent"); if(!el) return;
@@ -2331,6 +2353,29 @@ function drawLyvForm(){
     lyv.sent=true; drawLyvForm(); document.getElementById("lyv-form").scrollIntoView({block:"start",behavior:"smooth"});
   });
 }
+/* ---------- Event and filter menus that slide open sideways ---------- */
+function fxCount(){return FILTERS.filter(([k])=>state.f[k]).length+(state.f.max?1:0)+(state.near?1:0);}
+function fxBadge(){const n=document.getElementById("fx-f-n"); if(!n) return; const c=fxCount(); n.hidden=!c; n.textContent=c;}
+function fxOpen(id,focusTrigger){
+  const bar=document.getElementById("fbar"); if(!bar) return;
+  bar.querySelectorAll(".fx").forEach(fx=>{const on=fx.id===id, t=fx.querySelector(".fx-t"), p=fx.querySelector(".fx-p");
+    const was=fx.classList.contains("open");
+    fx.classList.toggle("open",on); t.setAttribute("aria-expanded",on); p.inert=!on;
+    p.querySelectorAll(".fx-in > *").forEach((el,i)=>el.style.setProperty("--i",i));
+    if(was&&!on&&focusTrigger&&fx.contains(document.activeElement)) t.focus();});
+  bar.classList.toggle("has-open",!!id);
+  setTimeout(fxFade,600);
+}
+function fxFade(){document.querySelectorAll("#fbar .fx-in").forEach(el=>el.classList.toggle("more",el.closest(".fx").classList.contains("open")&&el.scrollLeft+el.clientWidth<el.scrollWidth-4));}
+function bindFilterBar(){
+  const bar=document.getElementById("fbar"); if(!bar) return;
+  bar.querySelectorAll(".fx").forEach(fx=>fx.querySelector(".fx-t").addEventListener("click",()=>fxOpen(fx.classList.contains("open")?null:fx.id,true)));
+  bar.addEventListener("keydown",e=>{if(e.key==="Escape"&&bar.classList.contains("has-open")){e.stopPropagation();const o=bar.querySelector(".fx.open");fxOpen(null);o.querySelector(".fx-t").focus();}});
+  bar.querySelectorAll(".fx-in").forEach(el=>el.addEventListener("scroll",fxFade,{passive:true})); addEventListener("resize",fxFade);
+  bar.addEventListener("change",fxBadge); bar.addEventListener("click",e=>{if(e.target.closest(".fchip")) fxBadge();});
+  fxBadge();
+}
+
 /* ---------- Your venues: add, edit and submit for review (real venue accounts) ---------- */
 const VTYPES=[["pub","Pub","Pub function room"],["bar","Bar","Bar"],["club","Nightclub","Nightclub"],["karaoke","Karaoke or party bar","Karaoke and party bar"],["rooftop","Rooftop bar","Rooftop bar"],["hall","Village hall","Village hall"],["hall2","Church or community hall","Community hall"],["pavilion","Sports club","Sports club"],["boathouse","Rowing, sailing or social club","Club house"],["leisure","Leisure centre","Leisure centre"],["barn","Barn or outdoor space","Barn"]];
 const VSUITS=["Weddings","Birthdays","Wakes","Christenings","Corporate","Clubs & classes"];
@@ -2799,6 +2844,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.21.0",d:"2026-11-17",t:"Sliding event and filter menus",n:["On the home page, events and filters now sit behind two buttons that slide open sideways.","Picking an event closes the menu and shows your choice on the button. The Filters button shows how many filters are on."]},
  {v:"0.20.0",d:"2026-11-16",t:"A simpler home page",n:["A shorter introduction and a simpler search: where, date and guests.","Feature, price and distance filters now sit behind More filters, and open by themselves when one is in use.","The budget planner folds away until you open it, and the questions below it are cut to the five people ask most."]},
  {v:"0.19.2",d:"2026-11-16",t:"Venue types in capitals",n:["The list of venue types above the main heading now starts each word with a capital: Pubs · Bars · Nightclubs · Village Halls · Clubs · Leisure Centres."]},
  {v:"0.19.1",d:"2026-11-16",t:"Tidier header on phones",n:["On phones, the Book a venue, For venues and Admin tabs no longer squash onto two lines. When they can't fit beside the logo they get their own row."]},
