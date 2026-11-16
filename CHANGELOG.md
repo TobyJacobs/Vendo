@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.15.0 · Getting there by public transport
+
+_2026-11-16_
+
+- Each venue page shows the nearest stations, tram stops and bus stops, with walking times and step-free details.
+- See the bus numbers that stop nearby, a map of the stops, and a link to plan your journey.
+
 ## 0.14.1 · Clearer sign-in limits
 
 _2026-11-16_
