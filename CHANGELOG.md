@@ -2,6 +2,15 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.14.0 · Live database and sign-in
+
+_2026-11-16_
+
+- Venues, rooms, extras and reviews now load from the Vendo database, with the example venues as a backup if it can't be reached.
+- Calendars show real booked dates from the database.
+- Sign in with an emailed link: no password needed. Your account shows your bookings and details.
+- Booking requests and saved venues are stored in your account once you're signed in.
+
 ## 0.13.1 · Cleaner page addresses
 
 _2026-11-15_
