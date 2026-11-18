@@ -202,12 +202,13 @@ h1,h2,h3{font-family:var(--f-display);font-weight:650;text-wrap:balance;margin:0
    light/dark mode and the event moods. Purely decorative; still for anyone who prefers reduced motion. */
 .home-hero{position:relative;overflow:hidden;isolation:isolate;padding-bottom:24px}
 .glow{position:absolute;inset:0;z-index:-1;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
-.glow i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;will-change:transform}
-.glow i:nth-child(1){width:520px;height:520px;top:-220px;right:-120px;background:color-mix(in srgb,var(--accent) 22%,var(--bg));animation:glow1 22s ease-in-out infinite alternate}
-.glow i:nth-child(2){width:420px;height:420px;bottom:-240px;left:-60px;background:color-mix(in srgb,var(--brass) 20%,var(--bg));animation:glow2 26s ease-in-out infinite alternate}
-.glow i:nth-child(3){width:300px;height:300px;top:60px;left:48%;background:color-mix(in srgb,var(--accent) 16%,var(--bg));opacity:.6;animation:glow1 30s ease-in-out infinite alternate-reverse}
-@keyframes glow1{to{transform:translate(-140px,90px) scale(1.15)}}
-@keyframes glow2{to{transform:translate(180px,-70px) scale(.9)}}
+.glow i{position:absolute;border-radius:50%;filter:blur(64px);opacity:.9;will-change:transform}
+.glow i:nth-child(1){width:520px;height:520px;top:-220px;right:-120px;background:color-mix(in srgb,var(--accent) 32%,var(--bg));animation:glow1 9s ease-in-out infinite alternate}
+.glow i:nth-child(2){width:420px;height:420px;bottom:-240px;left:-60px;background:color-mix(in srgb,var(--brass) 30%,var(--bg));animation:glow2 11s ease-in-out infinite alternate}
+.glow i:nth-child(3){width:300px;height:300px;top:60px;left:48%;background:color-mix(in srgb,var(--accent) 24%,var(--bg));opacity:.75;animation:glow3 13s ease-in-out infinite alternate}
+@keyframes glow1{50%{transform:translate(-220px,60px) scale(1.2)}to{transform:translate(-60px,160px) scale(.95)}}
+@keyframes glow2{50%{transform:translate(260px,-60px) scale(.85)}to{transform:translate(420px,-120px) scale(1.1)}}
+@keyframes glow3{50%{transform:translate(-200px,-40px) scale(1.25)}to{transform:translate(160px,50px) scale(.9)}}
 @media (max-width:640px){.glow i{filter:blur(50px)}.glow i:nth-child(1){width:340px;height:340px;top:-160px;right:-140px}.glow i:nth-child(2){width:300px;height:300px}.glow i:nth-child(3){width:200px;height:200px}}
 @media (prefers-reduced-motion:reduce){.glow i{animation:none}}
 .intro{padding-block:40px 22px;display:grid;gap:22px}
@@ -2906,6 +2907,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.23.2",d:"2026-11-18",t:"Livelier backdrop",n:["The home page glow is a little stronger and moves more noticeably."]},
  {v:"0.23.1",d:"2026-11-18",t:"A calmer home page backdrop",n:["The dotted texture and drawn street are replaced by soft colour glows that drift slowly. They follow the event colours and dark mode, and stay still if you prefer less motion.","Fixed venue pages picking up the home page backdrop."]},
  {v:"0.23.0",d:"2026-11-17",t:"A home page backdrop",n:["The top of the home page has a soft dotted texture and a drawn street of venues along the bottom: a pub, a village hall, a club, a church hall and a leisure centre, with festoon lights.","It's drawn in the site's own colours, so it changes with dark mode and the event colours."]},
  {v:"0.22.3",d:"2026-11-17",t:"New link preview",n:["The picture shown when someone shares a Vendo link now has the new slogan and the new look."]},
