@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.28.1 · Venue fee is 12%
+
+_2026-11-18_
+
+- Venues pay Vendo 12% when a booking is paid. Guests still pay no booking fee.
+
 ## 0.28.0 · No booking fee for guests
 
 _2026-11-18_
