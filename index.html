@@ -1752,6 +1752,20 @@ function closeVenue(keepHash){
 }
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const lb=document.getElementById("lb");if(lb){lb.querySelector(".close").click();return;}const c=document.getElementById("chat-root");if(c&&c.innerHTML){c.innerHTML="";return;}if(state.open)closeVenue();});
 
+const hrsText=()=>`${quote.hours} hrs${quote.hours>=8?" · day rate":""}`;
+// The price lines in the booking panel, worked out from the current quote.
+function bookLines(v){
+  const rs=roomsOf(v), r=rs[quote.room]||rs[0], multi=rs.length>1;
+  const mult=priceMult(v,quote.date), hire=costFor(r,quote.hours,mult);
+  const add=v.addons.map((a,i)=>quote.addons[i]?(a.head?a.p*quote.guests:a.p):0).reduce((x,y)=>x+y,0);
+  const fee=(hire+add)*0.04, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100), pct=Math.round((mult-1)*100);
+  return `<div><span>${multi?r.name:"Venue hire"}${quote.hours>=8?" (day rate)":` (${quote.hours} × ${gbp(r.hour*mult)})`}</span><span>${gbp(hire)}</span></div>
+      ${pct?`<div class="note"><span>${BANDS[bandOf(quote.date)]}${quote.date.getMonth()===11&&hostSetup.pricing.dec?" in December":""} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
+      ${add?`<div><span>Extras</span><span>${gbp(add)}</span></div>`:""}
+      <div><span>Booking fee (4%)</span><span>${gbp(fee)}</span></div>
+      <div class="tot"><span>Total</span><span>${gbp(total)}</span></div>
+      <div class="note"><span>Refundable damage deposit, held separately</span><span>${gbp(deposit)}</span></div>`;
+}
 function drawBook(){
   const v=state.open, el=document.getElementById("book"), rs=roomsOf(v), r=rs[quote.room]||rs[0], multi=rs.length>1;
   if(quote.sent){
@@ -1801,17 +1815,10 @@ function drawBook(){
       <div class="legend" style="margin-top:6px"><span><s>12</s> booked: tap for other dates</span><span>Pick a free date</span></div>
     </div>
     ${want}
-    <div class="ctl"><label for="hrs">Hours <span>${quote.hours} hrs${quote.hours>=8?" · day rate":""}</span></label><input id="hrs" type="range" min="${r.minH}" max="12" value="${quote.hours}"></div>
-    <div class="ctl"><label for="gst">Guests <span>${quote.guests} of ${maxG} max</span></label><input id="gst" type="range" min="10" max="${maxG}" step="5" value="${quote.guests}"></div>
+    <div class="ctl"><label for="hrs">Hours <span id="hrs-v">${hrsText()}</span></label><input id="hrs" type="range" min="${r.minH}" max="12" value="${quote.hours}"></div>
+    <div class="ctl"><label for="gst">Guests <span id="gst-v">${quote.guests} of ${maxG} max</span></label><input id="gst" type="range" min="10" max="${maxG}" step="5" value="${quote.guests}"></div>
     <div class="addons">${v.addons.map((a,i)=>`<label class="addon" for="ad${i}"><input type="checkbox" id="ad${i}" data-i="${i}" ${quote.addons[i]?"checked":""}>${a.l}<span class="p">${gbp(a.p)}${a.head?" pp":""}</span></label>`).join("")}</div>
-    <div class="lines num" aria-live="polite">
-      <div><span>${multi?r.name:"Venue hire"}${quote.hours>=8?" (day rate)":` (${quote.hours} × ${gbp(r.hour*mult)})`}</span><span>${gbp(hire)}</span></div>
-      ${pct?`<div class="note"><span>${BANDS[bandOf(quote.date)]}${quote.date.getMonth()===11&&hostSetup.pricing.dec?" in December":""} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
-      ${add?`<div><span>Extras</span><span>${gbp(add)}</span></div>`:""}
-      <div><span>Booking fee (4%)</span><span>${gbp(fee)}</span></div>
-      <div class="tot"><span>Total</span><span>${gbp(total)}</span></div>
-      <div class="note"><span>Refundable damage deposit, held separately</span><span>${gbp(deposit)}</span></div>
-    </div>
+    <div class="lines num" id="bk-lines">${bookLines(v)}</div>
     <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>
     <button class="cta" id="req" ${quote.date?"":"disabled"}>${quote.date?"Continue to book "+quote.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"}):"Choose a date to continue"}</button>
@@ -1835,8 +1842,10 @@ function drawBook(){
   document.getElementById("prev").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()-1,1);drawBook();});
   document.getElementById("next").addEventListener("click",()=>{quote.month=new Date(m.getFullYear(),m.getMonth()+1,1);drawBook();});
   const hrs=document.getElementById("hrs"), gst=document.getElementById("gst");
-  hrs.addEventListener("input",()=>{quote.hours=+hrs.value;drawBook();document.getElementById("hrs").focus();});
-  gst.addEventListener("input",()=>{quote.guests=+gst.value;drawBook();document.getElementById("gst").focus();});
+  // Sliders update their label and the price as you drag. Redrawing the whole panel here would replace the slider
+  // under your finger and stop the drag.
+  hrs.addEventListener("input",()=>{quote.hours=+hrs.value;document.getElementById("hrs-v").textContent=hrsText();document.getElementById("bk-lines").innerHTML=bookLines(v);});
+  gst.addEventListener("input",()=>{quote.guests=+gst.value;document.getElementById("gst-v").textContent=`${quote.guests} of ${maxG} max`;document.getElementById("bk-lines").innerHTML=bookLines(v);});
   el.querySelectorAll(".addon input").forEach(c=>c.addEventListener("change",()=>{quote.addons[c.dataset.i]=c.checked;drawBook();document.getElementById(c.id).focus();}));
   document.getElementById("req").addEventListener("click",goCheckout);
   const hb=document.getElementById("hold"); if(hb) hb.addEventListener("click",()=>startHold(v));
@@ -3056,6 +3065,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.27.1",d:"2026-11-18",t:"Smooth hours and guests sliders",n:["The Hours and Guests sliders on a venue page now drag smoothly from one end to the other, on phones too, and the price updates as you drag."]},
  {v:"0.27.0",d:"2026-11-18",t:"Block bookings for classes and clubs",n:["Book the same room and time every week, every 2 weeks or every 4 weeks, for up to 52 sessions, in one go.","Every date is checked. Any that are already taken are shown and skipped, and you only book the free ones.","Venues can offer a block booking discount, such as 10% off 4 or more sessions. You pay for each session 14 days before it."]},
  {v:"0.26.0",d:"2026-11-18",t:"Your time is held while you book",n:["When you start booking, we hold your room and time for 15 minutes so nobody else can book it while you fill in the form. A countdown shows how long is left.","If someone else is already booking that time, you'll see it straight away and can pick another."]},
  {v:"0.25.0",d:"2026-11-18",t:"Hold a date and book a viewing",n:["Want to see a venue first? Hold your date free for up to 7 days and book a viewing. Nobody else can book that time meanwhile.","If you haven't booked by the end of the hold, the date is released by itself, so venues don't miss out on other bookings.","Find your held dates in My account, book with one tap or release them. Venues see who is coming to view, when, and how to reach them."]},

@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.27.1 · Smooth hours and guests sliders
+
+_2026-11-18_
+
+- The Hours and Guests sliders on a venue page now drag smoothly from one end to the other, on phones too, and the price updates as you drag.
+
 ## 0.27.0 · Block bookings for classes and clubs
 
 _2026-11-18_
