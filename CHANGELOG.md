@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.26.0 · Your time is held while you book
+
+_2026-11-18_
+
+- When you start booking, we hold your room and time for 15 minutes so nobody else can book it while you fill in the form. A countdown shows how long is left.
+- If someone else is already booking that time, you'll see it straight away and can pick another.
+
 ## 0.25.0 · Hold a date and book a viewing
 
 _2026-11-18_
