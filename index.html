@@ -309,6 +309,13 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .lines div{display:flex;justify-content:space-between;gap:12px}
 .lines .tot{font-weight:600;font-size:16.5px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
 .lines .note{font-size:12.5px;color:var(--muted)}
+.holdbox{display:grid;gap:6px;margin-top:4px}
+.holdbox .btn{width:100%}
+.holdform{display:grid;gap:12px}
+.holdform h3{margin:0;font-size:19px}
+.holdform .lf{display:grid;gap:4px}
+.holdform select,.holdform input,.holdform textarea{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;background:var(--surface);color:var(--ink);width:100%}
+.holdform .hd-view{border:0;padding:0;margin:0;display:grid;gap:6px}.holdform .hd-view legend{font-weight:700;font-size:14px;padding:0;margin-bottom:6px}
 .cta{border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15.5px;padding:14px}
 .cta:disabled{opacity:.5;cursor:not-allowed}
 .small{font-size:12.5px;color:var(--muted);text-align:center;margin:0}
@@ -1302,7 +1309,7 @@ const isoDay=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${
 const dayFromIso=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};
 function searchDay(){if(!state.date) return null;const d=dayFromIso(state.date);return isNaN(d)||d<TODAY?null:d;}
 const niceDay=d=>d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
-const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null, room:0, want:null};
+const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null, room:0, want:null, hold:null, held:null};
 
 const app = document.getElementById("app");
 const modalRoot = document.getElementById("modal-root");
@@ -1682,7 +1689,7 @@ function openVenue(id,fromRoute,pref){
   const free=!!sd&&!bookedDay(v,sd,ri);
   quote.room=ri; quote.want=sd&&!free?sd:null; quote.date=free?sd:null;
   quote.month=sd?new Date(sd.getFullYear(),sd.getMonth(),1):new Date(2026,11,1);
-  quote.hours=Math.max(5,rs[ri].minH); quote.guests=Math.min(60,rs[ri].seated); quote.addons={}; quote.sent=null;
+  quote.hours=Math.max(5,rs[ri].minH); quote.guests=Math.min(60,rs[ri].seated); quote.addons={}; quote.sent=null; quote.hold=null; quote.held=null;
   modalRoot.innerHTML = `<div class="overlay" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="hero" id="vhero">${scene(v,"h")}${heartBtn(v,"on-hero")}<button class="share" id="share" type="button">Share</button><button class="close" id="close" aria-label="Close ${v.name}">×</button></div>${v.photos&&v.photos.length>1?`<div class="vgal" role="group" aria-label="Photos of ${escH(v.name)}">${v.photos.map((u,i)=>`<button type="button" data-vph="${i}" aria-label="Photo ${i+1} of ${v.photos.length}" aria-current="${i===0}"><img src="${escH(u)}" alt="" loading="lazy"></button>`).join("")}</div>`:""}
     <div class="sheet-body">
@@ -1748,6 +1755,8 @@ function drawBook(){
     document.getElementById("again").addEventListener("click",()=>{quote.sent=null;quote.date=null;drawBook();});
     drawSimilar(); return;
   }
+  if(quote.held){drawHeld(v);return;}
+  if(quote.hold&&quote.date){drawHoldForm(v);return;}
   const m=quote.month, first=new Date(m.getFullYear(),m.getMonth(),1), days=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
   const offset=(first.getDay()+6)%7; let cells="";
   for(let i=0;i<offset;i++) cells+="<span></span>";
@@ -1797,7 +1806,9 @@ function drawBook(){
     <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>
     <button class="cta" id="req" ${quote.date?"":"disabled"}>${quote.date?"Continue to book "+quote.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"}):"Choose a date to continue"}</button>
-    <p class="small">${v.instant?"Instant book: confirmed straight away.":"You won't be charged until "+v.host.split(",")[0]+" accepts."} Your guest rating, ★ ${guestScore().toFixed(1)}, is shared with the venue.</p>`;
+    <p class="small">${v.instant?"Instant book: confirmed straight away.":"You won't be charged until "+v.host.split(",")[0]+" accepts."} Your guest rating, ★ ${guestScore().toFixed(1)}, is shared with the venue.</p>
+    ${canHold(v)?`<div class="holdbox"><button type="button" class="btn" id="hold" ${quote.date?"":"disabled"}>${quote.date?"Hold "+quote.date.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" and book a viewing":"Hold a date and book a viewing"}</button>
+      <span class="small" style="text-align:left">Want to see it first? Hold the date free for up to 7 days and visit. If you haven't booked by then, it's released.</span></div>`:""}`;
   const setRoom=i=>{quote.room=i;const nr=rs[i];quote.hours=Math.max(quote.hours,nr.minH);
     if(quote.date&&bookedDay(v,quote.date,i)){quote.want=quote.date;quote.date=null;}
     else if(quote.want&&!bookedDay(v,quote.want,i)){quote.date=quote.want;quote.want=null;}
@@ -1819,7 +1830,130 @@ function drawBook(){
   gst.addEventListener("input",()=>{quote.guests=+gst.value;drawBook();document.getElementById("gst").focus();});
   el.querySelectorAll(".addon input").forEach(c=>c.addEventListener("change",()=>{quote.addons[c.dataset.i]=c.checked;drawBook();document.getElementById(c.id).focus();}));
   document.getElementById("req").addEventListener("click",goCheckout);
+  const hb=document.getElementById("hold"); if(hb) hb.addEventListener("click",()=>startHold(v));
   drawSimilar();
+}
+
+/* ---------- Holds: reserve a date for up to 7 days to view the venue ----------
+   The database does the real work (supabase/migrations/…_viewing_holds.sql): a hold blocks the room and time for everyone
+   else, buffers included, and ends by itself after 7 days, or on the morning of the event if that's sooner. */
+const HOLD_DAYS=7;
+const canHold=v=>authLive()&&!!DB.ids[v.id];
+const holdEnd=d=>{const e=new Date(Date.now()+HOLD_DAYS*864e5); return d&&d<e?new Date(d.getFullYear(),d.getMonth(),d.getDate()):e;};
+const whenText=t=>new Date(t).toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}).replace(",","");
+const leftText=t=>{const ms=new Date(t)-Date.now(); if(ms<=0) return "ended"; const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5); return d?`${d} ${d===1?"day":"days"}${h?` ${h} hr`:""} left`:`${Math.max(1,h)} ${h===1?"hour":"hours"} left`;};
+function startHold(v){
+  if(!quote.date) return;
+  if(!DB.user){setReturn("venue-"+v.id);authForm.role="guest";toast("Sign in or create an account to hold a date.");closeVenue(true);nav("signin");return;}
+  const ts=freeStarts(v,quote.date,quote.room,quote.hours);
+  if(!ts.length){toast("There's no time left on that day for "+quote.hours+" hours. Try fewer hours or another day.");return;}
+  const p=DB.profile||{};
+  quote.hold={start:ts.includes("19:00")?"19:00":ts[Math.floor(ts.length/2)],vday:"",vtime:"11:00",name:p.full_name||"",phone:p.phone||"",note:"",err:"",busy:false};
+  drawBook(); const f=document.getElementById("hd-vday"); if(f) f.focus();
+}
+// Viewings use the real date, not the demo calendar's fixed "today".
+const realToday=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());};
+function viewingDays(d){const out=[], end=holdEnd(d), t=realToday(), late=new Date().getHours()>=19; for(let i=late?1:0;i<=HOLD_DAYS;i++){const x=new Date(t);x.setDate(x.getDate()+i); if(x>=end) break; out.push(x);} return out;}
+function drawHoldForm(v){
+  const el=document.getElementById("book"), h=quote.hold, rs=roomsOf(v), r=rs[quote.room]||rs[0], d=quote.date;
+  const ts=freeStarts(v,d,quote.room,quote.hours), vd=viewingDays(d), end=holdEnd(d);
+  if(!vd.some(x=>isoDay(x)===h.vday)) h.vday=vd.length>1?isoDay(vd[1]):vd.length?isoDay(vd[0]):"";
+  const vtimes=[];for(let m=9*60;m<=20*60;m+=30)vtimes.push(fromMin(m));
+  el.innerHTML=`<form class="holdform" id="holdform" novalidate>
+    <h3>Hold ${longDay(d)}</h3>
+    <p class="small" style="text-align:left;margin:0">${rs.length>1?escH(r.name)+" · ":""}${quote.hours} hours · ${quote.guests} guests. Nobody else can book it until ${whenText(end)}. Book before then or the date is released for others.</p>
+    <div class="lf"><label for="hd-start">Event start time</label><select id="hd-start">${ts.map(t=>`<option value="${t}" ${t===h.start?"selected":""}>${fmtT(t)}</option>`).join("")}</select></div>
+    <fieldset class="hd-view"><legend>Your viewing</legend>
+      <div class="ckrow"><div class="lf"><label for="hd-vday">Day</label><select id="hd-vday">${vd.map(x=>`<option value="${isoDay(x)}" ${isoDay(x)===h.vday?"selected":""}>${x.getTime()===realToday().getTime()?"Today":niceDay(x)}</option>`).join("")}</select></div>
+      <div class="lf"><label for="hd-vtime">Time</label><select id="hd-vtime">${vtimes.map(t=>`<option value="${t}" ${t===h.vtime?"selected":""}>${fmtT(t)}</option>`).join("")}</select></div></div>
+    </fieldset>
+    <div class="lf"><label for="hd-name">Your name</label><input id="hd-name" autocomplete="name" maxlength="80" value="${escH(h.name)}"></div>
+    <div class="lf"><label for="hd-phone">Mobile number</label><input id="hd-phone" type="tel" autocomplete="tel" maxlength="30" value="${escH(h.phone)}"><span class="hint">So ${escH(v.host.split(",")[0])} can confirm the viewing.</span></div>
+    <div class="lf"><label for="hd-note">Anything to mention? <span class="opt">(optional)</span></label><textarea id="hd-note" maxlength="500" placeholder="e.g. We'd like to see the garden too">${escH(h.note)}</textarea></div>
+    <span class="err" id="hd-err" role="alert">${escH(h.err)}</span>
+    <button class="cta" type="submit" ${h.busy?"disabled":""}>${h.busy?"Holding…":"Hold the date"}</button>
+    <button type="button" class="linkbtn" id="hd-cancel">Back</button>
+  </form>`;
+  const f=document.getElementById("holdform"), val=id=>document.getElementById(id).value;
+  ["hd-start","hd-vday","hd-vtime","hd-name","hd-phone","hd-note"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{h.start=val("hd-start");h.vday=val("hd-vday");h.vtime=val("hd-vtime");h.name=val("hd-name");h.phone=val("hd-phone");h.note=val("hd-note");}));
+  document.getElementById("hd-cancel").addEventListener("click",()=>{quote.hold=null;drawBook();const b=document.getElementById("hold");if(b)b.focus();});
+  f.addEventListener("submit",e=>{e.preventDefault();placeHold(v);});
+}
+async function placeHold(v){
+  const h=quote.hold, rs=roomsOf(v), r=rs[quote.room]||rs[0], x=DB.ids[v.id], room=x.rooms.find(q=>q.name===r.name);
+  const say=t=>{h.err=t;drawHoldForm(v);const e=document.getElementById("hd-err");if(e)e.focus&&e.scrollIntoView({block:"nearest"});};
+  if(!h.name.trim()) return say("Add your name.");
+  if(h.phone.replace(/\D/g,"").length<10) return say("Add a mobile number the venue can call.");
+  const viewing=`${h.vday}T${h.vtime}:00`;
+  if(new Date(viewing)<new Date()) return say("That viewing time has passed. Pick a later one.");
+  h.busy=true;h.err="";drawHoldForm(v);
+  const {data,error}=await DB.client.rpc("place_viewing_hold",{p_venue:x.uuid,p_room:room?room.id:null,p_date:isoDay(quote.date),p_start:h.start,p_hours:quote.hours,p_guests:quote.guests,
+    p_viewing:viewing,p_name:h.name,p_phone:h.phone,p_email:DB.user.email,p_note:h.note||null});
+  h.busy=false;
+  if(error){const m=(error.message||"").replace(/^HOLD_[A-Z]+: |^BOOKING_CLASH: /,""); delete DB.times[v.id]; dbLoadTimes(v); return say(m||"We couldn't hold the date. Please try again.");}
+  quote.held=data; quote.hold=null; delete DB.times[v.id]; dbLoadTimes(v); dbLoadHolds();
+  drawBook();
+}
+function drawHeld(v){
+  const el=document.getElementById("book"), h=quote.held;
+  el.innerHTML=`<div class="done" role="status"><div class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <h3 style="margin:0">${niceDay(dayFromIso(h.event_date))} is held for you</h3>
+    <p style="margin:0">Your viewing: <b>${whenText(h.viewing_at)}</b>. ${escH(v.host.split(",")[0])} will be in touch to confirm.</p>
+    <p style="margin:0">Nobody else can book it until <b>${whenText(h.expires_at)}</b>. Book before then, or the date is released.</p>
+    <p class="small">Find your held dates in My account.</p>
+    <button class="btn primary" id="held-book">Book it now</button>
+    <button class="btn" id="held-done">Done</button></div>`;
+  document.getElementById("held-book").addEventListener("click",()=>{quote.held=null;quote.date=dayFromIso(h.event_date);quote.hours=h.hours;quote.holdStart=h.start_time.slice(0,5);goCheckout();});
+  document.getElementById("held-done").addEventListener("click",()=>{quote.held=null;quote.date=null;drawBook();});
+  drawSimilar();
+}
+async function dbLoadHolds(){
+  if(!DB.user) return;
+  const {data,error}=await DB.client.from("viewing_holds").select("id,status,event_date,start_time,hours,guests,viewing_at,expires_at,room_id,venue_id,guest_id,contact_name,contact_phone,contact_email,note,venues(slug,name),rooms(name)").order("event_date");
+  if(error) return;
+  const all=data||[];
+  DB.holds=all.filter(h=>h.guest_id===DB.user.id);
+  DB.venueHolds=all.filter(h=>h.guest_id!==DB.user.id);
+  if(state.view==="account") renderAccount(); else if(state.view==="host") renderHost();
+}
+const holdLive=h=>h.status==="active"&&new Date(h.expires_at)>new Date();
+const holdState=h=>h.status==="converted"?["ok","Booked"]:h.status==="released"?["no","Released"]:holdLive(h)?["new",leftText(h.expires_at)]:["no","Expired"];
+async function releaseViewingHold(id){
+  const {error}=await DB.client.rpc("release_viewing_hold",{p_hold:id});
+  if(error){toast("That hold has already ended.");}else toast("Hold released. The date is free for others again.");
+  DB.times={}; await dbLoadHolds();
+}
+function bookFromHold(h){
+  const v=VENUES.find(x=>slugOf(x)===(h.venues&&h.venues.slug)); if(!v){toast("That venue isn't available right now.");return;}
+  openVenue(v.id); const rs=roomsOf(v), ri=Math.max(0,rs.findIndex(r=>h.rooms&&r.name===h.rooms.name));
+  quote.room=ri; quote.date=dayFromIso(h.event_date); quote.hours=h.hours; quote.guests=Math.min(h.guests,Math.max(rs[ri].seated,rs[ri].standing));
+  quote.month=new Date(quote.date.getFullYear(),quote.date.getMonth(),1); quote.holdStart=h.start_time.slice(0,5); goCheckout();
+}
+function guestHoldsPanel(){
+  const hs=(DB.holds||[]).filter(h=>holdLive(h)||new Date(h.expires_at)>new Date(Date.now()-14*864e5));
+  if(!hs.length) return "";
+  return `<div class="panel"><div class="panel-head"><h2>Held dates</h2><span class="eyebrow">Held for up to ${HOLD_DAYS} days</span></div>
+    ${hs.map(h=>{const [c,l]=holdState(h), live=holdLive(h);return `<div class="brow"><b>${escH(h.venues?h.venues.name:"Venue")}</b><span class="pill ${c}">${l}</span>
+      <span>${niceDay(dayFromIso(h.event_date))} · ${fmtT(h.start_time.slice(0,5))} · ${h.hours} hours${h.rooms?" · "+escH(h.rooms.name):""}</span>
+      ${live?`<span>Viewing ${whenText(h.viewing_at)} · held until ${whenText(h.expires_at)}</span>`:""}
+      <span class="brow-acts">${live?`<button class="btn primary" data-hold-book="${h.id}">Book it now</button><button class="linkbtn" data-hold-release="${h.id}">Release</button>`:""}</span></div>`;}).join("")}</div>`;
+}
+function venueHoldsPanel(){
+  const hs=(DB.venueHolds||[]).filter(holdLive);
+  if(!DB.venueHolds) return "";
+  return `<div class="panel"><div class="panel-head"><h2>Held dates and viewings</h2><span class="eyebrow">${hs.length} active</span></div>
+    <p class="pnote">Guests can hold a date for up to ${HOLD_DAYS} days while they come and see you. Nobody else can book it meanwhile. If they don't book in time, it's released by itself.</p>
+    ${hs.length?hs.map(h=>`<div class="brow"><b>${escH(h.contact_name)}</b><span class="pill new">${leftText(h.expires_at)}</span>
+      <span>Viewing <b>${whenText(h.viewing_at)}</b> · ${escH(h.venues?h.venues.name:"")}</span>
+      <span>Holding ${niceDay(dayFromIso(h.event_date))} · ${fmtT(h.start_time.slice(0,5))} · ${h.hours} hours · ${h.guests} guests${h.rooms?" · "+escH(h.rooms.name):""}</span>
+      <span><a href="tel:${escH(h.contact_phone.replace(/[^+\d]/g,""))}">${escH(h.contact_phone)}</a> · <a href="mailto:${escH(h.contact_email)}">${escH(h.contact_email)}</a></span>
+      ${h.note?`<span>"${escH(h.note)}"</span>`:""}
+      <span class="brow-acts"><button class="linkbtn" data-hold-release="${h.id}">Release this hold</button></span></div>`).join("")
+      :`<p class="pnote">No dates are held at the moment.</p>`}</div>`;
+}
+function bindHolds(root){
+  root.querySelectorAll("[data-hold-book]").forEach(b=>b.addEventListener("click",()=>{const h=(DB.holds||[]).find(x=>x.id===b.dataset.holdBook); if(h) bookFromHold(h);}));
+  root.querySelectorAll("[data-hold-release]").forEach(b=>b.addEventListener("click",()=>{if(confirm("Release this hold? The date becomes free for anyone to book.")) releaseViewingHold(b.dataset.holdRelease);}));
 }
 
 /* ---------- Host view ---------- */
@@ -2006,6 +2140,7 @@ function renderHost(){
   const mine=!!(me||(myv.list&&myv.list.length)||(authLive()&&DB.user&&!myv.list));
   app.innerHTML=`<section class="wrap dash">
     ${mine?myVenuesPanel():""}
+    ${mine?venueHoldsPanel():""}
     ${mine?`<div class="demo-banner"><span>${me?`Welcome, ${escH((me.full_name||"").split(" ")[0]||"there")}. `:""}The dashboard below shows example figures until your venue is live and taking bookings.</span></div>`:""}
     <div class="dash-head"><div><div class="eyebrow">Host dashboard · November 2026</div><h1>Good afternoon, Jo.</h1><p>${v.name} · ${hostRooms().length} ${hostRooms().length===1?"room":"rooms"} on Vendo</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="preview">View your listing</button><button class="btn primary" id="addspace">Add another venue</button></div></div>
@@ -2019,7 +2154,7 @@ function renderHost(){
       if(n){e.preventDefault();goTab(n.dataset.ht);n.focus();}});});
   document.getElementById("preview").addEventListener("click",()=>openVenue("plough"));
   document.getElementById("addspace").addEventListener("click",()=>{if(authLive()&&DB.user){setEditId(null);myv.form=null;nav("add-venue");}else nav("list-your-venue");window.scrollTo(0,0);});
-  bindMyVenues(app);
+  bindMyVenues(app); bindHolds(app);
   drawHostTab();
 }
 function goTab(k){host.tab=k;drawHostTab();}
@@ -2910,6 +3045,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.25.0",d:"2026-11-18",t:"Hold a date and book a viewing",n:["Want to see a venue first? Hold your date free for up to 7 days and book a viewing. Nobody else can book that time meanwhile.","If you haven't booked by the end of the hold, the date is released by itself, so venues don't miss out on other bookings.","Find your held dates in My account, book with one tap or release them. Venues see who is coming to view, when, and how to reach them."]},
  {v:"0.24.0",d:"2026-11-18",t:"Cleaning and setup time between bookings",n:["Venues set a cleaning time after each event and a setup time before it, room by room. Nobody can book a room while it's being cleaned or set up.","Guests only see start times that leave enough space around other events, and the venue page says how long the venue needs between events.","The database refuses any booking that clashes, buffers included, even if two people book at the same moment."]},
  {v:"0.23.2",d:"2026-11-18",t:"Livelier backdrop",n:["The home page glow is a little stronger and moves more noticeably."]},
  {v:"0.23.1",d:"2026-11-18",t:"A calmer home page backdrop",n:["The dotted texture and drawn street are replaced by soft colour glows that drift slowly. They follow the event colours and dark mode, and stay still if you prefer less motion.","Fixed venue pages picking up the home page backdrop."]},
@@ -3024,7 +3160,7 @@ if(NATIVE){
 const SUPABASE_URL="https://naslarphujlgcaaxbufg.supabase.co";
 // Publishable key: made for browsers and safe to publish. The database's security rules decide what it can do.
 const SUPABASE_KEY="sb_publishable_7qxK8SP0wI7vOjVTxAAVpw_UByqtYby";
-const DB={client:null,live:false,user:null,profile:null,ids:{},busy:{},times:{},bookings:null};
+const DB={client:null,live:false,user:null,profile:null,ids:{},busy:{},times:{},bookings:null,holds:null,venueHolds:null};
 function sbLoad(){
   if(window.supabase&&window.supabase.createClient) return Promise.resolve();
   return new Promise((res,rej)=>{const sc=document.createElement("script");
@@ -3114,9 +3250,17 @@ const minsText=m=>m<60?`${m} minutes`:m%60?`${Math.floor(m/60)} hr ${m%60} min`:
 function freeStarts(v,d,ri,hours){
   if(!hasTimes(v)) return startTimes();
   const r=roomsOf(v)[ri||0]||roomsOf(v)[0], x=DB.ids[v.id], room=x&&r&&x.rooms.find(q=>q.name===r.name), rid=room?room.id:null;
-  const busy=DB.times[v.id].filter(b=>!b.room||!rid||b.room===rid);
+  const mine=ownHoldSpans(v);
+  const busy=DB.times[v.id].filter(b=>(!b.room||!rid||b.room===rid)&&!mine.some(m=>m.room===b.room&&m.s===b.s&&m.e===b.e));
   const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(), su=(r.setup||0)*6e4, cl=(r.clean??60)*6e4;
   return startTimes().filter(t=>{const s=day+toMin(t)*6e4-su, e=day+(toMin(t)+hours*60)*6e4+cl; return !busy.some(b=>b.s<e&&s<b.e);});
+}
+// The guest's own active holds at this venue don't block them (the database allows it too).
+function ownHoldSpans(v){
+  const x=DB.ids[v.id]; if(!x||!DB.holds) return [];
+  return DB.holds.filter(h=>h.venue_id===x.uuid&&holdLive(h)).map(h=>{
+    const rr=roomsOf(v).find(r=>h.rooms&&r.name===h.rooms.name)||roomsOf(v)[0], d=dayFromIso(h.event_date), day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(), st=toMin(h.start_time.slice(0,5));
+    return {room:h.room_id,s:day+(st-(rr.setup||0))*6e4,e:day+(st+h.hours*60+(rr.clean??60))*6e4};});
 }
 function dbBusy(v,d,ri){
   if(hasTimes(v)){const r=roomsOf(v)[ri||0]||roomsOf(v)[0]; return !freeStarts(v,d,ri,r?r.minH:2).length;}
@@ -3132,7 +3276,7 @@ async function onAuth(session){
   if(u){
     const {data}=await DB.client.from("profiles").select("full_name,phone,town,account_type,business_name,business_type,is_admin").eq("id",u.id).maybeSingle();
     DB.profile=data||{full_name:"",phone:"",town:"",account_type:"guest"};
-    await syncSaved(); await dbLoadBookings();
+    await syncSaved(); await dbLoadBookings(); dbLoadHolds();
   }
   updateAvatar();
   if(u&&(state.view==="signin"||state.view==="signup")) return afterSignIn();
@@ -3316,6 +3460,7 @@ function renderRealAccount(){
     <div class="dash-head"><div><div class="eyebrow">My account</div><h1>Hello, ${escH(first)}.</h1><p>Signed in as ${escH(DB.user.email)}</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sign-out">Sign out</button></div></div>
     ${p.account_type==="host"?`<div class="demo-banner"><span><b>${escH(p.business_name||"Your venue")}</b>${p.business_type?` · ${escH(p.business_type)}`:""}. Manage bookings, prices and your calendar in the venue dashboard.</span><a class="btn primary" href="#host" style="text-decoration:none">Go to your venue dashboard</a></div>`:""}
+    ${guestHoldsPanel()}
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>Your bookings</h2><span class="eyebrow">${bk.length} ${bk.length===1?"booking":"bookings"}</span></div>
         ${bk.length?`<div>${bk.map(b=>`<div class="brow"><b>${escH(b.event)}</b><span class="pill ${b.status==="Confirmed"?"ok":b.status==="Request sent"?"new":"no"}">${b.status}</span>
@@ -3334,6 +3479,7 @@ function renderRealAccount(){
     ${waitHTML()}
     ${savedPanelHTML()}
   </section>`;
+  bindHolds(app);
   document.getElementById("sign-out").addEventListener("click",async()=>{await DB.client.auth.signOut();toast("You're signed out.");});
   document.getElementById("prof-form").addEventListener("submit",async e=>{e.preventDefault();
     const row={full_name:document.getElementById("pf-name").value.trim().slice(0,80),phone:document.getElementById("pf-phone").value.trim().slice(0,30)||null,town:document.getElementById("pf-town").value.trim().slice(0,60)||null,account_type:document.getElementById("pf-type").value==="host"?"host":"guest"};
@@ -3591,10 +3737,10 @@ function goCheckout(){
   const v=state.open, prev=checkout&&checkout.id===v.id&&!checkout.done?checkout:null;
   const ev=prev?prev.event:(v.suits.includes(state.event)?state.event:"");
   checkout={id:v.id,date:isoDay(quote.date),room:quote.room,hours:quote.hours,guests:quote.guests,addons:{...quote.addons},
-    start:prev?prev.start:(quote.hours>=8?"12:00":fromMin(Math.max(9*60,Math.min(19*60,24*60-quote.hours*60)))),
+    start:quote.holdStart||(prev?prev.start:(quote.hours>=8?"12:00":fromMin(Math.max(9*60,Math.min(19*60,24*60-quote.hours*60))))),
     event:ev,other:prev?prev.other:"",notes:prev?prev.notes:"",name:prev?prev.name:DB.user?((DB.profile&&DB.profile.full_name)||""):ME.name,email:prev?prev.email:DB.user?DB.user.email:ME.email,phone:prev?prev.phone:DB.user?((DB.profile&&DB.profile.phone)||""):ME.phone,
     pay:"deposit",method:"card",agree:false,done:null};
-  saveCheckout(); closeVenue(true); nav("book-"+v.id);
+  quote.holdStart=null; saveCheckout(); closeVenue(true); nav("book-"+v.id);
 }
 function ckPrice(){
   const c=checkout, v=VENUES.find(x=>x.id===c.id), rs=roomsOf(v), r=rs[c.room]||rs[0], d=dayFromIso(c.date);

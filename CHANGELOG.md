@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.25.0 · Hold a date and book a viewing
+
+_2026-11-18_
+
+- Want to see a venue first? Hold your date free for up to 7 days and book a viewing. Nobody else can book that time meanwhile.
+- If you haven't booked by the end of the hold, the date is released by itself, so venues don't miss out on other bookings.
+- Find your held dates in My account, book with one tap or release them. Venues see who is coming to view, when, and how to reach them.
+
 ## 0.24.0 · Cleaning and setup time between bookings
 
 _2026-11-18_
