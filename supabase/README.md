@@ -50,3 +50,9 @@ Row level security is on for every table:
   - `send_back_venue()` returns a venue to draft with a note the owner sees.
   - Owners can't verify their own venue, put it live, mark it as a demo or edit the admin's note.
 - `tests/venue_check.sql`: 28 checks covering owners, another owner, signed-out visitors and an admin, including file access. All passing.
+
+## Booking holds
+
+- `migrations/20261118120000_booking_holds.sql`: while a signed-in guest fills in the booking form, `place_hold()` reserves their room and time (setup and cleaning included) for 15 minutes. One hold per person; changing the time on the same day keeps the original deadline. `release_hold()` lets it go, and a booking uses it up. Other people see held times as busy in `venue_busy_times()`, and the database refuses to book over them.
+- `migrations/20261118150000_holds_together.sql`: runs after the viewing-holds migration, so 15-minute holds and 7-day viewing holds respect each other. `slot_conflict()` is the single place that decides whether a slot is free.
+- `tests/holds_check.sql`: two pretend guests racing for the same slot. 15 checks, all passing (rerun after the viewing-holds migration).
