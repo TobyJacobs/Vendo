@@ -2,6 +2,12 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.23.2 · Livelier backdrop
+
+_2026-11-18_
+
+- The home page glow is a little stronger and moves more noticeably.
+
 ## 0.23.1 · A calmer home page backdrop
 
 _2026-11-18_
