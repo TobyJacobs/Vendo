@@ -309,6 +309,10 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .lines div{display:flex;justify-content:space-between;gap:12px}
 .lines .tot{font-weight:600;font-size:16.5px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
 .lines .note{font-size:12.5px;color:var(--muted)}
+.series{display:grid;gap:8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
+.series ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.series li{font-size:13px;padding:4px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.series li.off{text-decoration:line-through;color:var(--muted)}
 .holdbox{display:grid;gap:6px;margin-top:4px}
 .holdbox .btn{width:100%}
 .holdform{display:grid;gap:12px}
@@ -1238,7 +1242,8 @@ function badgesHTML(v,card){const b=vBadges(v).filter(x=>!card||x[0]!=="verified
   return b.length?`<div class="vb${card?" card-vb":""}">${b.map(([k,l,t])=>`<span class="vb-${k}" title="${t}">${l}</span>`).join("")}</div>`:"";}
 function goodToKnow(v){const i=VINFO[v.id]; if(!i) return "";
   const r0=v.dbRooms&&v.dbRooms[0], buf=r0?(r0.setup?`${minsText(r0.setup)} to set up before and `:"")+`${minsText(r0.clean??60)} to clean after each event, so bookings are spaced out.`:"";
-  const rows=[["Between events",buf],["Finish time",i.finish],["Music",i.music],["Parking",i.park],["Getting there",i.go],["Your own cake and decorations",i.own],["If it rains",i.rain]].filter(r=>r[1]);
+  const bl=v.block&&v.block.pct?`Book the same time every week or fortnight. ${v.block.pct}% off when you book ${v.block.min} or more sessions.`:v.dbRooms?"Book the same time every week or fortnight, for classes and clubs.":"";
+  const rows=[["Regular bookings",bl],["Between events",buf],["Finish time",i.finish],["Music",i.music],["Parking",i.park],["Getting there",i.go],["Your own cake and decorations",i.own],["If it rains",i.rain]].filter(r=>r[1]);
   return `<div class="section"><h3>Good to know</h3><dl class="gtk">${rows.map(([k,x])=>`<div><dt>${k}</dt><dd>${x}</dd></div>`).join("")}</dl></div>`;}
 
 const ROOMS={plough:[
@@ -2620,7 +2625,7 @@ const vslug=s=>(s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"").replace
 function blankVenue(){
   const me=DB.profile||{};
   return {status:"draft",name:me.business_name||"",type:"pub",kind:"",town:me.town||"",postcode:"",space:"",blurb:"",suits:[],features:"",rules:"",
-    finish:"",music:"",park:"",go:"",cancel:"moderate",step_free:false,licensed_bar:false,outdoor:false,instant:false,photos:[],review_note:null,
+    finish:"",music:"",park:"",go:"",cancel:"moderate",block_pct:"0",block_min:"4",step_free:false,licensed_bar:false,outdoor:false,instant:false,photos:[],review_note:null,
     rooms:[{id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3",setup:"0",clean:"60"}],addons:[],
     docs:{legal_name:me.full_name||"",sells_alcohol:true,licence_number:"",licence_council:"",insurance_provider:"",insurance_cover:"",insurance_expiry:"",id_path:null,licence_path:null,insurance_path:null}};
 }
@@ -2632,7 +2637,7 @@ async function loadVenueForm(id){
   const p=x=>x==null?"":String(x/100);
   return {status:v.status,name:v.name,type:v.venue_type,kind:v.kind,town:(v.place||"").split(",")[0],postcode:v.postcode||"",space:v.space_title||"",blurb:v.blurb||"",
     suits:v.suits||[],features:(v.features||[]).join("\n"),rules:(v.house_rules||[]).join("\n"),finish:v.finish_time||"",music:v.music_note||"",park:v.parking||"",go:v.getting_there||"",
-    cancel:v.cancellation_policy,step_free:v.step_free,licensed_bar:v.licensed_bar,outdoor:v.outdoor_space,instant:v.instant_book,photos:v.photos||[],review_note:v.review_note,
+    cancel:v.cancellation_policy,block_pct:String(v.block_discount_pct??0),block_min:String(v.block_min_sessions??4),step_free:v.step_free,licensed_bar:v.licensed_bar,outdoor:v.outdoor_space,instant:v.instant_book,photos:v.photos||[],review_note:v.review_note,
     rooms:(v.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order).map(r=>({id:r.id,name:r.name,note:r.note||"",seated:String(r.seated),standing:String(r.standing),hour:p(r.hour_price_pence),day:p(r.day_price_pence),minH:String(r.min_hours),setup:String(r.setup_mins??0),clean:String(r.clean_mins??60)})),
     addons:(v.addons||[]).sort((a,b)=>a.sort_order-b.sort_order).map(a=>({id:a.id,label:a.label,price:p(a.price_pence),head:a.per_head})),
     docs:d?{legal_name:d.legal_name||"",sells_alcohol:d.sells_alcohol,licence_number:d.licence_number||"",licence_council:d.licence_council||"",insurance_provider:d.insurance_provider||"",
@@ -2725,6 +2730,8 @@ function drawVenueForm(){
       ${inp("rules","House rules",{full:true,area:true,opt:true,max:800,ph:"One per line, for example:\nNo confetti indoors\nOutside caterers by arrangement"})}
       <div class="lf full"><label for="av-cancel">Cancellation policy</label><select id="av-cancel" data-f="cancel">
         ${Object.entries(POLICIES).map(([k,[l,t]])=>`<option value="${k}" ${f.cancel===k?"selected":""}>${l}: ${t.replace(/^F/,"f").replace(/ your event/g,"")}</option>`).join("")}</select></div>
+      <div class="lf"><label for="av-block_pct">Block booking discount</label><select id="av-block_pct" data-f="block_pct">${[0,5,10,15,20,25,30].map(n=>`<option value="${n}" ${String(f.block_pct)===String(n)?"selected":""}>${n?n+"% off":"No discount"}</option>`).join("")}</select><span class="hint">For classes and clubs that book the same time every week.</span></div>
+      <div class="lf"><label for="av-block_min">Discount starts at</label><select id="av-block_min" data-f="block_min">${[2,4,6,8,10,12].map(n=>`<option value="${n}" ${String(f.block_min)===String(n)?"selected":""}>${n} sessions</option>`).join("")}</select></div>
     </div></div>
 
     <div class="panel"><div class="panel-head"><h2>Get verified</h2><span class="eyebrow">Step 5 of 5</span></div>
@@ -2843,7 +2850,7 @@ async function saveMyVenue(submit){
     const t=VTYPES.find(x=>x[0]===f.type)||VTYPES[0];
     const row={name:f.name.trim(),kind:f.kind.trim()||t[2],venue_type:t[0],postcode:pc.postcode,place:`${f.town.trim()}, ${pc.county}`,region:pc.region,lat:pc.lat,lng:pc.lng,
       space_title:f.space.trim(),blurb:f.blurb.trim(),suits:f.suits,features:lines(f.features),house_rules:lines(f.rules),instant_book:!!f.instant,step_free:!!f.step_free,
-      licensed_bar:!!f.licensed_bar,outdoor_space:!!f.outdoor,cancellation_policy:f.cancel,finish_time:nz(f.finish),music_note:nz(f.music),parking:nz(f.park),getting_there:nz(f.go)};
+      licensed_bar:!!f.licensed_bar,outdoor_space:!!f.outdoor,cancellation_policy:f.cancel,block_discount_pct:Math.min(50,Math.max(0,+f.block_pct||0)),block_min_sessions:Math.min(52,Math.max(2,+f.block_min||4)),finish_time:nz(f.finish),music_note:nz(f.music),parking:nz(f.park),getting_there:nz(f.go)};
     say("Saving your venue…");
     let id=myv.edit;
     if(!id){
@@ -3049,6 +3056,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.27.0",d:"2026-11-18",t:"Block bookings for classes and clubs",n:["Book the same room and time every week, every 2 weeks or every 4 weeks, for up to 52 sessions, in one go.","Every date is checked. Any that are already taken are shown and skipped, and you only book the free ones.","Venues can offer a block booking discount, such as 10% off 4 or more sessions. You pay for each session 14 days before it."]},
  {v:"0.26.0",d:"2026-11-18",t:"Your time is held while you book",n:["When you start booking, we hold your room and time for 15 minutes so nobody else can book it while you fill in the form. A countdown shows how long is left.","If someone else is already booking that time, you'll see it straight away and can pick another."]},
  {v:"0.25.0",d:"2026-11-18",t:"Hold a date and book a viewing",n:["Want to see a venue first? Hold your date free for up to 7 days and book a viewing. Nobody else can book that time meanwhile.","If you haven't booked by the end of the hold, the date is released by itself, so venues don't miss out on other bookings.","Find your held dates in My account, book with one tap or release them. Venues see who is coming to view, when, and how to reach them."]},
  {v:"0.24.0",d:"2026-11-18",t:"Cleaning and setup time between bookings",n:["Venues set a cleaning time after each event and a setup time before it, room by room. Nobody can book a room while it's being cleaned or set up.","Guests only see start times that leave enough space around other events, and the venue page says how long the venue needs between events.","The database refuses any booking that clashes, buffers included, even if two people book at the same moment."]},
@@ -3190,7 +3198,7 @@ const authLive=()=>DB.live;
 const pounds=p=>Math.round(p)/100;
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 async function dbLoadVenues(){
-  const {data,error}=await DB.client.from("venues").select("id,slug,verified,photos,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(*),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
+  const {data,error}=await DB.client.from("venues").select("id,slug,verified,photos,block_discount_pct,block_min_sessions,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(*),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
   if(error) throw new Error(error.message);
   if(!data||!data.length) throw new Error("no live venues");
   const keep=[];
@@ -3206,6 +3214,7 @@ async function dbLoadVenues(){
     v.flags={stepfree:+row.step_free,bar:+row.licensed_bar,outdoor:+row.outdoor_space};FLAGS[v.id]=v.flags;
     VINFO[v.id]={finish:row.finish_time,music:row.music_note,park:row.parking,go:row.getting_there,own:row.own_cake_decor,rain:row.if_it_rains};
     POLICY_OF[v.id]=row.cancellation_policy;
+    v.block={pct:row.block_discount_pct||0,min:row.block_min_sessions||4};
     const ads=(row.addons||[]).sort((a,b)=>a.sort_order-b.sort_order);
     v.addons=ads.map(a=>({l:a.label,p:pounds(a.price_pence),head:a.per_head}));
     v.pct={wk:row.pct_mon_thu,fri:row.pct_fri,sat:row.pct_sat,sun:row.pct_sun,dec:row.pct_december};
@@ -3329,11 +3338,13 @@ function dbSaveHeart(id){
 const STATUS_LABEL={requested:"Request sent",confirmed:"Confirmed",declined:"Declined",cancelled:"Cancelled",completed:"Completed"};
 async function dbLoadBookings(){
   if(!DB.user) return;
-  const {data,error}=await DB.client.from("bookings").select("id,ref,status,event_date,start_time,hours,guests,event_label,total_pence,venues(slug,name)").eq("guest_id",DB.user.id).order("event_date");
+  let {data,error}=await DB.client.from("bookings").select("id,ref,status,event_date,start_time,hours,guests,event_label,total_pence,series_id,series_no,venues(slug,name)").eq("guest_id",DB.user.id).order("event_date");
   if(error) return;
-  DB.bookings=(data||[]).map(b=>{const v=VENUES.find(x=>slugOf(x)===(b.venues&&b.venues.slug));
+  // A block booking shows once, with how many sessions it has.
+  const seen={}; data=(data||[]).filter(b=>{if(!b.series_id) return true; if(seen[b.series_id]){seen[b.series_id].n++;return false;} seen[b.series_id]=b; b.n=1; return true;});
+  DB.bookings=data.map(b=>{const v=VENUES.find(x=>slugOf(x)===(b.venues&&b.venues.slug));
     return {id:v?v.id:"",venue:b.venues?b.venues.name:"Venue",event:b.event_label,ref:b.ref,status:STATUS_LABEL[b.status]||b.status,
-      date:dayFromIso(b.event_date).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:b.guests};});
+      date:dayFromIso(b.event_date).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",","")+(b.n>1?`, then ${b.n-1} more ${b.n===2?"session":"sessions"}`:""),guests:b.guests};});
 }
 function acctBookings(){return authLive()&&DB.user?(DB.bookings||[]):ME.bookings;}
 
@@ -3744,8 +3755,20 @@ function goCheckout(){
   checkout={id:v.id,date:isoDay(quote.date),room:quote.room,hours:quote.hours,guests:quote.guests,addons:{...quote.addons},
     start:quote.holdStart||(prev?prev.start:(quote.hours>=8?"12:00":fromMin(Math.max(9*60,Math.min(19*60,24*60-quote.hours*60))))),
     event:ev,other:prev?prev.other:"",notes:prev?prev.notes:"",name:prev?prev.name:DB.user?((DB.profile&&DB.profile.full_name)||""):ME.name,email:prev?prev.email:DB.user?DB.user.email:ME.email,phone:prev?prev.phone:DB.user?((DB.profile&&DB.profile.phone)||""):ME.phone,
-    pay:"deposit",method:"card",agree:false,done:null};
+    repeat:prev&&prev.repeat?prev.repeat:{every:0,count:10},pay:"deposit",method:"card",agree:false,done:null};
   quote.holdStart=null; saveCheckout(); closeVenue(true); nav("book-"+v.id);
+}
+/* Block bookings: the same room and time every week, 2 weeks or 4 weeks. Each session is an ordinary booking,
+   so every date is checked for clashes, buffers and holds; taken dates are skipped. Venues can offer a block discount. */
+const REPEATS=[[0,"Just this date"],[1,"Every week"],[2,"Every 2 weeks"],[4,"Every 4 weeks"]];
+const repOf=c=>c.repeat||(c.repeat={every:0,count:10});
+const everyText=e=>e===1?"every week":`every ${e} weeks`;
+function ckSeries(c,v,ri){
+  const rp=repOf(c); if(!rp.every) return null;
+  const n=Math.min(52,Math.max(2,parseInt(rp.count,10)||2)), first=dayFromIso(c.date), out=[];
+  for(let i=0;i<n;i++){const d=new Date(first);d.setDate(d.getDate()+i*7*rp.every);
+    out.push({d,free:i===0||(hasTimes(v)?freeStarts(v,d,ri,c.hours).includes(c.start):!bookedDay(v,d,ri))});}
+  return out;
 }
 function ckPrice(){
   const c=checkout, v=VENUES.find(x=>x.id===c.id), rs=roomsOf(v), r=rs[c.room]||rs[0], d=dayFromIso(c.date);
@@ -3756,8 +3779,16 @@ function ckPrice(){
   const balDate=new Date(d); balDate.setDate(balDate.getDate()-14);
   const holdDate=new Date(d); holdDate.setDate(holdDate.getDate()-2);
   const payDeposit=c.pay==="deposit"&&!fullOnly, dueNow=payDeposit?deposit:total;
-  return {v,r,rs,d,mult,hire,extras,add,fee,total,fullOnly,deposit,balDate,holdDate,payDeposit,dueNow,balance:total-deposit,
-    damage:Math.min(250,Math.round(r.day*0.25/10)*10||100),end:fromMin(toMin(c.start)+c.hours*60)};
+  const all=ckSeries(c,v,c.room); let series=null;
+  if(all){
+    const ok=all.filter(x=>x.free), b=v.block||{pct:0,min:4}, disc=b.pct&&ok.length>=b.min?b.pct:0;
+    const sess=ok.map(x=>{const h=costFor(r,c.hours,priceMult(v,x.d))*(1-disc/100), f=(h+add)*FEE; return {d:x.d,hire:h,fee:f,total:h+add+f};});
+    const sum=k=>sess.reduce((a,x)=>a+x[k],0);
+    series={all,sess,disc,every:repOf(c).every,hire:sum("hire"),fee:sum("fee"),add:add*sess.length,total:sum("total"),first:sess[0]?sess[0].total:0,
+      full:sess.reduce((a,x)=>a+costFor(r,c.hours,priceMult(v,x.d)),0)};
+  }
+  return {v,r,rs,d,mult,hire,extras,add,fee,total,fullOnly,deposit,balDate,holdDate,payDeposit:series?false:payDeposit,dueNow:series?series.first:dueNow,balance:total-deposit,
+    damage:Math.min(250,Math.round(r.day*0.25/10)*10||100),end:fromMin(toMin(c.start)+c.hours*60),series};
 }
 function eventLabel(c){return c.event==="other"?(c.other.trim()||"Event"):EVENT_TYPES[c.event]||c.event||"Event";}
 function renderCheckout(){
@@ -3783,6 +3814,9 @@ function renderCheckout(){
             <div class="lf"><label for="ck-start">Start time</label><select id="ck-start" ${times.length?"":"disabled"}>${times.map(t=>`<option value="${t}" ${t===c.start?"selected":""}>${fmtT(t)}</option>`).join("")}</select><span class="hint" id="ck-until"></span>${bufNote}${noTimes}</div>
             <div class="lf"><label for="ck-guests">Guests</label><input id="ck-guests" type="number" inputmode="numeric" min="1" max="${maxG}" value="${c.guests}"><span class="hint">Up to ${maxG}${p.r.seated<maxG?`, or ${p.r.seated} seated`:""}</span><span class="err" id="ce-guests"></span></div>
           </div>
+          <div class="ckrow"><div class="lf"><label for="ck-rep">Repeat</label><select id="ck-rep">${REPEATS.map(([k,l])=>`<option value="${k}" ${repOf(c).every===k?"selected":""}>${l}</option>`).join("")}</select><span class="hint">For classes, clubs and regular groups: book the same time again and again.</span></div>
+            <div class="lf" id="ck-cnt-wrap" ${repOf(c).every?"":"hidden"}><label for="ck-cnt">Number of sessions</label><input id="ck-cnt" type="number" min="2" max="52" inputmode="numeric" value="${repOf(c).count}"><span class="hint">Up to 52.</span></div></div>
+          <div id="ck-series" aria-live="polite"></div>
           <div class="lf"><label for="ck-notes">Anything ${v.host.split(",")[0]} should know? (optional)</label><textarea id="ck-notes" maxlength="500" placeholder="Dietary needs, set-up time, a surprise to keep quiet">${escH(c.notes)}</textarea></div>
         </fieldset>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">2</span>Your details</legend>
@@ -3825,6 +3859,8 @@ function renderCheckout(){
   const g=document.getElementById("ck-guests");
   g.addEventListener("input",()=>{const n=parseInt(g.value,10);document.getElementById("ce-guests").textContent="";if(n>=1&&n<=maxG){set("guests",n);drawCkSum();}});
   document.querySelectorAll('[name="ck-pay"]').forEach(r=>r.addEventListener("change",()=>{set("pay",r.value);drawCkSum();}));
+  document.getElementById("ck-rep").addEventListener("change",e=>{const rp=repOf(c);rp.every=+e.target.value;saveCheckout();document.getElementById("ck-cnt-wrap").hidden=!rp.every;drawCkSum();});
+  document.getElementById("ck-cnt").addEventListener("input",e=>{const rp=repOf(c);rp.count=e.target.value;saveCheckout();drawCkSum();});
   document.querySelectorAll('[name="ck-method"]').forEach(r=>r.addEventListener("change",()=>set("method",r.value)));
   document.getElementById("ck-agree").addEventListener("change",e=>{set("agree",e.target.checked);document.getElementById("ce-agree").textContent="";});
   const back=()=>{releaseHold();openVenue(c.id,false,dayFromIso(c.date));quote.room=c.room;quote.hours=c.hours;quote.guests=c.guests;quote.addons={...c.addons};drawBook();};
@@ -3834,13 +3870,26 @@ function renderCheckout(){
   drawCkSum(); ckHold();
 }
 function drawCkSum(){
-  const c=checkout, p=ckPrice(), v=p.v;
+  const c=checkout, p=ckPrice(), v=p.v, se=p.series;
+  const sl=document.getElementById("ck-series"), pc=document.querySelector(".paychoice"), b=v.block||{pct:0,min:4};
+  if(sl) sl.innerHTML=se?`<div class="series"><b>${se.sess.length} of ${se.all.length} sessions are free</b>${se.disc?`<span class="pill ok">${se.disc}% block discount</span>`:b.pct?`<span class="hint">${b.pct}% off when you book ${b.min} or more sessions</span>`:""}
+      <ul>${se.all.map(x=>`<li class="${x.free?"":"off"}">${niceDay(x.d)}${x.free?"":" · taken, skipped"}</li>`).join("")}</ul>
+      <span class="hint">You pay for each session 14 days before it. Cancel future sessions under the venue's cancellation policy.</span></div>`:"";
+  if(pc) pc.hidden=!!se;
   document.getElementById("ck-until").textContent=`Until ${fmtT(p.end)} · ${c.hours} hours`;
   document.getElementById("pc-dep").textContent=gbp(p.deposit); document.getElementById("pc-full").textContent=gbp(p.total);
   if(!p.fullOnly) document.getElementById("pc-dep-s").textContent=`${v.instant?"now":"once accepted"}, then ${gbp(p.balance)} on ${niceDay(p.balDate)}`;
   const pct=Math.round((p.mult-1)*100);
   document.getElementById("cksum").innerHTML=`<div class="head"><span class="thumb">${scene(v,"ck")}</span><div><b>${v.name}</b><span>${v.place}</span></div></div>
-    <dl><dt>Date</dt><dd>${niceDay(p.d)}</dd><dt>Time</dt><dd>${fmtT(c.start)} to ${fmtT(p.end)}</dd>${p.rs.length>1?`<dt>Room</dt><dd>${p.r.name}</dd>`:""}<dt>Guests</dt><dd>${c.guests}</dd></dl>
+    <dl><dt>${se?"Dates":"Date"}</dt><dd>${se?`${se.sess.length} sessions, ${everyText(se.every)} from ${niceDay(p.d)}`:niceDay(p.d)}</dd><dt>Time</dt><dd>${fmtT(c.start)} to ${fmtT(p.end)}</dd>${p.rs.length>1?`<dt>Room</dt><dd>${p.r.name}</dd>`:""}<dt>Guests</dt><dd>${c.guests}</dd></dl>
+    ${se?`<div class="lines num">
+      <div><span>${p.rs.length>1?p.r.name:"Venue hire"} × ${se.sess.length} sessions</span><span>${gbp(se.full)}</span></div>
+      ${se.disc?`<div class="note"><span>Block discount (${se.disc}%)</span><span>−${gbp(se.full-se.hire)}</span></div>`:""}
+      ${se.add?`<div><span>Extras × ${se.sess.length}</span><span>${gbp(se.add)}</span></div>`:""}
+      <div><span>Booking fee (4%)</span><span>${gbp(se.fee)}</span></div>
+      <div class="tot"><span>Total for the block</span><span>${gbp(se.total)}</span></div></div>
+    <div class="due num" aria-live="polite"><div class="now"><span>${v.instant?"Due today":"When "+v.host.split(",")[0]+" accepts"}</span><span>${gbp(se.first)}</span></div>
+      ${se.sess.length>1?`<div><span>Then each session, 14 days before it</span><span>about ${gbp((se.total-se.first)/(se.sess.length-1))}</span></div>`:""}</div>`:`
     <div class="lines num">
       <div><span>${p.rs.length>1?p.r.name:"Venue hire"}${c.hours>=8?" (day rate)":` (${c.hours} hrs)`}</span><span>${gbp(p.hire)}</span></div>
       ${pct?`<div class="note"><span>${BANDS[bandOf(p.d)]} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
@@ -3850,10 +3899,10 @@ function drawCkSum(){
     </div>
     <div class="due num" aria-live="polite">${v.instant?`<div class="now"><span>Due today</span><span>${gbp(p.dueNow)}</span></div>`:`<div class="now"><span>Due today</span><span>£0</span></div><div><span>When ${v.host.split(",")[0]} accepts</span><span>${gbp(p.dueNow)}</span></div>`}
       ${p.payDeposit?`<div><span>Due ${niceDay(p.balDate)}</span><span>${gbp(p.balance)}</span></div>`:""}
-      <div class="hint"><span>Damage deposit, held then released</span><span>${gbp(p.damage)}</span></div></div>
+      <div class="hint"><span>Damage deposit, held then released</span><span>${gbp(p.damage)}</span></div></div>`}
     <div class="protect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor" opacity=".18"/><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.3 2.3 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>`;
-  document.getElementById("ck-go").textContent=authLive()?(DB.user?"Send booking request":"Create an account above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
+  document.getElementById("ck-go").textContent=se&&!se.sess.length?"No free sessions":authLive()?(DB.user?(se?`Request ${se.sess.length} sessions`:"Send booking request"):"Create an account above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
   document.getElementById("ck-go-note").textContent=authLive()?"Card payments are coming soon. For now your request is saved to your account and nothing is charged.":v.instant?"Your booking is confirmed straight away.":`${v.reply}. You'll only pay if ${v.host.split(",")[0]} accepts.`;
 }
 /* Booking holds: while you fill in the booking form, your time is reserved for 15 minutes so nobody else can book
@@ -3920,7 +3969,8 @@ async function submitCheckout(maxG){
   ["event","other","guests","name","email","phone","agree"].forEach(k=>{const e=document.getElementById("ce-"+k);if(e)e.textContent=er[k]||"";});
   const first=Object.keys(er)[0];
   if(first){const id={event:"ck-event",other:"ck-other",guests:"ck-guests",name:"ck-name",email:"ck-email",phone:"ck-phone",agree:"ck-agree"}[first];document.getElementById(id).focus();return;}
-  const p=ckPrice(), v=p.v, label=eventLabel(c);
+  const p=ckPrice(), v=p.v, label=eventLabel(c), se=p.series;
+  if(se&&!se.sess.length){const e=document.getElementById("ce-agree");e.textContent="None of those dates are free. Try another day or time.";return;}
   let ref="VND-"+(48213+p.d.getDate()*17+v.id.length+c.guests), savedToDb=false;
   if(authLive()&&DB.user&&DB.ids[v.id]){
     const go=document.getElementById("ck-go"); go.disabled=true; go.textContent="Saving…";
@@ -3929,21 +3979,27 @@ async function submitCheckout(maxG){
       event_type:c.event==="other"?"Other":c.event,event_label:label,notes:c.notes.trim()||null,contact_name:c.name.trim(),contact_email:c.email.trim(),contact_phone:c.phone.trim(),
       payment_plan:p.payDeposit?"deposit":"full",hire_pence:Math.round(p.hire*100),extras_pence:Math.round(p.add*100),fee_pence:Math.round(p.fee*100),total_pence:Math.round(p.total*100),
       deposit_pence:p.payDeposit?p.deposit*100:0,balance_due_on:p.payDeposit?isoDay(p.balDate):null,damage_hold_pence:p.damage*100};
-    const {data,error}=await DB.client.from("bookings").insert(row).select("id,ref").single();
+    let rows=[row];
+    if(se){const sid=crypto.randomUUID?crypto.randomUUID():"10000000-1000-4000-8000-100000000000".replace(/[018]/g,ch=>(ch^crypto.getRandomValues(new Uint8Array(1))[0]&15>>ch/4).toString(16));
+      rows=se.sess.map((x,i)=>{const due=new Date(x.d);due.setDate(due.getDate()-14);
+        return {...row,event_date:isoDay(x.d),hire_pence:Math.round(x.hire*100),fee_pence:Math.round(x.fee*100),total_pence:Math.round(x.total*100),
+          payment_plan:"full",deposit_pence:0,balance_due_on:i?isoDay(due):null,series_id:sid,series_no:i+1};});}
+    // One insert for the whole block: if any session clashes, none are saved.
+    const res=await DB.client.from("bookings").insert(rows).select("id,ref"), error=res.error, list=res.data||[], data=list[0];
     if(error){go.disabled=false;drawCkSum();const e=document.getElementById("ce-agree");
       if(/HOLD_TAKEN/.test(error.message)){e.textContent="Sorry, someone else is booking that time right now. Pick another start time, or try again in a few minutes.";delete DB.times[v.id];dbLoadTimes(v);}
       else if(/BOOKING_CLASH/.test(error.message)){e.textContent="Sorry, someone has just booked a time that clashes with yours, including the venue's cleaning time. Pick another start time.";delete DB.times[v.id];delete DB.busy[v.id];dbLoadBusy(v);}
       else e.textContent="We couldn't save your booking: "+error.message;return;}
     ref=data.ref; savedToDb=true; HOLD.key=""; HOLD.until=0; HOLD.state="";   // the booking used up the hold
-    const extras=v.addons.map((a,i)=>c.addons[i]?{booking_id:data.id,addon_id:x.addons[i]||null,label:a.l,price_pence:Math.round(a.p*100),quantity:a.head?c.guests:1}:null).filter(Boolean);
+    const extras=list.flatMap(bk=>v.addons.map((a,i)=>c.addons[i]?{booking_id:bk.id,addon_id:x.addons[i]||null,label:a.l,price_pence:Math.round(a.p*100),quantity:a.head?c.guests:1}:null).filter(Boolean));
     if(extras.length) await DB.client.from("booking_addons").insert(extras);
     if(DB.profile&&(!DB.profile.full_name||!DB.profile.phone)){
       const up={full_name:DB.profile.full_name||c.name.trim(),phone:DB.profile.phone||c.phone.trim()};
       const r=await DB.client.from("profiles").update(up).eq("id",DB.user.id); if(!r.error) Object.assign(DB.profile,up);}
     delete DB.busy[v.id]; await dbLoadBookings(); updateAvatar();
   }
-  c.done={ref,label,instant:v.instant&&!savedToDb,saved:savedToDb,dueNow:p.dueNow,total:p.total,balance:p.payDeposit?p.balance:0};
-  if(!savedToDb) ME.bookings.unshift({venue:v.name,id:v.id,event:label,date:p.d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:c.guests,status:v.instant?"Confirmed":"Awaiting reply"});
+  c.done={ref,label,instant:v.instant&&!savedToDb,saved:savedToDb,dueNow:p.dueNow,total:se?se.total:p.total,balance:p.payDeposit?p.balance:0,series:se?{n:se.sess.length,every:se.every}:null};
+  if(!savedToDb) ME.bookings.unshift({venue:v.name,id:v.id,event:label,date:p.d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).replace(",",""),guests:c.guests,status:v.instant?"Confirmed":"Awaiting reply",series:se?{n:se.sess.length,every:se.every}:null});
   const tk="b-"+v.id; if(!THREADS[tk]) THREADS[tk]={title:v.host,sub:`${v.name} · ${label} · ${niceDay(p.d)}`,side:"guest",msgs:[]};
   THREADS[tk].msgs.push(["them",v.instant?`Hi ${c.name.split(" ")[0]}, thanks for booking! We're looking forward to your ${label.toLowerCase()}. Message us any time with questions.`:`Hi ${c.name.split(" ")[0]}, thanks for your request. We'll check the date and reply soon.`,"Just now"]);
   if(v.id===HOST_ID&&v.instant&&!savedToDb){host.upcoming.push({d:p.d,t:`${c.name.trim()} · ${label}`,x:`${p.r.name} · ${c.guests} guests · ${fmtT(c.start)}–${fmtT(p.end)}`,v:Math.round(p.hire+p.add)});host.upcoming.sort((a,b)=>a.d-b.d);}
@@ -3961,7 +4017,7 @@ function renderBooked(){
   steps.push([niceDay(after),"Review each other",`Tell other guests about ${v.name}, and ${host1} rates how the event went.`]);
   app.innerHTML=`<section class="wrap ck-page">
     <div class="done-hero"><div class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1>${d.instant?"You're booked":"Request sent"}</h1>
-      <p>${v.name} · ${longDay(p.d)} · Reference <b>${d.ref}</b></p>
+      <p>${v.name} · ${d.series?`${d.series.n} sessions, ${everyText(d.series.every)} from ${longDay(p.d)}`:longDay(p.d)} · Reference <b>${d.ref}</b>${d.series&&d.series.n>1?` and ${d.series.n-1} more`:""}</p>
       <p>${d.instant?`We've emailed your confirmation to ${escH(c.email)}.`:`We'll email ${escH(c.email)} as soon as ${host1} replies.`}</p></div>
     <div class="cols">
       <div class="panel"><div class="panel-head"><h2>What happens next</h2></div>

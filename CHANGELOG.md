@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.27.0 · Block bookings for classes and clubs
+
+_2026-11-18_
+
+- Book the same room and time every week, every 2 weeks or every 4 weeks, for up to 52 sessions, in one go.
+- Every date is checked. Any that are already taken are shown and skipped, and you only book the free ones.
+- Venues can offer a block booking discount, such as 10% off 4 or more sessions. You pay for each session 14 days before it.
+
 ## 0.26.0 · Your time is held while you book
 
 _2026-11-18_
