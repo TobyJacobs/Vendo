@@ -2,6 +2,13 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.23.1 · A calmer home page backdrop
+
+_2026-11-18_
+
+- The dotted texture and drawn street are replaced by soft colour glows that drift slowly. They follow the event colours and dark mode, and stay still if you prefer less motion.
+- Fixed venue pages picking up the home page backdrop.
+
 ## 0.23.0 · A home page backdrop
 
 _2026-11-17_
