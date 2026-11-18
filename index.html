@@ -1226,7 +1226,8 @@ function vBadges(v){const b=v.verified===false?[]:[["verified","Verified venue",
 function badgesHTML(v,card){const b=vBadges(v).filter(x=>!card||x[0]!=="verified");
   return b.length?`<div class="vb${card?" card-vb":""}">${b.map(([k,l,t])=>`<span class="vb-${k}" title="${t}">${l}</span>`).join("")}</div>`:"";}
 function goodToKnow(v){const i=VINFO[v.id]; if(!i) return "";
-  const rows=[["Finish time",i.finish],["Music",i.music],["Parking",i.park],["Getting there",i.go],["Your own cake and decorations",i.own],["If it rains",i.rain]].filter(r=>r[1]);
+  const r0=v.dbRooms&&v.dbRooms[0], buf=r0?(r0.setup?`${minsText(r0.setup)} to set up before and `:"")+`${minsText(r0.clean??60)} to clean after each event, so bookings are spaced out.`:"";
+  const rows=[["Between events",buf],["Finish time",i.finish],["Music",i.music],["Parking",i.park],["Getting there",i.go],["Your own cake and decorations",i.own],["If it rains",i.rain]].filter(r=>r[1]);
   return `<div class="section"><h3>Good to know</h3><dl class="gtk">${rows.map(([k,x])=>`<div><dt>${k}</dt><dd>${x}</dd></div>`).join("")}</dl></div>`;}
 
 const ROOMS={plough:[
@@ -1238,7 +1239,7 @@ const hostSetup=(()=>{const d={listed:[true,true,false],pricing:{wk:0,fri:0,sat:
   try{const x=JSON.parse(localStorage.getItem(SETUP_KEY));if(x&&x.pricing&&Array.isArray(x.listed))return {listed:x.listed,pricing:{...d.pricing,...x.pricing}};}catch(e){}return d;})();
 function saveSetup(){try{localStorage.setItem(SETUP_KEY,JSON.stringify(hostSetup));}catch(e){}}
 function hostRooms(){const r=ROOMS.plough.filter((x,i)=>hostSetup.listed[i]);return r.length?r:[ROOMS.plough[0]];}
-function roomsOf(v){return v.id==="plough"?hostRooms():v.dbRooms&&v.dbRooms.length>1?v.dbRooms:[{name:v.space,seated:v.seated,standing:v.standing,hour:v.hour,day:v.day,minH:v.minH}];}
+function roomsOf(v){return v.id==="plough"?hostRooms():v.dbRooms&&v.dbRooms.length>1?v.dbRooms:[{name:v.space,seated:v.seated,standing:v.standing,hour:v.hour,day:v.day,minH:v.minH,setup:v.dbRooms&&v.dbRooms[0]?v.dbRooms[0].setup:0,clean:v.dbRooms&&v.dbRooms[0]?v.dbRooms[0].clean:60}];}
 const BANDS={wk:"Monday to Thursday",fri:"Friday",sat:"Saturday",sun:"Sunday",dec:"December"};
 function bandOf(d){const w=d.getDay();return w===5?"fri":w===6?"sat":w===0?"sun":"wk";}
 function priceMult(v,d){if(!d||(v.id!=="plough"&&!v.pct)) return 1;const p=v.id==="plough"?hostSetup.pricing:v.pct;let m=1+(p[bandOf(d)]||0)/100;if(d.getMonth()===11) m*=1+(p.dec||0)/100;return m;}
@@ -2481,7 +2482,7 @@ function blankVenue(){
   const me=DB.profile||{};
   return {status:"draft",name:me.business_name||"",type:"pub",kind:"",town:me.town||"",postcode:"",space:"",blurb:"",suits:[],features:"",rules:"",
     finish:"",music:"",park:"",go:"",cancel:"moderate",step_free:false,licensed_bar:false,outdoor:false,instant:false,photos:[],review_note:null,
-    rooms:[{id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3"}],addons:[],
+    rooms:[{id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3",setup:"0",clean:"60"}],addons:[],
     docs:{legal_name:me.full_name||"",sells_alcohol:true,licence_number:"",licence_council:"",insurance_provider:"",insurance_cover:"",insurance_expiry:"",id_path:null,licence_path:null,insurance_path:null}};
 }
 async function loadVenueForm(id){
@@ -2493,7 +2494,7 @@ async function loadVenueForm(id){
   return {status:v.status,name:v.name,type:v.venue_type,kind:v.kind,town:(v.place||"").split(",")[0],postcode:v.postcode||"",space:v.space_title||"",blurb:v.blurb||"",
     suits:v.suits||[],features:(v.features||[]).join("\n"),rules:(v.house_rules||[]).join("\n"),finish:v.finish_time||"",music:v.music_note||"",park:v.parking||"",go:v.getting_there||"",
     cancel:v.cancellation_policy,step_free:v.step_free,licensed_bar:v.licensed_bar,outdoor:v.outdoor_space,instant:v.instant_book,photos:v.photos||[],review_note:v.review_note,
-    rooms:(v.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order).map(r=>({id:r.id,name:r.name,note:r.note||"",seated:String(r.seated),standing:String(r.standing),hour:p(r.hour_price_pence),day:p(r.day_price_pence),minH:String(r.min_hours)})),
+    rooms:(v.rooms||[]).filter(r=>r.is_listed).sort((a,b)=>a.sort_order-b.sort_order).map(r=>({id:r.id,name:r.name,note:r.note||"",seated:String(r.seated),standing:String(r.standing),hour:p(r.hour_price_pence),day:p(r.day_price_pence),minH:String(r.min_hours),setup:String(r.setup_mins??0),clean:String(r.clean_mins??60)})),
     addons:(v.addons||[]).sort((a,b)=>a.sort_order-b.sort_order).map(a=>({id:a.id,label:a.label,price:p(a.price_pence),head:a.per_head})),
     docs:d?{legal_name:d.legal_name||"",sells_alcohol:d.sells_alcohol,licence_number:d.licence_number||"",licence_council:d.licence_council||"",insurance_provider:d.insurance_provider||"",
       insurance_cover:d.insurance_cover||"",insurance_expiry:d.insurance_expiry||"",id_path:d.id_path,licence_path:d.licence_path,insurance_path:d.insurance_path}:blankVenue().docs};
@@ -2557,6 +2558,8 @@ function drawVenueForm(){
         <div class="lf"><label for="av-r${i}-hour">£ per hour</label><input id="av-r${i}-hour" data-rk="hour" type="number" min="0" step="1" inputmode="decimal" value="${escH(r.hour)}"></div>
         <div class="lf"><label for="av-r${i}-day">£ for the whole day</label><input id="av-r${i}-day" data-rk="day" type="number" min="0" step="1" inputmode="decimal" value="${escH(r.day)}"></div>
         <div class="lf"><label for="av-r${i}-minH">Minimum hours</label><input id="av-r${i}-minH" data-rk="minH" type="number" min="1" max="24" inputmode="numeric" value="${escH(r.minH)}"></div>
+        <div class="lf"><label for="av-r${i}-setup">Setup time before each event</label><select id="av-r${i}-setup" data-rk="setup">${[0,15,30,45,60,90,120].map(m=>`<option value="${m}" ${String(m)===String(r.setup??0)?"selected":""}>${m?minsText(m):"None"}</option>`).join("")}</select></div>
+        <div class="lf"><label for="av-r${i}-clean">Cleaning time after each event</label><select id="av-r${i}-clean" data-rk="clean">${[0,15,30,45,60,90,120,180,240].map(m=>`<option value="${m}" ${String(m)===String(r.clean??60)?"selected":""}>${m?minsText(m):"None"}</option>`).join("")}</select><span class="hint">Nobody can book the room during this time.</span></div>
         <div class="lf"><label for="av-r${i}-note">Note <span class="opt">(optional)</span></label><input id="av-r${i}-note" data-rk="note" value="${escH(r.note)}" maxlength="120" placeholder="Upstairs, with its own bar"></div>
       </div>${f.rooms.length>1?`<button type="button" class="linkbtn" data-room-del="${i}">Remove this room</button>`:""}</div>`).join("")}
       ${f.rooms.length<6?`<button type="button" class="btn" id="av-room-add">Add another room</button>`:""}
@@ -2618,7 +2621,7 @@ function bindVenueForm(){
   form.querySelectorAll("[data-addon]").forEach(row=>{const a=f.addons[+row.dataset.addon];row.querySelectorAll("[data-ak]").forEach(el=>el.addEventListener(el.type==="checkbox"?"change":"input",()=>{a[el.dataset.ak]=el.type==="checkbox"?el.checked:el.value;}));});
   form.querySelectorAll("[data-room-del]").forEach(b=>b.addEventListener("click",()=>{const [r]=f.rooms.splice(+b.dataset.roomDel,1);if(r&&r.id) myv.removedRooms.push(r.id);drawVenueForm();}));
   form.querySelectorAll("[data-addon-del]").forEach(b=>b.addEventListener("click",()=>{const [a]=f.addons.splice(+b.dataset.addonDel,1);if(a&&a.id) myv.removedAddons.push(a.id);drawVenueForm();}));
-  const ra=document.getElementById("av-room-add"); if(ra) ra.addEventListener("click",()=>{f.rooms.push({id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3"});drawVenueForm();document.getElementById(`av-r${f.rooms.length-1}-name`).focus();});
+  const ra=document.getElementById("av-room-add"); if(ra) ra.addEventListener("click",()=>{f.rooms.push({id:null,name:"",note:"",seated:"",standing:"",hour:"",day:"",minH:"3",setup:"0",clean:"60"});drawVenueForm();document.getElementById(`av-r${f.rooms.length-1}-name`).focus();});
   const aa=document.getElementById("av-addon-add"); if(aa) aa.addEventListener("click",()=>{f.addons.push({id:null,label:"",price:"",head:false});drawVenueForm();document.getElementById(`av-a${f.addons.length-1}-label`).focus();});
   form.querySelectorAll("[data-ph]").forEach(b=>b.addEventListener("click",()=>{const [k,i]=b.dataset.ph.split(":");
     if(k==="old") myv.removedPhotos.push(...f.photos.splice(+i,1)); else {const [p]=myv.newPhotos.splice(+i,1);if(p) URL.revokeObjectURL(p.url);}
@@ -2715,7 +2718,7 @@ async function saveMyVenue(submit){
     say("Saving rooms and prices…");
     for(const [i,r] of f.rooms.filter(r=>r.name.trim()).entries()){
       const rr={venue_id:id,name:r.name.trim(),note:nz(r.note),seated:Math.max(0,Math.round(+r.seated||0)),standing:Math.max(0,Math.round(+r.standing||0)),
-        hour_price_pence:Math.max(0,Math.round((+r.hour||0)*100)),day_price_pence:Math.max(0,Math.round((+r.day||0)*100)),min_hours:Math.min(24,Math.max(1,Math.round(+r.minH||2))),sort_order:i,is_listed:true};
+        hour_price_pence:Math.max(0,Math.round((+r.hour||0)*100)),day_price_pence:Math.max(0,Math.round((+r.day||0)*100)),min_hours:Math.min(24,Math.max(1,Math.round(+r.minH||2))),setup_mins:Math.min(240,Math.max(0,Math.round(+r.setup||0))),clean_mins:Math.min(480,Math.max(0,Math.round(r.clean===""||r.clean==null?60:+r.clean))),sort_order:i,is_listed:true};
       if(r.id){const {error}=await DB.client.from("rooms").update(rr).eq("id",r.id); if(error) throw error;}
       else{const {data,error}=await DB.client.from("rooms").insert(rr).select("id").single(); if(error) throw error; r.id=data.id;}}
     for(const x of myv.removedRooms.splice(0)){const {error}=await DB.client.from("rooms").delete().eq("id",x); if(error) await DB.client.from("rooms").update({is_listed:false}).eq("id",x);}
@@ -2907,6 +2910,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.24.0",d:"2026-11-18",t:"Cleaning and setup time between bookings",n:["Venues set a cleaning time after each event and a setup time before it, room by room. Nobody can book a room while it's being cleaned or set up.","Guests only see start times that leave enough space around other events, and the venue page says how long the venue needs between events.","The database refuses any booking that clashes, buffers included, even if two people book at the same moment."]},
  {v:"0.23.2",d:"2026-11-18",t:"Livelier backdrop",n:["The home page glow is a little stronger and moves more noticeably."]},
  {v:"0.23.1",d:"2026-11-18",t:"A calmer home page backdrop",n:["The dotted texture and drawn street are replaced by soft colour glows that drift slowly. They follow the event colours and dark mode, and stay still if you prefer less motion.","Fixed venue pages picking up the home page backdrop."]},
  {v:"0.23.0",d:"2026-11-17",t:"A home page backdrop",n:["The top of the home page has a soft dotted texture and a drawn street of venues along the bottom: a pub, a village hall, a club, a church hall and a leisure centre, with festoon lights.","It's drawn in the site's own colours, so it changes with dark mode and the event colours."]},
@@ -3020,7 +3024,7 @@ if(NATIVE){
 const SUPABASE_URL="https://naslarphujlgcaaxbufg.supabase.co";
 // Publishable key: made for browsers and safe to publish. The database's security rules decide what it can do.
 const SUPABASE_KEY="sb_publishable_7qxK8SP0wI7vOjVTxAAVpw_UByqtYby";
-const DB={client:null,live:false,user:null,profile:null,ids:{},busy:{},bookings:null};
+const DB={client:null,live:false,user:null,profile:null,ids:{},busy:{},times:{},bookings:null};
 function sbLoad(){
   if(window.supabase&&window.supabase.createClient) return Promise.resolve();
   return new Promise((res,rej)=>{const sc=document.createElement("script");
@@ -3045,7 +3049,7 @@ const authLive=()=>DB.live;
 const pounds=p=>Math.round(p)/100;
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 async function dbLoadVenues(){
-  const {data,error}=await DB.client.from("venues").select("id,slug,verified,photos,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(id,name,note,seated,standing,hour_price_pence,day_price_pence,min_hours,is_listed,sort_order),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
+  const {data,error}=await DB.client.from("venues").select("id,slug,verified,photos,name,kind,venue_type,place,region,lat,lng,space_title,blurb,suits,features,house_rules,instant_book,reply_note,step_free,licensed_bar,outdoor_space,cancellation_policy,finish_time,music_note,parking,getting_there,own_cake_decor,if_it_rains,pct_mon_thu,pct_fri,pct_sat,pct_sun,pct_december,rooms(*),addons(id,label,price_pence,per_head,sort_order),venue_reviews(author_name,event_label,stars,body,host_reply,created_at)").eq("status","live");
   if(error) throw new Error(error.message);
   if(!data||!data.length) throw new Error("no live venues");
   const keep=[];
@@ -3064,7 +3068,7 @@ async function dbLoadVenues(){
     const ads=(row.addons||[]).sort((a,b)=>a.sort_order-b.sort_order);
     v.addons=ads.map(a=>({l:a.label,p:pounds(a.price_pence),head:a.per_head}));
     v.pct={wk:row.pct_mon_thu,fri:row.pct_fri,sat:row.pct_sat,sun:row.pct_sun,dec:row.pct_december};
-    v.dbRooms=rooms.map(r=>({name:r.name,note:r.note,seated:r.seated,standing:r.standing,hour:pounds(r.hour_price_pence),day:pounds(r.day_price_pence),minH:r.min_hours}));
+    v.dbRooms=rooms.map(r=>({name:r.name,note:r.note,seated:r.seated,standing:r.standing,hour:pounds(r.hour_price_pence),day:pounds(r.day_price_pence),minH:r.min_hours,setup:r.setup_mins??0,clean:r.clean_mins??60}));
     const revs=(row.venue_reviews||[]).sort((a,b)=>b.created_at.localeCompare(a.created_at));
     if(revs.length){REVIEWS[v.id]=revs.map(r=>{const d=new Date(r.created_at);return [r.author_name,r.event_label||"",`${MON[d.getMonth()]} ${d.getFullYear()}`,r.stars,r.body,r.host_reply||undefined];});
       if(!v.reviews){v.reviews=revs.length;v.rating=Math.round(revs.reduce((a,r)=>a+r.stars,0)/revs.length*10)/10;}}
@@ -3088,9 +3092,34 @@ async function dbLoadBusy(v){
   const {data,error}=await DB.client.rpc("venue_busy_days",{p_venue:x.uuid,p_from:isoDay(TODAY),p_to:isoDay(to)});
   if(error){delete DB.busy[v.id];return;}
   DB.busy[v.id]=new Set((data||[]).map(r=>r.day+"|"+(r.room_id||"")));
+  dbLoadTimes(v);
   if(state.open&&state.open.id===v.id&&!quote.sent) drawBook();
 }
+/* Buffer times. Each booking holds its room from (start - setup) to (end + cleaning), so the next event can't
+   start while the room is still being cleaned. The database enforces this too (supabase/migrations/…_buffer_times.sql). */
+async function dbLoadTimes(v){
+  const x=DB.ids[v.id]; if(!DB.live||!x||DB.times[v.id]) return;
+  DB.times[v.id]="loading";
+  const to=new Date(TODAY);to.setFullYear(to.getFullYear()+2);
+  const {data,error}=await DB.client.rpc("venue_busy_times",{p_venue:x.uuid,p_from:isoDay(TODAY),p_to:isoDay(to)});
+  if(error){delete DB.times[v.id];return;}
+  DB.times[v.id]=(data||[]).map(r=>({room:r.room_id,s:new Date(r.starts_at).getTime(),e:new Date(r.ends_at).getTime()}));
+  if(state.open&&state.open.id===v.id&&!quote.sent) drawBook();
+  if(state.view==="book"&&checkout&&checkout.id===v.id&&!checkout.done) renderCheckout();
+}
+let START_TIMES_=null; const startTimes=()=>START_TIMES_||(START_TIMES_=(()=>{const t=[];for(let m=9*60;m<=22*60;m+=30)t.push(fromMin(m));return t;})());
+const hasTimes=v=>Array.isArray(DB.times[v.id]);
+const minsText=m=>m<60?`${m} minutes`:m%60?`${Math.floor(m/60)} hr ${m%60} min`:`${m/60} ${m===60?"hour":"hours"}`;
+// Start times on day d that fit `hours` in room ri, leaving the room's setup and cleaning time clear of other events.
+function freeStarts(v,d,ri,hours){
+  if(!hasTimes(v)) return startTimes();
+  const r=roomsOf(v)[ri||0]||roomsOf(v)[0], x=DB.ids[v.id], room=x&&r&&x.rooms.find(q=>q.name===r.name), rid=room?room.id:null;
+  const busy=DB.times[v.id].filter(b=>!b.room||!rid||b.room===rid);
+  const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(), su=(r.setup||0)*6e4, cl=(r.clean??60)*6e4;
+  return startTimes().filter(t=>{const s=day+toMin(t)*6e4-su, e=day+(toMin(t)+hours*60)*6e4+cl; return !busy.some(b=>b.s<e&&s<b.e);});
+}
 function dbBusy(v,d,ri){
+  if(hasTimes(v)){const r=roomsOf(v)[ri||0]||roomsOf(v)[0]; return !freeStarts(v,d,ri,r?r.minH:2).length;}
   const b=DB.busy[v.id]; if(!b||!b.size) return false;
   const k=isoDay(d); if(b.has(k+"|")) return true;
   const x=DB.ids[v.id], r=roomsOf(v)[ri||0], room=x&&r&&x.rooms.find(q=>q.name===r.name);
@@ -3583,7 +3612,10 @@ function eventLabel(c){return c.event==="other"?(c.other.trim()||"Event"):EVENT_
 function renderCheckout(){
   const c=checkout; if(c.done){renderBooked();return;}
   const p=ckPrice(), v=p.v, info=VINFO[v.id]||{}, pol=POLICIES[POLICY_OF[v.id]||"moderate"], maxG=Math.max(p.r.seated,p.r.standing), needAuth=authLive()&&!DB.user;
-  const times=[];for(let m=9*60;m<=22*60;m+=30)times.push(fromMin(m));
+  const times=freeStarts(v,p.d,c.room,c.hours), hidden=startTimes().length-times.length;
+  if(times.length&&!times.includes(c.start)){c.start=times[0];saveCheckout();}
+  const bufNote=hidden?`<span class="hint">Times that clash with another event aren't shown. ${v.name} needs ${p.r.setup?minsText(p.r.setup)+" to set up and ":""}${minsText(p.r.clean??60)} to clean between events.</span>`:"";
+  const noTimes=!times.length?`<span class="err">There's no start time left on this day for ${c.hours} hours, once the venue's cleaning time is allowed for. Try fewer hours or another day.</span>`:"";
   app.innerHTML=`<section class="wrap ck-page">
     <button type="button" class="linkbtn ck-back" id="ck-back">← Back to ${v.name}</button>
     <h1>${v.instant&&!authLive()?"Confirm and pay":"Request to book"}</h1>
@@ -3596,7 +3628,7 @@ function renderCheckout(){
             <div class="lf" id="ck-other-wrap" ${c.event==="other"?"":"hidden"}><label for="ck-other">Tell us the occasion</label><input id="ck-other" maxlength="60" value="${escH(c.other)}" placeholder="e.g. Retirement party"><span class="err" id="ce-other"></span></div>
           </div>
           <div class="ckrow">
-            <div class="lf"><label for="ck-start">Start time</label><select id="ck-start">${times.map(t=>`<option value="${t}" ${t===c.start?"selected":""}>${fmtT(t)}</option>`).join("")}</select><span class="hint" id="ck-until"></span></div>
+            <div class="lf"><label for="ck-start">Start time</label><select id="ck-start" ${times.length?"":"disabled"}>${times.map(t=>`<option value="${t}" ${t===c.start?"selected":""}>${fmtT(t)}</option>`).join("")}</select><span class="hint" id="ck-until"></span>${bufNote}${noTimes}</div>
             <div class="lf"><label for="ck-guests">Guests</label><input id="ck-guests" type="number" inputmode="numeric" min="1" max="${maxG}" value="${c.guests}"><span class="hint">Up to ${maxG}${p.r.seated<maxG?`, or ${p.r.seated} seated`:""}</span><span class="err" id="ce-guests"></span></div>
           </div>
           <div class="lf"><label for="ck-notes">Anything ${v.host.split(",")[0]} should know? (optional)</label><textarea id="ck-notes" maxlength="500" placeholder="Dietary needs, set-up time, a surprise to keep quiet">${escH(c.notes)}</textarea></div>
@@ -3695,7 +3727,9 @@ async function submitCheckout(maxG){
       payment_plan:p.payDeposit?"deposit":"full",hire_pence:Math.round(p.hire*100),extras_pence:Math.round(p.add*100),fee_pence:Math.round(p.fee*100),total_pence:Math.round(p.total*100),
       deposit_pence:p.payDeposit?p.deposit*100:0,balance_due_on:p.payDeposit?isoDay(p.balDate):null,damage_hold_pence:p.damage*100};
     const {data,error}=await DB.client.from("bookings").insert(row).select("id,ref").single();
-    if(error){go.disabled=false;drawCkSum();const e=document.getElementById("ce-agree");e.textContent="We couldn't save your booking: "+error.message;return;}
+    if(error){go.disabled=false;drawCkSum();const e=document.getElementById("ce-agree");
+      if(/BOOKING_CLASH/.test(error.message)){e.textContent="Sorry, someone has just booked a time that clashes with yours, including the venue's cleaning time. Pick another start time.";delete DB.times[v.id];delete DB.busy[v.id];dbLoadBusy(v);}
+      else e.textContent="We couldn't save your booking: "+error.message;return;}
     ref=data.ref; savedToDb=true;
     const extras=v.addons.map((a,i)=>c.addons[i]?{booking_id:data.id,addon_id:x.addons[i]||null,label:a.l,price_pence:Math.round(a.p*100),quantity:a.head?c.guests:1}:null).filter(Boolean);
     if(extras.length) await DB.client.from("booking_addons").insert(extras);

@@ -2,6 +2,14 @@
 
 Versions start at 0 while Vendo is a demo. 1.0.0 will be the public launch.
 
+## 0.24.0 · Cleaning and setup time between bookings
+
+_2026-11-18_
+
+- Venues set a cleaning time after each event and a setup time before it, room by room. Nobody can book a room while it's being cleaned or set up.
+- Guests only see start times that leave enough space around other events, and the venue page says how long the venue needs between events.
+- The database refuses any booking that clashes, buffers included, even if two people book at the same moment.
+
 ## 0.23.2 · Livelier backdrop
 
 _2026-11-18_
