@@ -862,6 +862,10 @@ footer{border-top:1px solid var(--line);padding-block:22px;color:var(--muted);fo
 @media (max-width:560px){.ckrow{grid-template-columns:1fr}}
 .ckfixed{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;background:var(--sunk);border-radius:12px;padding:12px 14px;font-size:14.5px}
 .ckfixed b{display:block}
+.ck-hold{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--ink);font-size:14.5px;line-height:1.4}
+.ck-hold>svg{flex:none;color:var(--accent-text)}.ck-hold>span{flex:1 1 240px}
+.ck-hold .ck-hold-t{font-variant-numeric:tabular-nums}
+.ck-hold.soon,.ck-hold.bad{background:color-mix(in srgb,var(--warn) 14%,var(--surface))}.ck-hold.soon>svg,.ck-hold.bad>svg{color:var(--warn)}
 .hint{font-size:12.5px;color:var(--muted)}
 .paychoice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:560px){.paychoice{grid-template-columns:1fr}}
@@ -3765,6 +3769,7 @@ function renderCheckout(){
   app.innerHTML=`<section class="wrap ck-page">
     <button type="button" class="linkbtn ck-back" id="ck-back">← Back to ${v.name}</button>
     <h1>${v.instant&&!authLive()?"Confirm and pay":"Request to book"}</h1>
+    <div class="ck-hold" id="ck-hold" hidden></div><span class="sr-only" id="ck-hold-sr" aria-live="polite"></span>
     <div class="ckgrid">
       <form class="ckform" id="ckform" novalidate>
         <fieldset class="ckstep"><legend><span class="n" aria-hidden="true">1</span>Your event</legend>
@@ -3815,17 +3820,17 @@ function renderCheckout(){
   if(needAuth){["ck-signup","ck-signin"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{setReturn("book-"+c.id);authForm.role="guest";if(!authForm.name&&c.name!==ME.name)authForm.name=c.name;},true));}
   else {bindIn("ck-name","name"); bindIn("ck-email","email"); bindIn("ck-phone","phone");}
   document.getElementById("ck-event").addEventListener("change",e=>{set("event",e.target.value);document.getElementById("ce-event").textContent="";document.getElementById("ck-other-wrap").hidden=e.target.value!=="other";});
-  document.getElementById("ck-start").addEventListener("change",e=>{set("start",e.target.value);drawCkSum();});
+  document.getElementById("ck-start").addEventListener("change",e=>{set("start",e.target.value);drawCkSum();ckHold();});
   const g=document.getElementById("ck-guests");
   g.addEventListener("input",()=>{const n=parseInt(g.value,10);document.getElementById("ce-guests").textContent="";if(n>=1&&n<=maxG){set("guests",n);drawCkSum();}});
   document.querySelectorAll('[name="ck-pay"]').forEach(r=>r.addEventListener("change",()=>{set("pay",r.value);drawCkSum();}));
   document.querySelectorAll('[name="ck-method"]').forEach(r=>r.addEventListener("change",()=>set("method",r.value)));
   document.getElementById("ck-agree").addEventListener("change",e=>{set("agree",e.target.checked);document.getElementById("ce-agree").textContent="";});
-  const back=()=>{openVenue(c.id,false,dayFromIso(c.date));quote.room=c.room;quote.hours=c.hours;quote.guests=c.guests;quote.addons={...c.addons};drawBook();};
+  const back=()=>{releaseHold();openVenue(c.id,false,dayFromIso(c.date));quote.room=c.room;quote.hours=c.hours;quote.guests=c.guests;quote.addons={...c.addons};drawBook();};
   document.getElementById("ck-back").addEventListener("click",back);
   document.getElementById("ck-change").addEventListener("click",back);
   document.getElementById("ckform").addEventListener("submit",e=>{e.preventDefault();submitCheckout(maxG);});
-  drawCkSum();
+  drawCkSum(); ckHold();
 }
 function drawCkSum(){
   const c=checkout, p=ckPrice(), v=p.v;
@@ -3849,6 +3854,57 @@ function drawCkSum(){
       <div><b>Vendo Booking Protection</b>Your money is held until after your event. If the venue cancels, we'll find you a similar room or refund you in full.</div></div>`;
   document.getElementById("ck-go").textContent=authLive()?(DB.user?"Send booking request":"Create an account above to book"):v.instant?`Pay ${gbp(p.dueNow)} and book`:"Send booking request";
   document.getElementById("ck-go-note").textContent=authLive()?"Card payments are coming soon. For now your request is saved to your account and nothing is charged.":v.instant?"Your booking is confirmed straight away.":`${v.reply}. You'll only pay if ${v.host.split(",")[0]} accepts.`;
+}
+/* Booking holds: while you fill in the booking form, your time is reserved for 15 minutes so nobody else can book
+   it (supabase/migrations/…_booking_holds.sql). Holds need an account; the database enforces them for everyone. */
+const HOLD={key:"",until:0,state:"",timer:null};
+const HOLD_ICON='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>';
+async function ckHold(force){
+  const c=checkout, el=document.getElementById("ck-hold"); if(!c||c.done||!el) return;
+  const v=VENUES.find(x=>x.id===c.id), x=v&&DB.ids[v.id];
+  if(!authLive()||!x){el.hidden=true;return;}
+  if(!DB.user){HOLD.key="";HOLD.state="signin";drawHold();return;}
+  const p=ckPrice(), room=x.rooms.find(r=>r.name===p.r.name), key=[x.uuid,room?room.id:"",c.date,c.start,c.hours].join("|");
+  if(!force&&HOLD.key===key&&(HOLD.state!=="held"||HOLD.until>Date.now())){drawHold();return;}
+  HOLD.key=key; HOLD.state="placing"; drawHold();
+  const {data,error}=await DB.client.rpc("place_hold",{p_venue:x.uuid,p_room:room?room.id:null,p_date:c.date,p_start:c.start,p_hours:c.hours});
+  if(HOLD.key!==key) return;   // the guest changed the time while we were asking
+  if(error){HOLD.until=0;HOLD.state=/HOLD_TAKEN/.test(error.message)?"taken":/BOOKING_CLASH/.test(error.message)?"booked":"error";
+    if(HOLD.state!=="error"){delete DB.times[v.id];dbLoadTimes(v);}}
+  else{HOLD.until=new Date(data).getTime();HOLD.state="held";}
+  drawHold();
+}
+function drawHold(){
+  const el=document.getElementById("ck-hold"), sr=document.getElementById("ck-hold-sr");
+  clearInterval(HOLD.timer); HOLD.timer=null; if(!el) return;
+  const say=t=>{if(sr&&sr.textContent!==t) sr.textContent=t;};
+  const msg={signin:["","<b>Sign in to hold this time.</b> We'll keep it just for you for 15 minutes while you finish booking.",""],
+    placing:["","Holding this time for you…",""],
+    expired:["bad","<b>Your hold has run out.</b> Someone else could book this time now.","Hold it again"],
+    taken:["bad","<b>Someone else is booking this time right now.</b> Pick another start time, or try again in a few minutes.","Try again"],
+    booked:["bad","<b>This time has just been booked.</b> Pick another start time.",""],
+    error:["","We couldn't hold this time, but you can still book it.",""]}[HOLD.state];
+  el.hidden=!HOLD.state;
+  if(HOLD.state==="held"){
+    el.className="ck-hold"; el.innerHTML=`${HOLD_ICON}<span><b>We're holding this time for you.</b> Nobody else can book it for the next <b class="ck-hold-t num"></b>.</span>`;
+    say("We're holding this time for you for 15 minutes.");
+    const tick=()=>{const t=el.querySelector(".ck-hold-t"); if(!t||!document.body.contains(el)){clearInterval(HOLD.timer);HOLD.timer=null;return;}
+      const left=Math.max(0,Math.ceil((HOLD.until-Date.now())/1000));
+      if(!left){HOLD.state="expired";drawHold();return;}
+      t.textContent=`${Math.floor(left/60)}:${pad2(left%60)}`; el.classList.toggle("soon",left<=120);
+      if(left===120) say("2 minutes left on your hold.");};
+    tick(); HOLD.timer=setInterval(tick,1000); return;
+  }
+  if(!msg) return;
+  el.className="ck-hold"+(msg[0]?" "+msg[0]:"");
+  el.innerHTML=`${HOLD_ICON}<span>${msg[1]}</span>${msg[2]?`<button type="button" class="btn" id="ck-hold-again">${msg[2]}</button>`:""}`;
+  say(el.innerText);
+  const again=document.getElementById("ck-hold-again"); if(again) again.addEventListener("click",()=>ckHold(true));
+}
+function releaseHold(){
+  clearInterval(HOLD.timer); HOLD.timer=null;
+  const had=HOLD.state==="held"; HOLD.key=""; HOLD.until=0; HOLD.state="";
+  if(had&&authLive()&&DB.user) DB.client.rpc("release_hold").then(()=>{},()=>{});
 }
 async function submitCheckout(maxG){
   const c=checkout, er={}, n=parseInt(document.getElementById("ck-guests").value,10);
@@ -3874,9 +3930,10 @@ async function submitCheckout(maxG){
       deposit_pence:p.payDeposit?p.deposit*100:0,balance_due_on:p.payDeposit?isoDay(p.balDate):null,damage_hold_pence:p.damage*100};
     const {data,error}=await DB.client.from("bookings").insert(row).select("id,ref").single();
     if(error){go.disabled=false;drawCkSum();const e=document.getElementById("ce-agree");
-      if(/BOOKING_CLASH/.test(error.message)){e.textContent="Sorry, someone has just booked a time that clashes with yours, including the venue's cleaning time. Pick another start time.";delete DB.times[v.id];delete DB.busy[v.id];dbLoadBusy(v);}
+      if(/HOLD_TAKEN/.test(error.message)){e.textContent="Sorry, someone else is booking that time right now. Pick another start time, or try again in a few minutes.";delete DB.times[v.id];dbLoadTimes(v);}
+      else if(/BOOKING_CLASH/.test(error.message)){e.textContent="Sorry, someone has just booked a time that clashes with yours, including the venue's cleaning time. Pick another start time.";delete DB.times[v.id];delete DB.busy[v.id];dbLoadBusy(v);}
       else e.textContent="We couldn't save your booking: "+error.message;return;}
-    ref=data.ref; savedToDb=true;
+    ref=data.ref; savedToDb=true; HOLD.key=""; HOLD.until=0; HOLD.state="";   // the booking used up the hold
     const extras=v.addons.map((a,i)=>c.addons[i]?{booking_id:data.id,addon_id:x.addons[i]||null,label:a.l,price_pence:Math.round(a.p*100),quantity:a.head?c.guests:1}:null).filter(Boolean);
     if(extras.length) await DB.client.from("booking_addons").insert(extras);
     if(DB.profile&&(!DB.profile.full_name||!DB.profile.phone)){
@@ -4041,6 +4098,7 @@ function focusMain(){const m=document.getElementById("app");m.tabIndex=-1;m.focu
 document.getElementById("skip").addEventListener("click",e=>{e.preventDefault();focusMain();});
 function route(){
   const key=currentKey(), h="#"+key;
+  if(state.view==="book"&&!key.startsWith("book-")) releaseHold();
   if(h.startsWith("#venue-")){
     const id=h.slice(7);
     if(VENUES.some(x=>x.id===id)){
