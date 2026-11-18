@@ -1,5 +1,5 @@
--- New pricing: guests pay no booking fee, and venues pay Vendo 10% of each paid booking (room hire and extras).
--- The admin dashboard's takings now count 10% of hire and extras. fee_pence (the old 4% guest fee) is still added,
+-- New pricing: guests pay no booking fee, and venues pay Vendo 12% of each paid booking (room hire and extras).
+-- The admin dashboard's takings now count 12% of hire and extras. fee_pence (the old 4% guest fee) is still added,
 -- so earlier bookings that carried it keep counting it; new bookings save 0 there.
 create or replace function public.admin_stats() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
@@ -10,7 +10,7 @@ begin
   end if;
   with b as (
     select k.*, k.status in ('confirmed', 'completed') as won,
-           k.fee_pence + round((k.hire_pence + k.extras_pence) * 0.10)::int as vendo_pence,
+           k.fee_pence + round((k.hire_pence + k.extras_pence) * 0.12)::int as vendo_pence,
            round(k.total_pence * 0.015)::int + 20 as card_pence
       from public.bookings k
   ), months as (

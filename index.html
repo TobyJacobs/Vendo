@@ -54,7 +54,7 @@
      "name": "What is the booking fee?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "There isn't one. Guests pay the venue's price and nothing more. Venues pay Vendo a 10% fee when a booking is paid."
+      "text": "There isn't one. Guests pay the venue's price and nothing more. Venues pay Vendo a 12% fee when a booking is paid."
      }
     },
     {
@@ -1323,7 +1323,7 @@ const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null, 
 const app = document.getElementById("app");
 const modalRoot = document.getElementById("modal-root");
 
-const FEE=0; const full=n=>n*(1+FEE);   // guests pay no booking fee: venues pay Vendo 10% (HOST_FEE)
+const FEE=0; const full=n=>n*(1+FEE);   // guests pay no booking fee: venues pay Vendo 12% (HOST_FEE)
 
 /* ---------- Find view ---------- */
 function filtered(ignoreDate){
@@ -2209,8 +2209,8 @@ function hostOverview(b){
             <div class="ctl"><label for="eg">Average guests <span id="eg-v">${host.est.guests}</span></label><input id="eg" type="range" min="10" max="250" step="5" value="${host.est.guests}"></div>
           </div>
           <div class="est-out" aria-live="polite"><span class="eyebrow">Extra income per year</span><span class="big" id="e-total"></span>
-            <div class="split"><div>Room hire, after 10% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
-            <span style="font-size:12.5px;color:var(--muted)">No listing fee. Vendo takes 10% only when a booking is paid.</span></div>
+            <div class="split"><div>Room hire, after 12% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
+            <span style="font-size:12.5px;color:var(--muted)">No listing fee. Vendo takes 12% only when a booking is paid.</span></div>
         </div></div>
       <div class="panel"><div class="panel-head"><h2>Coming up</h2><span class="eyebrow">Next 4 weeks</span></div>
         <div class="upcoming" id="upc"></div></div>
@@ -2308,7 +2308,7 @@ function hostListingTab(b){
     host.qdone[k]=1;toast((msg[k]||"Done")+" (demo)");hostListingTab(b);}));
 }
 function addWorking(d,n){const x=new Date(d);while(n>0){x.setDate(x.getDate()+1);if(x.getDay()%6) n--;}return x;}
-const HOST_FEE=0.10;
+const HOST_FEE=0.12;
 function payoutRows(){
   const paid=[{ev:new Date(2026,10,7),t:"Amira Hassan · 30th birthday",g:1240},{ev:new Date(2026,9,31),t:"Daniel Okafor · Engagement party",g:1820},
     {ev:new Date(2026,9,23),t:"Bourton Running Club · Awards night",g:1460},{ev:new Date(2026,9,17),t:"Priya & Sam Kaur · Wedding reception",g:5240}].map(r=>({...r,d:addWorking(r.ev,2),st:"Paid"}));
@@ -2326,9 +2326,9 @@ function hostPayoutsTab(b){
     <div class="panel"><div class="panel-head"><h2>Payouts</h2><button type="button" class="btn" id="statement">Download statement (CSV)</button></div>
       <div class="bank"><span>Paid to your bank account ending 4417</span><button type="button" class="linkbtn" id="bank">Change bank account</button></div>
       <div class="tablewrap" tabindex="0" role="region" aria-label="Payouts table"><table class="ptable"><caption class="sr-only">Payouts, newest first</caption>
-        <thead><tr><th scope="col">Payout date</th><th scope="col">Booking</th><th scope="col" class="r">Room hire</th><th scope="col" class="r">Vendo fee (10%)</th><th scope="col" class="r">You receive</th><th scope="col">Status</th></tr></thead>
+        <thead><tr><th scope="col">Payout date</th><th scope="col">Booking</th><th scope="col" class="r">Room hire</th><th scope="col" class="r">Vendo fee (12%)</th><th scope="col" class="r">You receive</th><th scope="col">Status</th></tr></thead>
         <tbody>${rows.map(r=>`<tr><td>${day(r.d)}</td><td>${r.t}<small>Event on ${day(r.ev)}</small></td><td class="r">${gbp(r.g)}</td><td class="r">−${gbp(r.g*HOST_FEE)}</td><td class="r"><b>${gbp(net(r.g))}</b></td><td><span class="pill ${r.st==="Paid"?"ok":r.st==="Scheduled"?"new":"held"}">${r.st}</span></td></tr>`).join("")}</tbody></table></div>
-      <p class="pnote">Payouts reach your bank 2 working days after each event. Vendo's 10% fee is on bookings made through Vendo only: money you take at the bar or for food on the night is all yours. VAT invoices for Vendo's fees are in each monthly statement.</p></div>`;
+      <p class="pnote">Payouts reach your bank 2 working days after each event. Vendo's 12% fee is on bookings made through Vendo only: money you take at the bar or for food on the night is all yours. VAT invoices for Vendo's fees are in each monthly statement.</p></div>`;
   document.getElementById("bank").addEventListener("click",()=>toast("Demo: bank details are changed through Stripe's secure page, never on Vendo."));
   document.getElementById("statement").addEventListener("click",()=>{
     const q=x=>`"${String(x).replace(/"/g,'""')}"`;
@@ -2483,7 +2483,7 @@ function renderList(){
     <div class="lyv-hero">
       <div class="eyebrow">For pubs, bars, nightclubs, halls and clubs</div>
       <h1>Turn your empty room into <em>steady income.</em></h1>
-      <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 10% only when a booking is paid.</p>
+      <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 12% only when a booking is paid.</p>
       <div class="lyv-cta">${authLive()?`<a class="btn primary" href="#add-venue" id="lyv-self">Add your venue yourself</a><a class="btn" href="#lyv-form">Or ask us to set it up</a>`:`<a class="btn primary" href="#lyv-form">List your venue free</a>`}<a class="btn" href="#lyv-earn">See what you could earn</a></div>
     </div>
     <h2 class="sr-only">How it works</h2>
@@ -2494,7 +2494,7 @@ function renderList(){
     </div>
     <div class="perks">
       <div><b>Free to list</b><span>No sign-up or monthly fee.</span></div>
-      <div><b>10% only when booked</b><span>No monthly fee, and no booking fee for your guests.</span></div>
+      <div><b>12% only when booked</b><span>No monthly fee, and no booking fee for your guests.</span></div>
       <div><b>Rated guests</b><span>See every guest's rating before you say yes.</span></div>
       <div><b>Your rules</b><span>Set your own prices, hours and house rules.</span></div>
     </div>
@@ -2507,7 +2507,7 @@ function renderList(){
           <div class="ctl"><label for="eg">Average guests <span id="eg-v">${host.est.guests}</span></label><input id="eg" type="range" min="10" max="250" step="5" value="${host.est.guests}"></div>
         </div>
         <div class="est-out" aria-live="polite"><span class="eyebrow">Extra income per year</span><span class="big" id="e-total"></span>
-          <div class="split"><div>Room hire, after 10% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
+          <div class="split"><div>Room hire, after 12% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
           <span style="font-size:12.5px;color:var(--muted)">An estimate based on the numbers you choose. Your real results will vary.</span></div>
       </div></div>
     <div class="lyv-grid">
@@ -2702,7 +2702,7 @@ function drawVenueForm(){
     </div></div>
 
     <div class="panel"><div class="panel-head"><h2>Rooms and prices</h2><span class="eyebrow">Step 2 of 5</span></div>
-      <p class="pnote">Guests pay exactly the prices you set. Vendo's 10% fee comes off when you're paid.</p>
+      <p class="pnote">Guests pay exactly the prices you set. Vendo's 12% fee comes off when you're paid.</p>
       ${f.rooms.map((r,i)=>`<div class="av-room" data-room="${i}"><div class="lform">
         <div class="lf full"><label for="av-r${i}-name">Room name</label><input id="av-r${i}-name" data-rk="name" value="${escH(r.name)}" maxlength="60" placeholder="Function room"></div>
         <div class="lf"><label for="av-r${i}-seated">Seated guests</label><input id="av-r${i}-seated" data-rk="seated" type="number" min="0" inputmode="numeric" value="${escH(r.seated)}"></div>
@@ -3027,13 +3027,13 @@ function openChat(key){
 const PAGES={
  about:{title:"About Vendo",lead:"Vendo helps pubs, bars, nightclubs, village halls, clubs and leisure centres earn from rooms that sit empty most nights.",body:`
   <h2>Why we exist</h2><p>Thousands of function rooms, halls and clubhouses across the UK are quiet on most evenings, while people planning a party, wedding or wake struggle to find a room, a price and a free date. Vendo puts all three in one place.</p>
-  <h2>How we make money</h2><p>Listing is free. Venues pay us 10% when a booking is paid. Guests pay no booking fee. That's it.</p>
+  <h2>How we make money</h2><p>Listing is free. Venues pay us 12% when a booking is paid. Guests pay no booking fee. That's it.</p>
   <h2>What we care about</h2><ul><li>Honest prices with nothing added at checkout.</li><li>Fair two-way reviews, so good guests and good venues both stand out.</li><li>Keeping local venues open and busy.</li></ul>`},
  contact:{title:"Contact us",lead:"We usually reply within one working day.",body:"contact"},
  terms:{title:"Terms of use",lead:"Draft for the demo. These terms must be reviewed by a solicitor before Vendo takes real bookings.",body:`
   <h2>1. Who we are</h2><p>Vendo runs a website that lets people book rooms at venues. The venue provides the room and the event services. Vendo acts as the venue's booking agent.</p>
   <h2>2. Bookings</h2><p>A booking is confirmed when the venue accepts your request, or straight away for instant book venues. You'll get a confirmation by email.</p>
-  <h2>3. Prices and fees</h2><p>Guests pay no Vendo booking fee. Venues pay Vendo 10% of each paid booking. Venues may also hold a refundable damage deposit, shown before you pay.</p>
+  <h2>3. Prices and fees</h2><p>Guests pay no Vendo booking fee. Venues pay Vendo 12% of each paid booking. Venues may also hold a refundable damage deposit, shown before you pay.</p>
   <h2>4. Cancellations</h2><p>Each venue sets its own cancellation policy, shown on its listing and before you pay. Refunds follow that policy.</p>
   <h2>5. Your event</h2><p>You agree to follow the venue's house rules, keep to the guest numbers you booked, and leave the venue as you found it.</p>
   <h2>6. Ratings and reviews</h2><p>Guests and venues can rate each other after an event. Reviews must be honest and about the booking. You can reply to any review, and report one you think breaks these terms.</p>
@@ -3064,6 +3064,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.28.1",d:"2026-11-18",t:"Venue fee is 12%",n:["Venues pay Vendo 12% when a booking is paid. Guests still pay no booking fee."]},
  {v:"0.28.0",d:"2026-11-18",t:"No booking fee for guests",n:["Guests now pay exactly the venue's price, with no booking fee on top.","Venues pay Vendo one simple 10% fee, only when a booking is paid."]},
  {v:"0.27.1",d:"2026-11-18",t:"Smooth hours and guests sliders",n:["The Hours and Guests sliders on a venue page now drag smoothly from one end to the other, on phones too, and the price updates as you drag."]},
  {v:"0.27.0",d:"2026-11-18",t:"Block bookings for classes and clubs",n:["Book the same room and time every week, every 2 weeks or every 4 weeks, for up to 52 sessions, in one go.","Every date is checked. Any that are already taken are shown and skipped, and you only book the free ones.","Venues can offer a block booking discount, such as 10% off 4 or more sessions. You pay for each session 14 days before it."]},
@@ -3631,7 +3632,7 @@ const MONTH_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","
 function exampleStats(){
   const now=new Date(), months=[];
   for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1), k=12-i, gmv=Math.round(6000+k*k*560)*100;
-    const vendo=Math.round(gmv*0.10), bk=Math.max(1,Math.round(gmv/118000));
+    const vendo=Math.round(gmv*0.12), bk=Math.max(1,Math.round(gmv/118000));
     months.push({m:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`,bookings:bk,gmv,vendo,card:Math.round(gmv*0.015)+bk*20,signups:Math.round(6+k*k*0.9)});}
   const sum=f=>months.reduce((a,m)=>a+m[f],0);
   const names=VENUES.slice(0,8);
@@ -3701,7 +3702,7 @@ function drawAdmin(){
       <div class="stat"><span class="eyebrow">Venues live</span><span class="v">${venues.live||0}</span><span class="d ${venues.pending_review?"down":"up"}">${d.verified_venues!=null?`${d.verified_venues} verified · `:""}${venues.pending_review||0} waiting for approval · ${d.hosts||0} venue accounts</span></div>
     </div>
     <div class="cols even">
-      <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">10% of each booking</span></div>
+      <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">12% of each booking</span></div>
         <div class="achart">${barChart(months.map(m=>m.vendo),labels,(v,ax)=>ax&&v>=100000?"£"+Math.round(v/100000)+"k":pnd(v),"Vendo takings by month for the last 12 months")}</div></div>
       <div class="panel"><div class="panel-head"><h2>New accounts by month</h2><span class="eyebrow">Guests and venues</span></div>
         <div class="achart">${barChart(months.map(m=>m.signups),labels,v=>Math.round(v).toLocaleString("en-GB"),"New accounts by month for the last 12 months")}</div></div>
