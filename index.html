@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. Every price includes all fees.">
+<meta name="description" content="Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. No booking fees for guests.">
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vendo">
 <meta property="og:title" content="Vendo: book pubs, bars, halls and clubs for your event">
-<meta property="og:description" content="Function rooms, village halls, private bars and nightclubs for weddings, parties and wakes. Book by date. Every price includes all fees.">
+<meta property="og:description" content="Function rooms, village halls, private bars and nightclubs for weddings, parties and wakes. Book by date. No booking fees for guests.">
 <meta property="og:image" content="https://vendohire.com/og-image.jpg">
 <meta property="og:url" content="https://vendohire.com/">
 <link rel="canonical" href="https://vendohire.com/">
@@ -54,7 +54,7 @@
      "name": "What is the booking fee?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "4% of the booking, already included in every price you see. There are no other charges."
+      "text": "There isn't one. Guests pay the venue's price and nothing more. Venues pay Vendo a 10% fee when a booking is paid."
      }
     },
     {
@@ -1323,7 +1323,7 @@ const quote = {month:null, date:null, hours:5, guests:60, addons:{}, sent:null, 
 const app = document.getElementById("app");
 const modalRoot = document.getElementById("modal-root");
 
-const FEE=0.04; const full=n=>n*(1+FEE);
+const FEE=0; const full=n=>n*(1+FEE);   // guests pay no booking fee: venues pay Vendo 10% (HOST_FEE)
 
 /* ---------- Find view ---------- */
 function filtered(ignoreDate){
@@ -1396,12 +1396,12 @@ function renderFind(){
     <div class="how">
       <h2>How Vendo works</h2>
       <div class="steps">
-        <div class="step"><span class="n">1</span><h3>Find your room</h3><p>Search by date, guests and place. Every price includes all fees.</p></div>
+        <div class="step"><span class="n">1</span><h3>Find your room</h3><p>Search by date, guests and place. No booking fees for guests.</p></div>
         <div class="step"><span class="n">2</span><h3>Build your quote</h3><p>Choose hours and extras like food, bar staff or a DJ, and see the total straight away.</p></div>
         <div class="step"><span class="n">3</span><h3>Book and relax</h3><p>Pay securely on Vendo. Message the venue any time before the big day.</p></div>
       </div>
       <div class="faq two">
-        <details><summary>What is the booking fee?</summary><p>4% of the booking, already included in every price you see. There are no other charges.</p></details>
+        <details><summary>What is the booking fee?</summary><p>There isn't one. You pay the venue's price and nothing more. There are no other charges.</p></details>
         <details><summary>How do deposits work?</summary><p>Most venues hold a refundable damage deposit. It's returned within 7 days of your event if all is well.</p></details>
         <details><summary>Can I cancel?</summary><p>Each venue sets its own cancellation policy, shown before you pay. Many offer a full refund up to 30 days before.</p></details>
         <details><summary>Can I see the venue first?</summary><p>Yes. Message the venue to arrange a viewing before you book.</p></details>
@@ -1528,7 +1528,7 @@ function drawPlanner(){const p=state.plan, el=document.getElementById("pl-out");
   const small=pool.length-res.length;
   el.innerHTML=`<p class="pl-sum">${fit.length?`${fit.length} of ${pool.length} venues fit ${gbp(p.budget)} for ${p.guests} guests`:`Nothing fits ${gbp(p.budget)} yet. These are the closest.`}${small?` <span style="color:var(--muted);font-weight:600">· ${small} too small for ${p.guests}</span>`:""}</p>
     <div class="pl-list">${[...fit,...over].map(r=>{const ok=r.total<=p.budget;return `<button type="button" class="plrow${ok?"":" over"}" data-plan="${r.v.id}"><b>${r.v.name}${roomsOf(r.v).length>1?" · "+r.r.name:""}</b><span class="s">${r.parts.join(" + ")}</span><span class="tot">${gbp(r.total)}</span><span class="pill ${ok?"ok":"over"}">${ok?gbp(p.budget-r.total)+" spare":gbp(r.total-p.budget)+" over"}</span></button>`;}).join("")}</div>
-    <p class="small" style="text-align:left;margin-top:10px">Totals include Vendo's 4% fee on anything booked through Vendo. Costs for your own caterer or drinks are rough guides.</p>`;
+    <p class="small" style="text-align:left;margin-top:10px">There's no booking fee on anything booked through Vendo. Costs for your own caterer or drinks are rough guides.</p>`;
   el.querySelectorAll("[data-plan]").forEach(b=>b.addEventListener("click",()=>openFromPlan(b.dataset.plan)));
 }
 function openFromPlan(id){const v=VENUES.find(x=>x.id===id), r=planCost(v,state.plan); openVenue(id); if(!r) return;
@@ -1581,7 +1581,7 @@ function drawGrid(){
       ${badgesHTML(v,true)}
       ${v.dist!=null?`<div class="dist">${milesText(v.dist)} away</div>`:""}
       <div class="meta"><span><b class="num">${v.seated}</b> seated</span><span><b class="num">${v.standing}</b> standing</span></div>
-      <div class="price"><b class="num">${gbp(full(v.hour))}</b>/hour · <span class="num">${gbp(full(v.day))}</span> full day <span class="incl">incl. fees</span></div>
+      <div class="price"><b class="num">${gbp(full(v.hour))}</b>/hour · <span class="num">${gbp(full(v.day))}</span> full day <span class="incl">no booking fee</span></div>
     </button></div>`).join("") : empty;
   grid.querySelectorAll(".card").forEach(c=>c.addEventListener("click",()=>openVenue(c.dataset.id)));
 }
@@ -1618,7 +1618,7 @@ function ensureMap(){
   return lmap;
 }
 function popHTML(v){
-  return `<div class="pop"><b>${v.name}</b><span>${v.kind} · ${v.place}</span><span class="pp"><strong>${gbp(full(v.hour))}</strong>/hour incl. fees · ${rtg(v)}${v.dist!=null?` · ${milesText(v.dist)}`:""}</span><button type="button" class="pop-view" data-id="${v.id}">View venue</button></div>`;
+  return `<div class="pop"><b>${v.name}</b><span>${v.kind} · ${v.place}</span><span class="pp"><strong>${gbp(full(v.hour))}</strong>/hour · ${rtg(v)}${v.dist!=null?` · ${milesText(v.dist)}`:""}</span><button type="button" class="pop-view" data-id="${v.id}">View venue</button></div>`;
 }
 function lightPin(id,on){
   document.querySelectorAll(".vpin").forEach(p=>p.classList.toggle("on",on&&p.dataset.id===id));
@@ -1705,7 +1705,7 @@ function openVenue(id,fromRoute,pref){
       <div>
         <div class="vhead"><div class="eyebrow">${v.kind} · ${v.region}</div><h2 id="sheet-title">${v.name}</h2>
           <div class="sub">${v.place} · ${v.reviews?`<span class="rating num">${v.rating.toFixed(1)}</span> from ${v.reviews} reviews`:"New on Vendo"}</div>${badgesHTML(v)}</div>
-        <div class="facts"><div><b>${v.seated}</b><span>seated</span></div><div><b>${v.standing}</b><span>standing</span></div><div><b>${gbp(full(v.hour))}</b><span>per hour, incl. fees</span></div><div><b>${v.minH} hrs</b><span>minimum hire</span></div></div>
+        <div class="facts"><div><b>${v.seated}</b><span>seated</span></div><div><b>${v.standing}</b><span>standing</span></div><div><b>${gbp(full(v.hour))}</b><span>per hour</span></div><div><b>${v.minH} hrs</b><span>minimum hire</span></div></div>
         <div class="section"><h3>${v.space}</h3><p class="blurb">${v.blurb}</p><div class="suits">${v.suits.map(s=>`<span>${s}</span>`).join("")}</div></div>
         <div class="section"><h3>What's included</h3><ul class="features">${v.features.map(f=>`<li>${f}</li>`).join("")}</ul></div>
         <div class="section"><h3>House rules</h3><ul class="rules">${v.rules.map(r=>`<li>${r}</li>`).join("")}</ul></div>
@@ -1758,11 +1758,10 @@ function bookLines(v){
   const rs=roomsOf(v), r=rs[quote.room]||rs[0], multi=rs.length>1;
   const mult=priceMult(v,quote.date), hire=costFor(r,quote.hours,mult);
   const add=v.addons.map((a,i)=>quote.addons[i]?(a.head?a.p*quote.guests:a.p):0).reduce((x,y)=>x+y,0);
-  const fee=(hire+add)*0.04, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100), pct=Math.round((mult-1)*100);
+  const fee=(hire+add)*FEE, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100), pct=Math.round((mult-1)*100);
   return `<div><span>${multi?r.name:"Venue hire"}${quote.hours>=8?" (day rate)":` (${quote.hours} × ${gbp(r.hour*mult)})`}</span><span>${gbp(hire)}</span></div>
       ${pct?`<div class="note"><span>${BANDS[bandOf(quote.date)]}${quote.date.getMonth()===11&&hostSetup.pricing.dec?" in December":""} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
       ${add?`<div><span>Extras</span><span>${gbp(add)}</span></div>`:""}
-      <div><span>Booking fee (4%)</span><span>${gbp(fee)}</span></div>
       <div class="tot"><span>Total</span><span>${gbp(total)}</span></div>
       <div class="note"><span>Refundable damage deposit, held separately</span><span>${gbp(deposit)}</span></div>`;
 }
@@ -1792,7 +1791,7 @@ function drawBook(){
   const maxG=Math.max(r.seated,r.standing); quote.guests=Math.min(quote.guests,maxG); quote.hours=Math.max(quote.hours,r.minH);
   const mult=priceMult(v,quote.date), hire=costFor(r,quote.hours,mult);
   const add=v.addons.map((a,i)=>quote.addons[i]?(a.head?a.p*quote.guests:a.p):0).reduce((x,y)=>x+y,0);
-  const fee=(hire+add)*0.04, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100);
+  const fee=(hire+add)*FEE, total=hire+add+fee, deposit=Math.min(250,Math.round(r.day*0.25/10)*10||100);
   const pct=Math.round((mult-1)*100);
   let want="";
   if(quote.want){
@@ -1806,7 +1805,7 @@ function drawBook(){
   }
   el.innerHTML=`
     <div class="from"><span><b class="num">${gbp(full(r.hour))}</b> / hour</span><span style="font-size:13px;color:var(--muted)">Day rate ${gbp(full(r.day))}</span></div>
-    <p class="small" style="text-align:left;margin-top:-10px">Prices include Vendo's 4% booking fee. No other charges.</p>
+    <p class="small" style="text-align:left;margin-top:-10px">No booking fee. The price you see is the price you pay.</p>
     ${pricingNote(v)}
     ${multi?`<div class="ctl"><span class="ctl-l" id="room-l" style="font-size:13px;font-weight:700">Choose a space</span><div class="seg roomseg" role="group" aria-labelledby="room-l">${rs.map((x,i)=>`<button type="button" data-room="${i}" aria-pressed="${i===quote.room}">${x.name}<small>Up to ${Math.max(x.seated,x.standing)} · ${gbp(full(x.hour))}/hr</small></button>`).join("")}</div></div>`:""}
     <div>
@@ -2210,8 +2209,8 @@ function hostOverview(b){
             <div class="ctl"><label for="eg">Average guests <span id="eg-v">${host.est.guests}</span></label><input id="eg" type="range" min="10" max="250" step="5" value="${host.est.guests}"></div>
           </div>
           <div class="est-out" aria-live="polite"><span class="eyebrow">Extra income per year</span><span class="big" id="e-total"></span>
-            <div class="split"><div>Room hire, after 8% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
-            <span style="font-size:12.5px;color:var(--muted)">No listing fee. Vendo takes 8% of hire only when a booking is paid.</span></div>
+            <div class="split"><div>Room hire, after 10% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
+            <span style="font-size:12.5px;color:var(--muted)">No listing fee. Vendo takes 10% only when a booking is paid.</span></div>
         </div></div>
       <div class="panel"><div class="panel-head"><h2>Coming up</h2><span class="eyebrow">Next 4 weeks</span></div>
         <div class="upcoming" id="upc"></div></div>
@@ -2309,7 +2308,7 @@ function hostListingTab(b){
     host.qdone[k]=1;toast((msg[k]||"Done")+" (demo)");hostListingTab(b);}));
 }
 function addWorking(d,n){const x=new Date(d);while(n>0){x.setDate(x.getDate()+1);if(x.getDay()%6) n--;}return x;}
-const HOST_FEE=0.08;
+const HOST_FEE=0.10;
 function payoutRows(){
   const paid=[{ev:new Date(2026,10,7),t:"Amira Hassan · 30th birthday",g:1240},{ev:new Date(2026,9,31),t:"Daniel Okafor · Engagement party",g:1820},
     {ev:new Date(2026,9,23),t:"Bourton Running Club · Awards night",g:1460},{ev:new Date(2026,9,17),t:"Priya & Sam Kaur · Wedding reception",g:5240}].map(r=>({...r,d:addWorking(r.ev,2),st:"Paid"}));
@@ -2327,9 +2326,9 @@ function hostPayoutsTab(b){
     <div class="panel"><div class="panel-head"><h2>Payouts</h2><button type="button" class="btn" id="statement">Download statement (CSV)</button></div>
       <div class="bank"><span>Paid to your bank account ending 4417</span><button type="button" class="linkbtn" id="bank">Change bank account</button></div>
       <div class="tablewrap" tabindex="0" role="region" aria-label="Payouts table"><table class="ptable"><caption class="sr-only">Payouts, newest first</caption>
-        <thead><tr><th scope="col">Payout date</th><th scope="col">Booking</th><th scope="col" class="r">Room hire</th><th scope="col" class="r">Vendo fee (8%)</th><th scope="col" class="r">You receive</th><th scope="col">Status</th></tr></thead>
+        <thead><tr><th scope="col">Payout date</th><th scope="col">Booking</th><th scope="col" class="r">Room hire</th><th scope="col" class="r">Vendo fee (10%)</th><th scope="col" class="r">You receive</th><th scope="col">Status</th></tr></thead>
         <tbody>${rows.map(r=>`<tr><td>${day(r.d)}</td><td>${r.t}<small>Event on ${day(r.ev)}</small></td><td class="r">${gbp(r.g)}</td><td class="r">−${gbp(r.g*HOST_FEE)}</td><td class="r"><b>${gbp(net(r.g))}</b></td><td><span class="pill ${r.st==="Paid"?"ok":r.st==="Scheduled"?"new":"held"}">${r.st}</span></td></tr>`).join("")}</tbody></table></div>
-      <p class="pnote">Payouts reach your bank 2 working days after each event. Vendo's 8% fee is on room hire only: money you take at the bar or for food on the night is all yours. VAT invoices for Vendo's fees are in each monthly statement.</p></div>`;
+      <p class="pnote">Payouts reach your bank 2 working days after each event. Vendo's 10% fee is on bookings made through Vendo only: money you take at the bar or for food on the night is all yours. VAT invoices for Vendo's fees are in each monthly statement.</p></div>`;
   document.getElementById("bank").addEventListener("click",()=>toast("Demo: bank details are changed through Stripe's secure page, never on Vendo."));
   document.getElementById("statement").addEventListener("click",()=>{
     const q=x=>`"${String(x).replace(/"/g,'""')}"`;
@@ -2339,7 +2338,7 @@ function hostPayoutsTab(b){
 }
 function drawEst(){
   const e=host.est, perHead=EST_TYPES[e.type][2];
-  const hire=e.per*12*e.rate*0.92, bar=e.per*12*e.guests*perHead;
+  const hire=e.per*12*e.rate*(1-HOST_FEE), bar=e.per*12*e.guests*perHead;
   document.getElementById("ep-v").textContent=e.per; document.getElementById("er-v").textContent=gbp(e.rate); document.getElementById("eg-v").textContent=e.guests;
   document.getElementById("e-total").textContent=gbp(hire+bar);
   document.getElementById("e-hire").textContent=gbp(hire);
@@ -2484,7 +2483,7 @@ function renderList(){
     <div class="lyv-hero">
       <div class="eyebrow">For pubs, bars, nightclubs, halls and clubs</div>
       <h1>Turn your empty room into <em>steady income.</em></h1>
-      <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 8% only when a booking is paid.</p>
+      <p>List your function room, hall or bar on Vendo for free. We set up your listing, send you bookings, and take 10% only when a booking is paid.</p>
       <div class="lyv-cta">${authLive()?`<a class="btn primary" href="#add-venue" id="lyv-self">Add your venue yourself</a><a class="btn" href="#lyv-form">Or ask us to set it up</a>`:`<a class="btn primary" href="#lyv-form">List your venue free</a>`}<a class="btn" href="#lyv-earn">See what you could earn</a></div>
     </div>
     <h2 class="sr-only">How it works</h2>
@@ -2495,7 +2494,7 @@ function renderList(){
     </div>
     <div class="perks">
       <div><b>Free to list</b><span>No sign-up or monthly fee.</span></div>
-      <div><b>8% only when booked</b><span>Founding venues pay 5% for life.</span></div>
+      <div><b>10% only when booked</b><span>No monthly fee, and no booking fee for your guests.</span></div>
       <div><b>Rated guests</b><span>See every guest's rating before you say yes.</span></div>
       <div><b>Your rules</b><span>Set your own prices, hours and house rules.</span></div>
     </div>
@@ -2508,7 +2507,7 @@ function renderList(){
           <div class="ctl"><label for="eg">Average guests <span id="eg-v">${host.est.guests}</span></label><input id="eg" type="range" min="10" max="250" step="5" value="${host.est.guests}"></div>
         </div>
         <div class="est-out" aria-live="polite"><span class="eyebrow">Extra income per year</span><span class="big" id="e-total"></span>
-          <div class="split"><div>Room hire, after 8% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
+          <div class="split"><div>Room hire, after 10% fee<b class="num" id="e-hire"></b></div><div>Bar & food spend<b class="num" id="e-bar"></b></div></div>
           <span style="font-size:12.5px;color:var(--muted)">An estimate based on the numbers you choose. Your real results will vary.</span></div>
       </div></div>
     <div class="lyv-grid">
@@ -2703,7 +2702,7 @@ function drawVenueForm(){
     </div></div>
 
     <div class="panel"><div class="panel-head"><h2>Rooms and prices</h2><span class="eyebrow">Step 2 of 5</span></div>
-      <p class="pnote">Prices are what you receive before Vendo's 8% fee. Guests see a price that includes all fees.</p>
+      <p class="pnote">Guests pay exactly the prices you set. Vendo's 10% fee comes off when you're paid.</p>
       ${f.rooms.map((r,i)=>`<div class="av-room" data-room="${i}"><div class="lform">
         <div class="lf full"><label for="av-r${i}-name">Room name</label><input id="av-r${i}-name" data-rk="name" value="${escH(r.name)}" maxlength="60" placeholder="Function room"></div>
         <div class="lf"><label for="av-r${i}-seated">Seated guests</label><input id="av-r${i}-seated" data-rk="seated" type="number" min="0" inputmode="numeric" value="${escH(r.seated)}"></div>
@@ -3028,13 +3027,13 @@ function openChat(key){
 const PAGES={
  about:{title:"About Vendo",lead:"Vendo helps pubs, bars, nightclubs, village halls, clubs and leisure centres earn from rooms that sit empty most nights.",body:`
   <h2>Why we exist</h2><p>Thousands of function rooms, halls and clubhouses across the UK are quiet on most evenings, while people planning a party, wedding or wake struggle to find a room, a price and a free date. Vendo puts all three in one place.</p>
-  <h2>How we make money</h2><p>Listing is free. We take a small commission when a booking is paid, and guests pay a 4% booking fee that's always shown in the price. That's it.</p>
+  <h2>How we make money</h2><p>Listing is free. Venues pay us 10% when a booking is paid. Guests pay no booking fee. That's it.</p>
   <h2>What we care about</h2><ul><li>Honest prices with nothing added at checkout.</li><li>Fair two-way reviews, so good guests and good venues both stand out.</li><li>Keeping local venues open and busy.</li></ul>`},
  contact:{title:"Contact us",lead:"We usually reply within one working day.",body:"contact"},
  terms:{title:"Terms of use",lead:"Draft for the demo. These terms must be reviewed by a solicitor before Vendo takes real bookings.",body:`
   <h2>1. Who we are</h2><p>Vendo runs a website that lets people book rooms at venues. The venue provides the room and the event services. Vendo acts as the venue's booking agent.</p>
   <h2>2. Bookings</h2><p>A booking is confirmed when the venue accepts your request, or straight away for instant book venues. You'll get a confirmation by email.</p>
-  <h2>3. Prices and fees</h2><p>Prices include a 4% Vendo booking fee. Venues may also hold a refundable damage deposit, shown before you pay.</p>
+  <h2>3. Prices and fees</h2><p>Guests pay no Vendo booking fee. Venues pay Vendo 10% of each paid booking. Venues may also hold a refundable damage deposit, shown before you pay.</p>
   <h2>4. Cancellations</h2><p>Each venue sets its own cancellation policy, shown on its listing and before you pay. Refunds follow that policy.</p>
   <h2>5. Your event</h2><p>You agree to follow the venue's house rules, keep to the guest numbers you booked, and leave the venue as you found it.</p>
   <h2>6. Ratings and reviews</h2><p>Guests and venues can rate each other after an event. Reviews must be honest and about the booking. You can reply to any review, and report one you think breaks these terms.</p>
@@ -3065,6 +3064,7 @@ const PAGES={
    To release: add an entry at the top of RELEASES, then run ./release.sh <version>.
    Bump the last number for fixes, the middle number for new features. */
 const RELEASES=[
+ {v:"0.28.0",d:"2026-11-18",t:"No booking fee for guests",n:["Guests now pay exactly the venue's price, with no booking fee on top.","Venues pay Vendo one simple 10% fee, only when a booking is paid."]},
  {v:"0.27.1",d:"2026-11-18",t:"Smooth hours and guests sliders",n:["The Hours and Guests sliders on a venue page now drag smoothly from one end to the other, on phones too, and the price updates as you drag."]},
  {v:"0.27.0",d:"2026-11-18",t:"Block bookings for classes and clubs",n:["Book the same room and time every week, every 2 weeks or every 4 weeks, for up to 52 sessions, in one go.","Every date is checked. Any that are already taken are shown and skipped, and you only book the free ones.","Venues can offer a block booking discount, such as 10% off 4 or more sessions. You pay for each session 14 days before it."]},
  {v:"0.26.0",d:"2026-11-18",t:"Your time is held while you book",n:["When you start booking, we hold your room and time for 15 minutes so nobody else can book it while you fill in the form. A countdown shows how long is left.","If someone else is already booking that time, you'll see it straight away and can pick another."]},
@@ -3631,7 +3631,7 @@ const MONTH_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","
 function exampleStats(){
   const now=new Date(), months=[];
   for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1), k=12-i, gmv=Math.round(6000+k*k*560)*100;
-    const vendo=Math.round(gmv*0.115), bk=Math.max(1,Math.round(gmv/118000));
+    const vendo=Math.round(gmv*0.10), bk=Math.max(1,Math.round(gmv/118000));
     months.push({m:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`,bookings:bk,gmv,vendo,card:Math.round(gmv*0.015)+bk*20,signups:Math.round(6+k*k*0.9)});}
   const sum=f=>months.reduce((a,m)=>a+m[f],0);
   const names=VENUES.slice(0,8);
@@ -3701,7 +3701,7 @@ function drawAdmin(){
       <div class="stat"><span class="eyebrow">Venues live</span><span class="v">${venues.live||0}</span><span class="d ${venues.pending_review?"down":"up"}">${d.verified_venues!=null?`${d.verified_venues} verified · `:""}${venues.pending_review||0} waiting for approval · ${d.hosts||0} venue accounts</span></div>
     </div>
     <div class="cols even">
-      <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">Booking fee + commission</span></div>
+      <div class="panel"><div class="panel-head"><h2>Vendo takings by month</h2><span class="eyebrow">10% of each booking</span></div>
         <div class="achart">${barChart(months.map(m=>m.vendo),labels,(v,ax)=>ax&&v>=100000?"£"+Math.round(v/100000)+"k":pnd(v),"Vendo takings by month for the last 12 months")}</div></div>
       <div class="panel"><div class="panel-head"><h2>New accounts by month</h2><span class="eyebrow">Guests and venues</span></div>
         <div class="achart">${barChart(months.map(m=>m.signups),labels,v=>Math.round(v).toLocaleString("en-GB"),"New accounts by month for the last 12 months")}</div></div>
@@ -3896,7 +3896,6 @@ function drawCkSum(){
       <div><span>${p.rs.length>1?p.r.name:"Venue hire"} × ${se.sess.length} sessions</span><span>${gbp(se.full)}</span></div>
       ${se.disc?`<div class="note"><span>Block discount (${se.disc}%)</span><span>−${gbp(se.full-se.hire)}</span></div>`:""}
       ${se.add?`<div><span>Extras × ${se.sess.length}</span><span>${gbp(se.add)}</span></div>`:""}
-      <div><span>Booking fee (4%)</span><span>${gbp(se.fee)}</span></div>
       <div class="tot"><span>Total for the block</span><span>${gbp(se.total)}</span></div></div>
     <div class="due num" aria-live="polite"><div class="now"><span>${v.instant?"Due today":"When "+v.host.split(",")[0]+" accepts"}</span><span>${gbp(se.first)}</span></div>
       ${se.sess.length>1?`<div><span>Then each session, 14 days before it</span><span>about ${gbp((se.total-se.first)/(se.sess.length-1))}</span></div>`:""}</div>`:`
@@ -3904,7 +3903,6 @@ function drawCkSum(){
       <div><span>${p.rs.length>1?p.r.name:"Venue hire"}${c.hours>=8?" (day rate)":` (${c.hours} hrs)`}</span><span>${gbp(p.hire)}</span></div>
       ${pct?`<div class="note"><span>${BANDS[bandOf(p.d)]} price</span><span>${pct>0?"+":""}${pct}%</span></div>`:""}
       ${p.extras.map(e=>`<div><span>${e.l}</span><span>${gbp(e.c)}</span></div>`).join("")}
-      <div><span>Booking fee (4%)</span><span>${gbp(p.fee)}</span></div>
       <div class="tot"><span>Total</span><span>${gbp(p.total)}</span></div>
     </div>
     <div class="due num" aria-live="polite">${v.instant?`<div class="now"><span>Due today</span><span>${gbp(p.dueNow)}</span></div>`:`<div class="now"><span>Due today</span><span>£0</span></div><div><span>When ${v.host.split(",")[0]} accepts</span><span>${gbp(p.dueNow)}</span></div>`}
@@ -4117,7 +4115,7 @@ document.addEventListener("click",e=>{
 
 /* ---------- Titles and descriptions for search engines and share cards ---------- */
 const META_DESC={
-  find:"Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. Every price includes all fees.",
+  find:"Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. No booking fees for guests.",
   "list-your-venue":"List your pub, bar, club, hall or leisure centre on Vendo for free. Fill your function room on quiet nights and pay a small fee only when you get a booking.",
   about:"Vendo helps pubs, bars, village halls, clubs and leisure centres earn from rooms that sit empty most nights, and helps people find the right room for their event.",
   contact:"Get in touch with Vendo about a booking, listing your venue, or partnering with us.",
@@ -4128,7 +4126,7 @@ const META_DESC={
 function metaFor(key){
   const m=key.match(/^(venue|book)-(.+)$/), v=m&&VENUES.find(x=>x.id===m[2]);
   if(v&&m[1]==="venue") return {title:`${v.name}, ${v.place.split(",")[0]}: ${v.kind.toLowerCase()} to hire · Vendo`,
-    desc:`${v.space} for up to ${Math.max(v.seated,v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, including all fees. Ideal for ${v.suits.slice(0,3).join(", ").toLowerCase()}.`,index:INDEX_VENUES};
+    desc:`${v.space} for up to ${Math.max(v.seated,v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, with no booking fee. Ideal for ${v.suits.slice(0,3).join(", ").toLowerCase()}.`,index:INDEX_VENUES};
   if(v) return {title:`${checkout&&checkout.done?"Booked":"Book"}: ${v.name} · Vendo`,desc:META_DESC.find,index:false};
   if(key==="admin") return {title:"Admin · Vendo",desc:META_DESC.find,index:false};
   if(key==="add-venue") return {title:"Add your venue · Vendo",desc:META_DESC["list-your-venue"],index:false};

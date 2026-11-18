@@ -40,11 +40,11 @@ const FAQ = LD["@graph"].find(g => g["@type"] === "FAQPage").mainEntity;
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const slugOf = (v) => v.name.toLowerCase().replace(/&/g, "and").replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const gbp = (n) => "£" + Math.round(n).toLocaleString("en-GB");
-const full = (n) => n * 1.04;
+const full = (n) => n;   // guests pay no booking fee
 
 // ---- page content seen before the app script runs ----
 const DESC = {
-  home: "Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. Every price includes all fees.",
+  home: "Book pubs, bars, nightclubs, village halls, clubs and leisure centres for weddings, parties, wakes and christenings. See real availability. No booking fees for guests.",
   list: "List your pub, bar, club, hall or leisure centre on Vendo for free. Fill your function room on quiet nights and pay a small fee only when you get a booking.",
   about: "Vendo helps pubs, bars, village halls, clubs and leisure centres earn from rooms that sit empty most nights, and helps people find the right room for their event.",
   contact: "Get in touch with Vendo about a booking, listing your venue, or partnering with us.",
@@ -58,14 +58,14 @@ const homeBody = () => `<section class="wrap page">
   <h2>Venues on Vendo</h2>
   <ul>${VENUES.map(v => `<li><a href="/venues/${slugOf(v)}">${esc(v.name)}</a>: ${esc(v.kind.toLowerCase())} in ${esc(v.place)}, for up to ${Math.max(v.seated, v.standing)} guests, from ${gbp(full(v.hour))} an hour.</li>`).join("")}</ul>
   <h2>How Vendo works</h2>
-  <ol><li>Find your room: search by date, guests and place. Every price includes all fees.</li><li>Build your quote: choose hours and extras like food, bar staff or a DJ.</li><li>Book and relax: pay securely on Vendo and message the venue any time.</li></ol>
+  <ol><li>Find your room: search by date, guests and place. No booking fees for guests.</li><li>Build your quote: choose hours and extras like food, bar staff or a DJ.</li><li>Book and relax: pay securely on Vendo and message the venue any time.</li></ol>
   <h2>Questions</h2>
   ${FAQ.map(q => `<h3>${esc(q.name)}</h3><p>${esc(q.acceptedAnswer.text)}</p>`).join("")}
   <p><a href="/list-your-venue">List your venue on Vendo</a></p></section>`;
 const venueBody = (v) => `<section class="wrap page">
   <p>${esc(v.kind)} · ${esc(v.region)}</p><h1>${esc(v.name)}</h1>
   <p class="lead">${esc(v.place)} · rated ${v.rating.toFixed(1)} from ${v.reviews} reviews</p>
-  <p>${v.seated} seated · ${v.standing} standing · ${gbp(full(v.hour))} an hour or ${gbp(full(v.day))} a day, including fees · ${v.minH} hours minimum</p>
+  <p>${v.seated} seated · ${v.standing} standing · ${gbp(full(v.hour))} an hour or ${gbp(full(v.day))} a day, no booking fee · ${v.minH} hours minimum</p>
   <h2>${esc(v.space)}</h2><p>${esc(v.blurb)}</p>
   <p>Ideal for: ${esc(v.suits.join(", "))}</p>
   <h2>What's included</h2><ul>${v.features.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
@@ -87,7 +87,7 @@ const pages = [
   ...["about", "contact", "terms", "privacy", "cookies"].map(k => ({ path: "/" + k, title: `${PAGES[k].title} · Vendo`, desc: DESC[k], body: infoBody(k), index: true, priority: "0.5" })),
   { path: "/whats-new", title: "What's new · Vendo", desc: DESC.changelog, body: changelogBody(), index: true, priority: "0.3" },
   ...VENUES.map(v => ({ path: `/venues/${slugOf(v)}`, title: `${v.name}, ${v.place.split(",")[0]}: ${v.kind.toLowerCase()} to hire · Vendo`,
-    desc: `${v.space} for up to ${Math.max(v.seated, v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, including all fees. Ideal for ${v.suits.slice(0, 3).join(", ").toLowerCase()}.`,
+    desc: `${v.space} for up to ${Math.max(v.seated, v.standing)} guests in ${v.place}. From ${gbp(full(v.hour))} an hour, with no booking fee. Ideal for ${v.suits.slice(0, 3).join(", ").toLowerCase()}.`,
     body: venueBody(v), index: INDEX_VENUES, priority: "0.8" })),
   // App screens: real files so a refresh works, but kept out of search results.
   ...VENUES.map(v => ({ path: `/book/${slugOf(v)}`, title: `Book: ${v.name} · Vendo`, desc: DESC.home, body: "", index: false })),
